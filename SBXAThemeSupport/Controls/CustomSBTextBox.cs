@@ -19,9 +19,10 @@ namespace SBXAThemeSupport.Controls
             {
                 try
                 {
-                    sbTextBox = SBUISupport.FindParentByType(e.Source as DependencyObject, typeof(SBTextBox)) as SBTextBox;
+// ReSharper disable once UnusedVariable
+                    var textBox = SBUISupport.FindParentByType(e.Source as DependencyObject, typeof(SBTextBox)) as SBTextBox;
                 }
-                catch (Exception exception)
+                catch (Exception)
                 {
                     e.Handled = true;
                     return;

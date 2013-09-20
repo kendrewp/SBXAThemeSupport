@@ -136,7 +136,7 @@ namespace SBXAThemeSupport
                     string[] parts = fullName.Split(GenericConstants.CHAR_COMMA);
                     if (parts[0].EndsWith(".resources") || parts[0].EndsWith(".XmlSerializers")) return (null);
                 }
-                return assembly ?? (assembly = LoadAssembly(typeof (AssemblyLoader).Assembly, fullName, ResourceNameSpace));
+                return assembly ?? (LoadAssembly(typeof (AssemblyLoader).Assembly, fullName, ResourceNameSpace));
             }
             catch (Exception exception)
             {

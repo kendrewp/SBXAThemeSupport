@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -8,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SBXAThemeSupport")]
 [assembly: AssemblyDescription("This library contains classes, methods and properties to support SB/XA Theme development.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Ascension Technologies, Inc. & Ruf Informatika")]
+[assembly: AssemblyCompany("Ascension Technologies, Inc.")]
 [assembly: AssemblyProduct("SBXAThemeSupport")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyCopyright("Copyright ©  2012, 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.3410.*")]
-[assembly: AssemblyFileVersion("1.0.3410.0")]
+[assembly: AssemblyVersion("1.0.3427.*")]
+[assembly: AssemblyFileVersion("1.0.3427.0")]

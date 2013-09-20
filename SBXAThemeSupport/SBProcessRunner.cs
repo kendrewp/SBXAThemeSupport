@@ -26,7 +26,7 @@ namespace SBXAThemeSupport
         private bool _IsRunningProcesses;
         private readonly ConcurrentQueue<IActionDefinition> _Processes = new ConcurrentQueue<IActionDefinition>();
 
-        private bool _LastCanSendValue = false;
+        private bool _LastCanSendValue;
 
         private SBProcessRunner()
         {
@@ -200,7 +200,7 @@ namespace SBXAThemeSupport
                             JobManager.RunSyncInUIThread(DispatcherPriority.Normal,
                                                          () =>
                                                          {
-                                                             if (!CanSendServerCommands(true)) return;
+                                                             if (!CanSendServerCommands()) return;
                                                              try
                                                              {
                                                                  SBProcessCallAction sbProcessCallAction = action as SBProcessCallAction;
@@ -210,7 +210,8 @@ namespace SBXAThemeSupport
 
                                                                  sbProcessCallAction.Action.Invoke(sbProcessCallAction.ProcessName);
                                                                  _Processes.TryDequeue(out action); // Only remove the process from the queue if it runs sucessfully.
-                                                                 if (action is IDisposable) ((IDisposable)action).Dispose();
+                                                                 var disposable = action as IDisposable;
+                                                                 if (disposable != null) disposable.Dispose();
 
                                                                  SBPlusClient.LogInformation("Executed action. Number of processes left = " + _Processes.Count);
                                                              }
@@ -321,18 +322,6 @@ namespace SBXAThemeSupport
 
         public void ExecuteSBPlusProcess(SBPlusProcess sbPlusProcess, bool isInContext, object parameter, IInputElement target, ServerProcessFailed serverProcessFailed, string name = null)
         {
-            var processDefinition = new SBProcessDefinition
-            {
-                SbProcess = sbPlusProcess,
-                IsInContext = isInContext,
-                Parameter = parameter,
-                Target = target,
-                CurrentFormSbHandle = CurrentFormSBHandle,
-                ServerProcessFailedCallback = serverProcessFailed,
-                Name = name
-            };
-
-            // change this one.                _Processes.Enqueue(processDefinition.SbProcess);
             RunProcess();
         }
 
@@ -340,17 +329,10 @@ namespace SBXAThemeSupport
         /// Executes an SB/XA process when it gets a chance.
         /// </summary>
         /// <param name="processName">The name of the process.</param>
+        /// <param name="inContext">True if the command should be executed in context.</param>
         public static void ExecuteSBPlusProcess(string processName, bool inContext = false)
         {
-            SBProcessCallAction actionDefinition;
-            if (inContext)
-            {
-                actionDefinition = new SBProcessCallAction(processName, true, ExecuteSBProcessInContext);
-            }
-            else
-            {
-                actionDefinition = new SBProcessCallAction(processName, true, ExecuteSBProcess);
-            }
+            SBProcessCallAction actionDefinition = inContext ? new SBProcessCallAction(processName, true, ExecuteSBProcessInContext) : new SBProcessCallAction(processName, true, ExecuteSBProcess);
             Instance._Processes.Enqueue(actionDefinition);
             Instance.RunProcess();
         }
@@ -517,15 +499,8 @@ namespace SBXAThemeSupport
             // change the incontext);
             if (isInContext && SBPlus.Current != null && SBPlus.Current.CurrentForm != null)
             {
-                GuiObjectDefinition guiObjectDefinition;
-                if (SBFocusManager.FormWithFocus is SBMultiForm)
-                {
-                    guiObjectDefinition = ((SBForm)((SBMultiForm)SBFocusManager.FormWithFocus).CurrentForm).GuiObjectDefinition;
-                }
-                else
-                {
-                    guiObjectDefinition = SBFocusManager.FormWithFocus.GuiObjectDefinition;
-                }
+                var form = SBFocusManager.FormWithFocus as SBMultiForm;
+                GuiObjectDefinition guiObjectDefinition = form != null ? ((SBForm)form.CurrentForm).GuiObjectDefinition : SBFocusManager.FormWithFocus.GuiObjectDefinition;
 
                 var formObjectDefinition = guiObjectDefinition as FormObjectDefinition;
                 isInContext = formObjectDefinition != null && formObjectDefinition.ProcessType == ProcessTypes.I;
@@ -769,6 +744,7 @@ namespace SBXAThemeSupport
             public void Dispose()
             {
                 Dispose(true);
+// ReSharper disable once GCSuppressFinalizeForTypeWithoutDestructor
                 GC.SuppressFinalize(this);
             }
 

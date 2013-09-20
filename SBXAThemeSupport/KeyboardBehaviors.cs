@@ -64,8 +64,8 @@ namespace SBXAThemeSupport
 
         private void AssociatedObject_KeyUp(object sender, KeyEventArgs e)
         {
-            if (SBXAThemeSupport.UiAssistant.Current.KeyUpCommand != null && SBXAThemeSupport.UiAssistant.Current.KeyUpCommand.CanExecute(e))
-                SBXAThemeSupport.UiAssistant.Current.KeyUpCommand.Execute(e);
+            if (UiAssistant.Current.KeyUpCommand != null && UiAssistant.Current.KeyUpCommand.CanExecute(e))
+                UiAssistant.Current.KeyUpCommand.Execute(e);
         }
     }
 }
