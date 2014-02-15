@@ -4,6 +4,8 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
+using SBXA.Runtime;
 using SBXA.Shared;
 using SBXA.Shared.Definitions;
 using SBXA.UI.Client;
@@ -55,7 +57,7 @@ namespace SBXAThemeSupport
 
         static void HandleMainWindowStateChanged(object sender, EventArgs e)
         {
-            SBMainWindow sbMainWindow = sender as SBMainWindow;
+            var sbMainWindow = sender as SBMainWindow;
             if (sbMainWindow == null) return;
 
             string minimizedTitle = GetMainWindowMinimizedTitle(SBPlus.Current);
@@ -160,12 +162,18 @@ namespace SBXAThemeSupport
                 case Key.D:
                     DebugWindowManager.ShowDebugWindow();
                     break;
+                    case Key.G:
+                    DebugWindowManager.BringTopMost();
+                    break;
+                    case Key.K:
+                    DebugWindowManager.FlipDebugConsole();
+                    break;
             }
         }
 
         private static void SendControlX()
         {
-            ISBField field2 = SBFocusManager.FocusedControl as ISBField;
+            var field2 = SBFocusManager.FocusedControl as ISBField;
 // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
             if (field2 != null)
             {
@@ -735,6 +743,52 @@ namespace SBXAThemeSupport
         }
 
         #endregion HyperlinkText Property
+
+        #region SetDrawable Property
+
+        public static readonly DependencyProperty SetDrawableProperty =
+            DependencyProperty.RegisterAttached(
+                "SetDrawable",
+                typeof (bool),
+                typeof (UiAssistant),
+                new PropertyMetadata(true, OnSetDrawableChanged)
+                );
+
+        /// <summary>
+        /// Sets the value of the SetDrawable property.
+        /// </summary>
+        /// <param name="target">The depdendency object that this property is attached to.</param>
+        /// <param name="value">The value to set it to.</param>
+        public static void SetSetDrawable(DependencyObject target, bool value)
+        {
+            target.SetValue(SetDrawableProperty, value);
+        }
+
+        /// <summary>
+        /// Gets the value of SetDrawable
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns>The value of SetDrawable</returns>
+        public static bool GetSetDrawable(DependencyObject target)
+        {
+            return ((bool) target.GetValue(SetDrawableProperty));
+        }
+
+        private static void OnSetDrawableChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
+        {
+            // if (SBPlus.Current.CommandLineArguments.ContainsKey(GenericConstants.CL_START_APPLICATION))
+            if ((bool) args.NewValue)
+            {
+                SBGUIAttribute.SetSBDrawable(target, GenericConstants.TRUE_SB_STRING);
+            }
+            else
+            {
+                SBGUIAttribute.SetSBDrawable(target, GenericConstants.FALSE_SB_STRING);
+            }
+        }
+
+        #endregion SetDrawable Property
+
     }
 
     public class RelayCommand : ICommand

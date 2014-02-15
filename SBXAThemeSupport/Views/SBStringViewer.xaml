@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="SBXAThemeSupport.Views.SBStringViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:views="clr-namespace:SBXAThemeSupport.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        
+        <DataTemplate x:Key="IndexColumnTemplate">
+            <TextBlock Text="{Binding Index}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="IndexButtonColumnTemplate">
+            <Button Content="{Binding Index}" Command="views:SBStringViewer.DrillDownCommand" CommandParameter="{Binding}"/>
+        </DataTemplate>
+
+    </UserControl.Resources>
+    <Grid>
+        <DataGrid AutoGenerateColumns="False" Name="dataGrid1" ItemsSource="{Binding}" >
+            <DataGrid.Columns>
+
+                <DataGridTemplateColumn Header="Attribute" Width="Auto"  IsReadOnly="True" 
+                                        CellTemplate="{StaticResource IndexButtonColumnTemplate}" />
+<!--
+                    <DataGridTemplateColumn.CellTemplateSelector>
+                        <views:SBStringViewerCellTemplateSelector 
+                         DefaultTemplate="{StaticResource IndexColumnTemplate}"
+                         AlternateTemplate="{StaticResource IndexButtonColumnTemplate}"
+                        />
+                    </DataGridTemplateColumn.CellTemplateSelector>
+-->
+                    
+                
+                
+                <DataGridTemplateColumn Header="Data" Width="*" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Data}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="" Width="Auto" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Refresh" Width="Auto"
+                                    Command="views:CommonViewer.RefreshCommonCommand"
+                                    CommandParameter="{Binding}"
+                                    />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

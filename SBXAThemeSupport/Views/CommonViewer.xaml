@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="SBXAThemeSupport.Views.CommonViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:views="clr-namespace:SBXAThemeSupport.Views"
+             xmlns:viewModels="clr-namespace:SBXAThemeSupport.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+<!--
+    <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+        <Button Content="Refresh" Grid.Row="0" Height="23" HorizontalAlignment="Left" Margin="0" Name="button1" VerticalAlignment="Top" Width="75" Click="button1_Click" />
+        <views:SBStringViewer Grid.Row="1" />
+    </Grid>
+-->
+    <TabControl Name="tabControl1">
+        <TabItem Header="Section 1" Name="Section1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Button Content="Refresh" Grid.Row="0" Height="23" HorizontalAlignment="Left" 
+                        Margin="0" Name="RefreshSingleVariables" VerticalAlignment="Top" Width="75" 
+                        Command="views:CommonViewer.RefreshCommonCommand"
+                        CommandParameter="SECTION1"
+                        />
+                <views:SBStringViewer Grid.Row="1" DataContext="{Binding Section1Collection}"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="PARMS" Name="ParmsItem">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Button Content="Refresh" Grid.Row="0" Height="23" HorizontalAlignment="Left" Margin="0" 
+                        Name="RefreshParms" VerticalAlignment="Top" Width="75" 
+                        Command="views:CommonViewer.RefreshCommonCommand"
+                        CommandParameter="PARMS"
+                        />
+                <views:SBStringViewer Grid.Row="1" DataContext="{Binding Parms}"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Section 2" Name="Section2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Button Content="Refresh" Grid.Row="0" Height="23" HorizontalAlignment="Left" 
+                        Margin="0" Name="RefreshSection2" VerticalAlignment="Top" Width="75" 
+                        Command="views:CommonViewer.RefreshCommonCommand"
+                        CommandParameter="SECTION2"
+                        />
+                <views:SBStringViewer Grid.Row="1" DataContext="{Binding Section2Collection}"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Section 3" Name="Section3">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Button Content="Refresh" Grid.Row="0" Height="23" HorizontalAlignment="Left" 
+                        Margin="0" Name="RefreshSection3" VerticalAlignment="Top" Width="75" 
+                        Command="views:CommonViewer.RefreshCommonCommand"
+                        CommandParameter="SECTION3"
+                        />
+                <views:SBStringViewer Grid.Row="1" DataContext="{Binding Section3Collection}"/>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</UserControl>

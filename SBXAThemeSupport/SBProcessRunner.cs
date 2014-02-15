@@ -157,10 +157,8 @@ namespace SBXAThemeSupport
 
                             ((ActionDefinition)targetAction).Action.Invoke();
                             _Processes.TryDequeue(out targetAction); // Only remove the process from the queue if it runs sucessfully.
-                            
-                            Debug.WriteLine("[SBProcessRunner.DoRunProcess(160)] dequeued "+targetAction.Name);
 
-                            SBPlusClient.LogInformation("Executed action. Number of processes left = " + _Processes.Count);
+                            SBPlusClient.LogInformation("Dequeued "+targetAction.Name+". Number of processes left = " + _Processes.Count);
                         }
                         else if (targetAction is SubroutineCallAction)
                         {
@@ -200,7 +198,7 @@ namespace SBXAThemeSupport
                             JobManager.RunSyncInUIThread(DispatcherPriority.Normal,
                                                          () =>
                                                          {
-                                                             if (!CanSendServerCommands()) return;
+                                                             if (!CanSendServerCommands(true)) return;
                                                              try
                                                              {
                                                                  SBProcessCallAction sbProcessCallAction = action as SBProcessCallAction;
@@ -210,8 +208,7 @@ namespace SBXAThemeSupport
 
                                                                  sbProcessCallAction.Action.Invoke(sbProcessCallAction.ProcessName);
                                                                  _Processes.TryDequeue(out action); // Only remove the process from the queue if it runs sucessfully.
-                                                                 var disposable = action as IDisposable;
-                                                                 if (disposable != null) disposable.Dispose();
+                                                                 if (action is IDisposable) ((IDisposable)action).Dispose();
 
                                                                  SBPlusClient.LogInformation("Executed action. Number of processes left = " + _Processes.Count);
                                                              }
@@ -276,7 +273,6 @@ namespace SBXAThemeSupport
         public void ExecuteMethod(Action myAction, bool canCauseUnexpectedResponsesToServer, string name = null)
         {
             var actionDefinition = new ActionDefinition(canCauseUnexpectedResponsesToServer, myAction);
-            Debug.WriteLine("[SBProcessRunner.ExecuteMethod(196)] adding process ");
             _Processes.Enqueue(actionDefinition);
             RunProcess();
 
@@ -353,22 +349,17 @@ namespace SBXAThemeSupport
 
         private static void ExecuteSBProcess(string processName)
         {
-            Debug.WriteLine("[SBProcessRunner.RunDummyProcess(224)] Executing " + processName);
             SBPlusRuntime.Current.ExecuteServerProcess(processName, ServerProcessFailed);
-            Debug.WriteLine("[SBProcessRunner.RunDummyProcess(226)] Executed " + processName);
         }
 
         private static void ExecuteSBProcessInContext(string processName)
         {
-            Debug.WriteLine("[SBProcessRunner.ExecuteSBProcessInContext(371)] Executing " + processName);
             SBPlusRuntime.Current.ExecuteInContextServerProcess(processName, InContextServerProcessFailed);
-            Debug.WriteLine("[SBProcessRunner.ExecuteSBProcessInContext(373)] Executed " + processName);
         }
 
         public static bool CanSendServerCommands(bool commandCouldCauseUiAction = true)
         {
-            Debug.WriteLine("[SBProcessRunner.CanSendServerCommands(372)] commandCouldCauseUiAction = " + commandCouldCauseUiAction);
-            bool canSend = false;
+            var canSend = false;
             if (commandCouldCauseUiAction)
             {
                 if (!Application.Current.Dispatcher.CheckAccess())
@@ -387,26 +378,24 @@ namespace SBXAThemeSupport
                     canSend = true;
                 }
             }
-            Debug.WriteLine("[SBProcessRunner.CanSendServerCommands(392)] canSend = " + canSend);
             return (canSend);
         }
 
         private static bool CheckCanSendServerCommands()
         {
-            bool canSend = false;
+            var canSend = false;
             // Check I am connected and that there is a system selected.
             if (SBPlusClient.Current.IsConnected && SBPlusClient.Current.IsSystemSelected)
             {
                 // now check if the server is ready
-                Debug.WriteLine("[SBProcessRunner.CheckCanSendServerCommands(407)] SBPlusRuntime.Current.CommandProcessor.IsServerWaiting " + SBPlusRuntime.Current.CommandProcessor.IsServerWaiting);
                 if (SBPlusRuntime.Current.CommandProcessor.IsServerWaiting)
                 {
                     // make sure the UI is waiting for input.
-                    Debug.WriteLine("[SBProcessRunner.CheckCanSendServerCommands(403)] " + SBPlus.Current.InputState);
                     if (SBPlus.Current.InputState == SBInputState.WaitingForInput)
                     {
                         // now I need to check if the command waiting is an SBGuiCommand.
-                        SBPlusServerMessage sbPlusServerMessage = SBPlusRuntime.Current.CommandProcessor.GetLastMessage(false);
+                        var sbPlusServerMessage = SBPlusRuntime.Current.CommandProcessor.GetLastMessage(false);
+/*
                         if (sbPlusServerMessage != null && sbPlusServerMessage.Command != null)
                         {
                             Debug.WriteLine("[SBProcessRunner.CheckCanSendServerCommands(412)] Command is " + sbPlusServerMessage.Command.GetType().Name);
@@ -415,6 +404,7 @@ namespace SBXAThemeSupport
                         {
                             Debug.WriteLine("[SBProcessRunner.CheckCanSendServerCommands(412)] Command is null.");
                         }
+*/
                         if (sbPlusServerMessage != null && sbPlusServerMessage.Command != null && sbPlusServerMessage.Command is GuiInputCommand)
                         {
                             canSend = true;
@@ -613,8 +603,6 @@ namespace SBXAThemeSupport
         {
             SBString[] retunSBStrings = null;
 
-            Debug.WriteLine("[SbProcessHandler.ExecuteSubroutine(204)] " + CanSendServerCommands() + ", " + SBPlusRuntime.Current.CommandProcessor.IsServerWaiting);
-
             if (CanSendServerCommands() && SBPlusRuntime.Current.CommandProcessor.IsServerWaiting)
             {
                 try
@@ -636,8 +624,6 @@ namespace SBXAThemeSupport
         private static SBString[] ExecuteSubroutineIfNoUi(string subroutineName, SBString[] arguments)
         {
             SBString[] retunSBStrings = null;
-
-            Debug.WriteLine("[SbProcessHandler.ExecuteSubroutine(204)] " + SBPlusRuntime.Current.CommandProcessor.IsServerWaiting);
 
             if (SBPlusRuntime.Current.CommandProcessor.IsServerWaiting)
             {

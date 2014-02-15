@@ -17,7 +17,7 @@ namespace SBXAThemeSupport
 
                 // get version
                 string version = typeof(SBString).Assembly.GetName().Version.ToString();
-                string rootPath = Utilities.GetEnvironmentVariable(GenericConstants.SBOPATH);
+                string rootPath = SBXA.Shared.Utilities.GetEnvironmentVariable(GenericConstants.SBOPATH);
                 DirectoryInfo rootDirectory = Directory.GetParent(rootPath);
                 // get list of folders in "%APPDATA%/Rocket Software/SBXA"
                 DirectoryInfo[] directories = rootDirectory.GetDirectories();

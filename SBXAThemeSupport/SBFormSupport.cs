@@ -17,7 +17,7 @@ namespace SBXAThemeSupport
 
         static void HandleSBPlusClientSBFormCreated(object sender, SBFormCreatedEventArgs e)
         {
-            SBForm sbForm = e.Form as SBForm;
+            var sbForm = e.Form as SBForm;
             if (sbForm != null)
             {
                 Keyboard.AddKeyUpHandler(sbForm, keyUpHandler);
@@ -26,11 +26,10 @@ namespace SBXAThemeSupport
 
         public static void keyUpHandler(object sender, KeyEventArgs args)
         {
-            if (args.Key == Key.X && Keyboard.Modifiers == ModifierKeys.Control && !args.Handled)
-            {
-                Debug.WriteLine("[SBFormSupport.keyUpHandler(30)] Sending Ctrl-X back to the server. ");
-                SendControlX();
-            }
+            if (args.Key != Key.X || Keyboard.Modifiers != ModifierKeys.Control || args.Handled) return;
+
+            Debug.WriteLine("[SBFormSupport.keyUpHandler(30)] Sending Ctrl-X back to the server. ");
+            SendControlX();
         }
 
         public static void SendResponse(SBString response)
@@ -58,7 +57,7 @@ namespace SBXAThemeSupport
 
         private static void SendControlX()
         {
-            ISBField field2 = SBFocusManager.FocusedControl as ISBField;
+            var field2 = SBFocusManager.FocusedControl as ISBField;
             SendResponse(field2 != null
                              ? new GuiInputEvent(field2.SBValue, SBCommands.SBCtrlxCommand.SBEvent, SBCommands.SBCtrlxCommand.SBKeyValue, field2.CursorPosition + 1).ResponseString
                              : new GuiInputEvent(string.Empty, SBCommands.SBCtrlxCommand.SBEvent, SBCommands.SBCtrlxCommand.SBKeyValue, 1).ResponseString);

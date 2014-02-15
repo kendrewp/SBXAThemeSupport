@@ -19,14 +19,14 @@ namespace SBXAThemeSupport
 
         private void HandleMainWindowKeyUp(object sender, KeyEventArgs e)
         {
-            AssociatedObject_KeyUp(sender, e);
+            HandleAssociatedObjectKeyUp(sender, e);
             e.Handled = true;
         }
 
         protected override void OnAttached()
         {
             base.OnAttached();
-            AssociatedObject.KeyUp += AssociatedObject_KeyUp;
+            AssociatedObject.KeyUp += HandleAssociatedObjectKeyUp;
             Dispatcher.BeginInvoke(DispatcherPriority.Input, new DispatcherOperationCallback(delegate
                                                                                                  {
                                                                                                      ListenToWindowClose
@@ -38,7 +38,7 @@ namespace SBXAThemeSupport
         protected override void OnDetaching()
         {
             base.OnDetaching();
-            AssociatedObject.KeyUp -= AssociatedObject_KeyUp;
+            AssociatedObject.KeyUp -= HandleAssociatedObjectKeyUp;
         }
 
         private void ListenToWindowClose()
@@ -56,13 +56,13 @@ namespace SBXAThemeSupport
             if (window != null)
             {
                 window.Closed -= HandleSBWindowClosed;
-                AssociatedObject.KeyUp -= AssociatedObject_KeyUp;
+                AssociatedObject.KeyUp -= HandleAssociatedObjectKeyUp;
             }
             Application.Current.MainWindow.KeyUp -= HandleMainWindowKeyUp;
 
         }
 
-        private void AssociatedObject_KeyUp(object sender, KeyEventArgs e)
+        private static void HandleAssociatedObjectKeyUp(object sender, KeyEventArgs e)
         {
             if (UiAssistant.Current.KeyUpCommand != null && UiAssistant.Current.KeyUpCommand.CanExecute(e))
                 UiAssistant.Current.KeyUpCommand.Execute(e);
