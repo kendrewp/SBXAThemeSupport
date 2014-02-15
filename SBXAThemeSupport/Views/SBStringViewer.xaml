@@ -16,6 +16,10 @@
             <Button Content="{Binding Index}" Command="views:SBStringViewer.DrillDownCommand" CommandParameter="{Binding}"/>
         </DataTemplate>
 
+        <ControlTemplate x:Key="RefreshButtonTemplate">
+            <Image Source="/SBXAThemeSupport;component/Images/reload.png" />
+        </ControlTemplate>
+
     </UserControl.Resources>
     <Grid>
         <DataGrid AutoGenerateColumns="False" Name="dataGrid1" ItemsSource="{Binding}" >
@@ -45,9 +49,10 @@
                 <DataGridTemplateColumn Header="" Width="Auto" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Refresh" Width="Auto"
+                            <Button Content="Refresh" Width="16" Height="16"
                                     Command="views:CommonViewer.RefreshCommonCommand"
                                     CommandParameter="{Binding}"
+                                    Template="{StaticResource RefreshButtonTemplate}"
                                     />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

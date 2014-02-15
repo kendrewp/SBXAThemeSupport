@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interactivity;
 using System.Windows.Threading;
+using SBXA.UI.Client;
 using SBXA.UI.WPFControls;
 
 namespace SBXAThemeSupport
@@ -52,13 +53,24 @@ namespace SBXAThemeSupport
 
         private void HandleSBWindowClosed(object sender, EventArgs e)
         {
-            var window = sender as SBWindow;
-            if (window != null)
+            try
             {
-                window.Closed -= HandleSBWindowClosed;
-                AssociatedObject.KeyUp -= HandleAssociatedObjectKeyUp;
+
+                var window = sender as SBWindow;
+                if (window != null)
+                {
+                    window.Closed -= HandleSBWindowClosed;
+                    AssociatedObject.KeyUp -= HandleAssociatedObjectKeyUp;
+                }
+                if (Application.Current != null && Application.Current.MainWindow != null)
+                {
+                    Application.Current.MainWindow.KeyUp -= HandleMainWindowKeyUp;
+                }
             }
-            Application.Current.MainWindow.KeyUp -= HandleMainWindowKeyUp;
+            catch (Exception exception)
+            {
+                SBPlusClient.LogError("Problem cleaning up KeyboardBehaviours.", exception);
+            }
 
         }
 

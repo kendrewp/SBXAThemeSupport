@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using SBXA.UI.Client;
 using SBXA.UI.WPFControls;
+using SBXAThemeSupport.ViewModels;
 
 namespace SBXAThemeSupport.Controls
 {
@@ -30,6 +32,73 @@ namespace SBXAThemeSupport.Controls
             }
 
             base.OnPreviewMouseDoubleClick(e);
+        }
+
+
+        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        {
+            var sbMvEditControl = SBUISupport.FindParentByType(this, typeof(SBMvEditControl)) as SBMvEditControl;
+            if (sbMvEditControl != null)
+            {
+                SBControl.SetShouldSendSBCommands(sbMvEditControl, true);
+            }
+            base.OnPreviewMouseDown(e);
+        }
+
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            try
+            {
+                // Find the field
+                var sbField = SBUISupport.FindParentByType(this, typeof(SBField)) as SBField;
+                if (sbField == null || sbField.GuiObjectDefinition == null || sbField.GuiObjectDefinition.FieldDefinition == null) return;
+
+                if (UiViewModel.Current.IsKeyDisabled(e, sbField.GuiObjectDefinition.FieldDefinition.FieldName))
+                {
+                    // Find SBMvEditControl
+                    var sbMvEditControl = SBUISupport.FindParentByType(this, typeof(SBMvEditControl)) as SBMvEditControl;
+                    if (sbMvEditControl == null) return;
+                    // Find the window
+                    var sbWindow = SBUISupport.FindParentByType(this, typeof(SBWindow)) as SBWindow;
+                    if (sbWindow == null) return;
+
+                    SBControl.SetShouldSendSBCommands(sbMvEditControl, false);
+
+                    sbWindow.PreviewMouseDown += HandleSBWindowPreviewMouseDown;
+                    e.Handled = true;
+
+                    return;
+                }
+                else
+                {
+                    var sbMvEditControl = SBUISupport.FindParentByType(this, typeof(SBMvEditControl)) as SBMvEditControl;
+                    if (sbMvEditControl != null)
+                    {
+                        SBControl.SetShouldSendSBCommands(sbMvEditControl, true);
+                    }
+
+                }
+            }
+            catch (Exception exception)
+            {
+                SBPlusClient.LogError("An exception was caught while looking for disabled keys.", exception);
+            }
+            base.OnPreviewKeyDown(e);
+        }
+
+        void HandleSBWindowPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+            // Find SBMvEditControl
+            var sbMvEditControl = SBUISupport.FindParentByType(this, typeof(SBMvEditControl)) as SBMvEditControl;
+            if (sbMvEditControl == null) return;
+
+            // Find the window
+            var sbWindow = SBUISupport.FindParentByType(this, typeof(SBWindow)) as SBWindow;
+            if (sbWindow == null) return;
+
+            sbWindow.PreviewMouseDown -= HandleSBWindowPreviewMouseDown;
+            SBControl.SetShouldSendSBCommands(sbMvEditControl, true);
         }
 
     }

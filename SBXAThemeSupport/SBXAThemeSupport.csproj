@@ -157,6 +157,7 @@
     <Compile Include="Utilities\TimerHelper.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ViewModels\TroubleShooterViewModel.cs" />
     <Compile Include="ViewModels\UiViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="Views\CommonViewer.xaml.cs">
@@ -211,7 +212,15 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\reload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\debugger.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\StringViewer.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

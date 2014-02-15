@@ -29,7 +29,6 @@ namespace SBXAThemeSupport.Utilities
         {
             if (((e.StagingItem == null) || (e.StagingItem.Input == null)) || (!(e.StagingItem.Input.Device is KeyboardDevice))) return;
 
-            Debug.WriteLine("[KeepAliveTimer.HandleInputManagerPostProcessInput(32)] ");
             _LastMessage = DateTime.Now;
         }
 
@@ -51,18 +50,19 @@ namespace SBXAThemeSupport.Utilities
 
         public void Start()
         {
-            if (_TimerHelper != null) return;
-
-            _TimerHelper = new TimerHelper(Interval) {Data = ProcessName};
-            _TimerHelper.Elapsed += OnExecuteSBProcessTimerTick;
-            _TimerHelper.Start();
-            SBPlusClient.LogInformation("Keep alive timer started. With an interval of "+Interval);
-            if (_Timeout > 0)
+            if (_TimerHelper == null && Interval > 0)
             {
-                _LogoutTimerHelper = new TimerHelper(60000) { Data = "XUI.KEEPALIVE,3" };
+                _TimerHelper = new TimerHelper(Interval) {Data = ProcessName};
+                _TimerHelper.Elapsed += OnExecuteSBProcessTimerTick;
+                _TimerHelper.Start();
+                SBPlusClient.LogInformation("Keep alive timer started. With an interval of " + Interval);
+            }
+            if (_LogoutTimerHelper == null && _Timeout <= 0)
+            {
+                _LogoutTimerHelper = new TimerHelper(60000) {Data = "XUI.KEEPALIVE,3"};
                 _LogoutTimerHelper.Elapsed += OnExecuteLogoutTimerTick;
                 _LogoutTimerHelper.Start();
-                SBPlusClient.LogInformation("Logout alive timer started with logout timeout = "+_Instance._Timeout);
+                SBPlusClient.LogInformation("Logout alive timer started with logout timeout = " + _Instance._Timeout);
             }
         }
 
@@ -110,11 +110,10 @@ namespace SBXAThemeSupport.Utilities
 
             var timeout = new TimeSpan(0, _Instance._Timeout, 0);
 
-            SBPlusClient.LogInformation("Checking if we should logout " + currentTime.Subtract(_Instance._LastMessage).Minutes + ", last message " + _Instance._LastMessage.ToShortTimeString() + ", Current time " + currentTime.ToShortTimeString() + ", comparison = " + currentTime.Subtract(_Instance._LastMessage).CompareTo(timeout));
             if (currentTime.Subtract(_Instance._LastMessage).CompareTo(timeout) <= 0) return;
 
             Stop(); // stop the timers so they do not fire while I am logging out.
-            SBPlusClient.LogInformation("Executing " + processName);
+            SBPlusClient.LogInformation("Executing " + processName + ", current time " + currentTime.ToShortTimeString() +", last message "+_Instance._LastMessage.ToShortTimeString());
 
             SBProcessRunner.ExecuteSBPlusProcess(processName, false);
         }

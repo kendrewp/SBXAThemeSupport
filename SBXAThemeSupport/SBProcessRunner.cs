@@ -339,7 +339,7 @@ namespace SBXAThemeSupport
         /// <param name="parameters">The array with parameters</param>
         public static void ExecuteSBPlusProcess(string processName, string[] parameters = null)
         {
-            string processCall = processName;
+            var processCall = processName;
             if (parameters != null)
             {
                 processCall = parameters.Aggregate(processCall, (current, param) => current + ("," + param));

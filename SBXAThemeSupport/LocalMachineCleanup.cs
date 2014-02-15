@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using SBXA.Shared;
+using SBXA.UI.Client;
 
 namespace SBXAThemeSupport
 {
@@ -39,8 +41,30 @@ namespace SBXAThemeSupport
             }
             catch (Exception exception)
             {
+                SBPlusClient.LogError("Failed to clean the previous version data.", exception);
+            }
+        }
+        /// <summary>
+        /// This will remove the logs from before the date specified in before.
+        /// </summary>
+        /// <param name="before">The date which should be used to figure out which logs are cleaned.</param>
+        public static void CleanLogs(DateTime before)
+        {
+            try
+            {
+                // get list of files  in "%APPDATA%/Rocket Software/SBXA/Logs"
+                var files = Directory.GetFiles(Path.Combine(Log.LOG_DIRECTORY, "Client"));
 
-                ;
+                foreach (var fileInfo in from fileInfo in files let creationTime = File.GetLastWriteTime(fileInfo) where creationTime.Year < before.Year
+                                                                                                                         || creationTime.Month < before.Month
+                                                                                                                         || creationTime.Day < before.Day select fileInfo)
+                {
+                    File.Delete(fileInfo);
+                }
+            }
+            catch (Exception exception)
+            {
+                SBPlusClient.LogError("Failed to clean the logs.", exception);
             }
         }
 

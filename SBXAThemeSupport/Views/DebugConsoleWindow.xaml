@@ -4,10 +4,9 @@
         xmlns:views="clr-namespace:SBXAThemeSupport.Views"
         xmlns:viewModels="clr-namespace:SBXAThemeSupport.DebugAssistant.ViewModels"
         DataContext="{Binding Source={x:Static viewModels:DebugViewModel.Instance}}"
-        Title="DebugConsoleWindow" 
+        Title="Application Insight" 
         Height="{Binding DebugConsoleWindowHeight}" 
-        Width="{Binding DebugConsoleWindowWidth}"
-        >
+        Width="{Binding DebugConsoleWindowWidth}" Icon="/SBXAThemeSupport;component/Images/debugger.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -23,10 +22,20 @@
                 <views:CommonViewer />
             </TabItem>
         </TabControl>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,5,0">
         <CheckBox Name="IsDebugEnabled" 
-                  Content="Enable Debugging" Grid.Row="0" Height="16" 
+                  Content="Enable Debugging" Height="16" 
                   HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" 
+                  Padding="2,0,2,0"
                   IsChecked="{Binding IsDebugEnabled}"
-                  />
+                  /> 
+            <CheckBox Content="Show SB/XA Debug Window"  Height="16" 
+                      HorizontalAlignment="Left" Margin="0" 
+                      VerticalAlignment="Top" 
+                      IsChecked="{Binding IsSBXADebugWindowOpen}"
+                      Padding="2,0,2,0"
+                      />
+            
+        </StackPanel>
     </Grid>
 </Window>

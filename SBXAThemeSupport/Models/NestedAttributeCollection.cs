@@ -1,22 +1,52 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using SBXA.Shared;
+using SBXAThemeSupport.DebugAssistant.ViewModels;
+using SBXAThemeSupport.ViewModels;
 
 namespace SBXAThemeSupport.Models
 {
     public class NestedAttributeCollection : ObservableCollection<NestedAttribute>
     {
-        public static NestedAttributeCollection BuildFromSBString(SBString sbString)
+        public static NestedAttributeCollection BuildFromSBString(string variable, SBString sbString)
         {
-            var nac = new NestedAttributeCollection();
-            var index = 0;
-            foreach (var attr in sbString)
-            {
-                nac.Insert(index, new NestedAttribute((index + 1).ToString(CultureInfo.InvariantCulture), attr));
-                index++;
-            }
+            var nac = new NestedAttributeCollection {Variable = variable, Source = sbString};
             return nac;
+        }
+
+        private void UpdateCollection(SBString sbString)
+        {
+            Clear();
+            var index = 0;
+            if (sbString.Dcount() == 1)
+            {
+                    Insert(index, new NestedAttribute(DebugViewModel.BuildTitle(Variable, "1"), sbString, DebugViewModel.BuildTitle(Variable, "1")));
+            }
+            else
+            {
+                foreach (var attr in sbString)
+                {
+                    Insert(index, new NestedAttribute(DebugViewModel.BuildTitle(Variable, (index + 1).ToString(CultureInfo.InvariantCulture)), attr, DebugViewModel.BuildTitle(Variable, (index + 1).ToString(CultureInfo.InvariantCulture))));
+                    index++;
+                }
+            }
+        }
+    
+
+        private SBString _Source;
+
+        public SBString Source
+        {
+            get { return _Source; }
+            set
+            {
+                _Source = value;
+                UpdateCollection(_Source);
+
+            }
         }
 
         public bool ContainsIndex(string index)
@@ -28,6 +58,27 @@ namespace SBXAThemeSupport.Models
         {
             return this.FirstOrDefault(item => item.Index.Equals(index));
         }
+
+        #region Variable Property
+
+        private string _Variable;
+
+        /// <summary>
+        /// Gets or sets the Variable property. This property will raise a <see cref="ViewModel.PropertyChanged"/> event.
+        /// </summary>
+        public string Variable
+        {
+            get { return _Variable; }
+            set
+            {
+                if (_Variable == value) return;
+                _Variable = value;
+                base.OnPropertyChanged(new PropertyChangedEventArgs(Variable));
+            }
+        }
+
+        #endregion Variable Property
+    
     }
 
     public class NestedAttribute : ObservableEntity
@@ -36,6 +87,7 @@ namespace SBXAThemeSupport.Models
         private string _Data;
         private bool _IsNested;
         private SBString _Source;
+        private string _Variable;
 
         public string Index
         {
@@ -90,10 +142,17 @@ namespace SBXAThemeSupport.Models
             }
         }
 
-        public NestedAttribute(string attributeNumber, SBString data)
+        public string Variable
+        {
+            get { return _Variable; }
+            set { _Variable = value; }
+        }
+
+        public NestedAttribute(string attributeNumber, SBString data, string variable)
         {
             Index = attributeNumber;
             Source = data;
+            Variable = variable;
         }
     }
 }
