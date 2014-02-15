@@ -1,7 +1,9 @@
 ﻿<Window x:Class="SBXAThemeSupport.Views.SBStringViewerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:views="clr-namespace:SBXAThemeSupport.Views"
-        Title="SBStringViewerWindow" Height="300" Width="300">
+        Title="{Binding Variable}" 
+        
+        Height="300" Width="300" Icon="/SBXAThemeSupport;component/Images/StringViewer.png">
     <Grid>
         <views:SBStringViewer />
     </Grid>

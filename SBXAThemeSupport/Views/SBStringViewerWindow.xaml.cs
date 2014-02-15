@@ -1,26 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using SBXAThemeSupport.DebugAssistant;
+using SBXAThemeSupport.Models;
 
 namespace SBXAThemeSupport.Views
 {
     /// <summary>
     /// Interaction logic for SBStringViewerWindow.xaml
     /// </summary>
-    public partial class SBStringViewerWindow : Window
+    public partial class SBStringViewerWindow
     {
         public SBStringViewerWindow()
         {
             InitializeComponent();
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            var collection = DataContext as NestedAttributeCollection;
+            if (collection == null) return;
+
+            DebugWindowManager.RemoveWindow(collection.Variable);
+            base.OnClosing(e);
         }
     }
 }
