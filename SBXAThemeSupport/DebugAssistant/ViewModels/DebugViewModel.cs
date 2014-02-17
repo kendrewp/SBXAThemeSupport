@@ -438,7 +438,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     collection = window.DataContext as NestedAttributeCollection;
                 }
                 if (collection == null) return;
-                    SetItemData(value, which, collection);
+                SetItemData(value, which, collection);
 
             }
             catch (Exception exception)

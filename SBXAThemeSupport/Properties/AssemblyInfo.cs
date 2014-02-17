@@ -32,7 +32,8 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.3427.*")]
-[assembly: AssemblyFileVersion("1.0.3427.0")]
+[assembly: AssemblyVersion("6.15.3523.*")]
+[assembly: AssemblyFileVersion("6.15.3523.0")]
 [assembly: XmlnsDefinition("http://schemas.asctech.com/ThemeSupport", "SBXAThemeSupport")]
 [assembly: XmlnsDefinition("http://schemas.asctech.com/ThemeSupport", "SBXAThemeSupport.Converters")]
+[assembly: XmlnsDefinition("http://schemas.asctech.com/ThemeSupport", "SBXAThemeSupport.Controls")]

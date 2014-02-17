@@ -13,6 +13,7 @@ namespace SBXAThemeSupport.Models
     {
         public static NestedAttributeCollection BuildFromSBString(string variable, SBString sbString)
         {
+            if (sbString.Dcount() == 1) sbString = sbString.Extract(1); // if only a single attribute, raise it so that the colleciton is built correctly.
             var nac = new NestedAttributeCollection {Variable = variable, Source = sbString};
             return nac;
         }

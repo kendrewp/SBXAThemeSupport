@@ -113,7 +113,7 @@ namespace SBXAThemeSupport
             }
             if (assembly == null)
             {
-                // only load thi assembly loaded if the base one could not be loaded, or find the assembly.
+                // only load the assembly loaded if the base one could not be loaded, or find the assembly.
                 if (_AssemblyLoader == null)
                 {
                     _AssemblyLoader = new AssemblyLoader("CustomSBPlusTheme");
@@ -165,7 +165,7 @@ namespace SBXAThemeSupport
                     case Key.G:
                     DebugWindowManager.BringTopMost();
                     break;
-                    case Key.K:
+                case Key.K:
                     DebugWindowManager.FlipDebugConsole();
                     break;
             }
