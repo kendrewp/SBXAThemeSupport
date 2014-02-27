@@ -4,8 +4,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
-using SBXA.Runtime;
 using SBXA.Shared;
 using SBXA.Shared.Definitions;
 using SBXA.UI.Client;
@@ -159,13 +157,15 @@ namespace SBXAThemeSupport
                     // Settings.Instance.IsOptionsVisible = Visibility.Visible;
                     Current.OptionsVisibility = Current.OptionsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
                     break;
+/*
                 case Key.D:
                     DebugWindowManager.ShowDebugWindow();
                     break;
-                    case Key.G:
+*/
+                case Key.G:
                     DebugWindowManager.BringTopMost();
                     break;
-                case Key.K:
+                case Key.D:
                     DebugWindowManager.FlipDebugConsole();
                     break;
             }
