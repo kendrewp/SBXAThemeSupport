@@ -47,13 +47,10 @@ namespace SBXAThemeSupport.DebugAssistant
 
         public static void BringTopMost()
         {
-            Type sbPlusWindowType = typeof(SBPlusWindow);
-            var fieldInfo = sbPlusWindowType.GetField("_Ghost", BindingFlags.NonPublic | BindingFlags.Instance);
+            SBPlusClient.LogInformation("User hit Ctrl-Shift-G");
+            TroubleShooterViewModel.SendCtrolShiftG("User struck 'Ctrl-Shft-G");
 
-            if (fieldInfo == null) return;
-
-            var removeMethodInfo = ReflectionAssistant.GetMemberInfo(typeof(SBUISupport), "RemoveGhost", new[] { typeof(UIElement), typeof(SBGhost) });
-            if (removeMethodInfo == null) return;
+            var sbPlusWindowType = typeof(SBPlusWindow);
 
             if (SBPlus.Current.FormStack.RealStack.Count == 0) return;
             var formInfo = SBPlus.Current.FormStack.RealStack.Peek();
@@ -65,38 +62,14 @@ namespace SBXAThemeSupport.DebugAssistant
             sbWindow.Top = 0d;
             sbWindow.Left = 0d;
 
-            TroubleShooterViewModel.SendFreeze("User struck 'Ctrl-Shft-G");
-
-/*
-            Type sbPlusWindowType = typeof (SBPlusWindow);
-            var fieldInfo  = sbPlusWindowType.GetField("_Ghost", BindingFlags.NonPublic | BindingFlags.Instance);
+            var fieldInfo = sbPlusWindowType.GetField("_Ghost", BindingFlags.NonPublic | BindingFlags.Instance);
 
             if (fieldInfo == null) return;
 
-            var removeMethodInfo = ReflectionAssistant.GetMemberInfo(typeof(SBUISupport), "RemoveGhost", new Type[] {typeof(UIElement), typeof(SBGhost) });
+            var removeMethodInfo = ReflectionAssistant.GetMemberInfo(typeof(SBUISupport), "RemoveGhost", new[] { typeof(UIElement), typeof(SBGhost) });
             if (removeMethodInfo == null) return;
 
-            // if the ghost is on the form, remove it. If it is not put it on the form - unless it is the current form.
-            foreach (var isbForm in SBPlus.Current.FormStack.RealStack)
-            {
-                var sbWindow = isbForm.ObjectHandle.ParentSBWindow;
-                var sbPlusWindow = SBUISupport.FindParentByType((DependencyObject)isbForm.ObjectHandle, typeof(SBPlusWindow)) as SBPlusWindow;
-                if (sbPlusWindow != null)
-                {
-                    var ghost = fieldInfo.GetValue(sbPlusWindow);
-                    if (ghost != null)
-                    {
-                        typeof(SBUISupport).InvokeMember("RemoveGhost", BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy | BindingFlags.NonPublic | BindingFlags.Static, Type.DefaultBinder, null, new object[] { sbPlusWindow, ghost });
 
-                        //sbPlusWindowType.InvokeMember("SetupOrRemoveGhost", BindingFlags.InvokeMethod | BindingFlags.NonPublic, Type.DefaultBinder, sbPlusWindow, new object[] { (ISBForm)isbForm.ObjectHandle });
-
-                        // SetupOrRemoveGhost(ISBForm form)
-                    }
-                    // var ghost = propInfo.GetValue(sbPlusWindow, BindingFlags.NonPublic, null, new object[0]);
-                    Debug.WriteLine("[DebugWindowManager.SwitchGhost(26)] " + SBControl.GetIsGhostPresent(sbPlusWindow));
-                }
-            }
-*/
         }
 
         private static void OpenDebugConsole()

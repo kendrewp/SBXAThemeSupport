@@ -68,17 +68,24 @@ namespace SBXAThemeSupport.Utilities
 
         public static void Stop()
         {
-            if (_Instance._TimerHelper != null)
+            try
             {
-                _Instance._TimerHelper.Stop();
-                _Instance._TimerHelper.Close();
-                _Instance._TimerHelper = null;
+                if (_Instance._TimerHelper != null)
+                {
+                    _Instance._TimerHelper.Stop();
+                    _Instance._TimerHelper.Close();
+                    _Instance._TimerHelper = null;
+                }
+                if (_Instance._LogoutTimerHelper != null)
+                {
+                    _Instance._LogoutTimerHelper.Stop();
+                    _Instance._LogoutTimerHelper.Close();
+                    _Instance._LogoutTimerHelper = null;
+                }
             }
-            if (_Instance._LogoutTimerHelper != null)
+            catch (Exception)
             {
-                _Instance._LogoutTimerHelper.Stop();
-                _Instance._LogoutTimerHelper.Close();
-                _Instance._LogoutTimerHelper = null;
+                ;
             }
         }
 
