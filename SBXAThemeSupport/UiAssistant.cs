@@ -157,16 +157,11 @@ namespace SBXAThemeSupport
                     // Settings.Instance.IsOptionsVisible = Visibility.Visible;
                     Current.OptionsVisibility = Current.OptionsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
                     break;
-/*
-                case Key.D:
-                    DebugWindowManager.ShowDebugWindow();
-                    break;
-*/
-                case Key.G:
-                    DebugWindowManager.BringTopMost();
-                    break;
                 case Key.D:
                     DebugWindowManager.FlipDebugConsole();
+                    break;
+                    case Key.G:
+                    DebugWindowManager.BringTopMost();
                     break;
             }
         }
