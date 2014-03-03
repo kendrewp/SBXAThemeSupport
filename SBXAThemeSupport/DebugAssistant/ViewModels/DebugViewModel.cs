@@ -323,6 +323,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     {
                         try
                         {
+                            if (Instance.ProcessHistoryStack.Count == 0) return;
                             Instance.ProcessStack.Pop();
                         }
                         catch (Exception exception)

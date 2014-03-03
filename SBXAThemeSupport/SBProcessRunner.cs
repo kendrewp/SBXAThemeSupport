@@ -141,7 +141,7 @@ namespace SBXAThemeSupport
 
                 while (_Processes.Count > 0 && CanSendServerCommands(false))
                 {
-                    SBPlusClient.LogInformation(string.Format("Jobs to process {0}", _Processes.Count));
+//                    SBPlusClient.LogInformation(string.Format("Jobs to process {0}", _Processes.Count));
 
                     IActionDefinition targetAction;
                     if (!_Processes.TryPeek(out targetAction)) break; // if there is nothing in the queue break out.
@@ -153,17 +153,17 @@ namespace SBXAThemeSupport
                     {
                         if (targetAction is ActionDefinition)
                         {
-                            SBPlusClient.LogInformation("Executing action. Is on UI thread " + Application.Current.Dispatcher.CheckAccess());
+//                            SBPlusClient.LogInformation("Executing action. Is on UI thread " + Application.Current.Dispatcher.CheckAccess());
 
                             ((ActionDefinition)targetAction).Action.Invoke();
                             _Processes.TryDequeue(out targetAction); // Only remove the process from the queue if it runs sucessfully.
 
-                            SBPlusClient.LogInformation("Dequeued "+targetAction.Name+". Number of processes left = " + _Processes.Count);
+//                            SBPlusClient.LogInformation("Dequeued "+targetAction.Name+". Number of processes left = " + _Processes.Count);
                         }
                         else if (targetAction is SubroutineCallAction)
                         {
 
-                            SBPlusClient.LogInformation("Executing action. Is on UI thread " + Application.Current.Dispatcher.CheckAccess());
+//                            SBPlusClient.LogInformation("Executing action. Is on UI thread " + Application.Current.Dispatcher.CheckAccess());
 
                             // If the action is only to run a process on the server, then inclose the check and the call in a single block so as to prevent any action on the UI from getting in between and preventing 
                             // the server call.
@@ -175,11 +175,11 @@ namespace SBXAThemeSupport
                                                              if (!subroutineCallAction.CanSendCommandToServer()) return;
                                                              try
                                                              {
-                                                                 SBPlusClient.LogInformation("Executing action. Is on UI thread " + Application.Current.Dispatcher.CheckAccess());
+//                                                                 SBPlusClient.LogInformation("Executing action. Is on UI thread " + Application.Current.Dispatcher.CheckAccess());
                                                                  subroutineCallAction.Action.Invoke(subroutineCallAction.SubroutineName, subroutineCallAction.Parameters, subroutineCallAction.UserState, subroutineCallAction.SubroutineCallCompleted);
                                                                  _Processes.TryDequeue(out targetAction); // Only remove the process from the queue if it runs sucessfully.
 
-                                                                 SBPlusClient.LogInformation("Executed action. Number of processes left = " + _Processes.Count);
+//                                                                 SBPlusClient.LogInformation("Executed action. Number of processes left = " + _Processes.Count);
                                                              }
                                                              catch (Exception exception)
                                                              {
@@ -188,7 +188,7 @@ namespace SBXAThemeSupport
                                                          });
                             // Should have already been dequeued in the try/catch bloxk, _Processes.TryDequeue(out targetAction); // Only remove the process from the queue if it runs sucessfully.
 
-                            SBPlusClient.LogInformation("Executed action. Number of processes left = " + _Processes.Count);
+//                            SBPlusClient.LogInformation("Executed action. Number of processes left = " + _Processes.Count);
                         }
                         else
                         {
@@ -204,13 +204,13 @@ namespace SBXAThemeSupport
                                                                  SBProcessCallAction sbProcessCallAction = action as SBProcessCallAction;
                                                                  if (sbProcessCallAction == null) return;
 
-                                                                 SBPlusClient.LogInformation("Executing action. Is on UI thread " + Application.Current.Dispatcher.CheckAccess());
+//                                                                 SBPlusClient.LogInformation("Executing action. Is on UI thread " + Application.Current.Dispatcher.CheckAccess());
 
                                                                  sbProcessCallAction.Action.Invoke(sbProcessCallAction.ProcessName);
                                                                  _Processes.TryDequeue(out action); // Only remove the process from the queue if it runs sucessfully.
                                                                  if (action is IDisposable) ((IDisposable)action).Dispose();
 
-                                                                 SBPlusClient.LogInformation("Executed action. Number of processes left = " + _Processes.Count);
+//                                                                 SBPlusClient.LogInformation("Executed action. Number of processes left = " + _Processes.Count);
                                                              }
                                                              catch (Exception exception)
                                                              {
@@ -218,11 +218,10 @@ namespace SBXAThemeSupport
                                                              }
                                                          });
                         }
-                        SBPlusClient.LogInformation("Executed action");
+//                        SBPlusClient.LogInformation("Executed action");
                     }
                     catch (SBPlusApplicationException exception)
                     {
-                        Debug.WriteLine("[SBProcessRunner.RunProcess(186)] Exception " + exception.Message);
                         if (!CanSendServerCommands(false) ||
                             exception.Message.Contains("The server is currently busy and cannot accept requests."))
                         {
@@ -447,7 +446,7 @@ namespace SBXAThemeSupport
             string procIncludingParam = processName;
             if (!string.IsNullOrEmpty(param)) procIncludingParam = string.Format("{0},{1}", processName, param);
 
-            SBPlusClient.LogInformation(string.Format("CheckIsServerReady: {0}, process call: {1}", CanSendServerCommands(false), procIncludingParam));
+//            SBPlusClient.LogInformation(string.Format("CheckIsServerReady: {0}, process call: {1}", CanSendServerCommands(false), procIncludingParam));
 
             Instance.ExecuteSBPlusProcess(CallProcessInternal, isInContext, procIncludingParam, SBPlus.Current, null, name);
         }
@@ -456,7 +455,7 @@ namespace SBXAThemeSupport
         {
             string param = parameter.GetRawString();
 
-            SBPlusClient.LogInformation(string.Format("Check Application.IsServerReady: {0}", CanSendServerCommands(false)));
+//            SBPlusClient.LogInformation(string.Format("Check Application.IsServerReady: {0}", CanSendServerCommands(false)));
 
             string procIncludingParam = processName;
             if (!string.IsNullOrEmpty(param)) procIncludingParam = string.Format("{0},{1}", processName, param);
@@ -472,7 +471,7 @@ namespace SBXAThemeSupport
         {
             if (parameter == null)
             {
-                SBPlusClient.LogInformation("parameter is null. This should never be the case");
+//                SBPlusClient.LogInformation("parameter is null. This should never be the case");
                 return;
             }
 
@@ -496,9 +495,9 @@ namespace SBXAThemeSupport
                 isInContext = formObjectDefinition != null && formObjectDefinition.ProcessType == ProcessTypes.I;
             }
 
-            SBPlusClient.LogInformation(string.Format("CallProcessInternal isInContext: {0} Parameter: {1}", isInContext, myLogParameter));
+//            SBPlusClient.LogInformation(string.Format("CallProcessInternal isInContext: {0} Parameter: {1}", isInContext, myLogParameter));
 
-            SBPlusClient.LogInformation(string.Format("Der Process : {0} wird aufgerufen.", myLogParameter));
+//            SBPlusClient.LogInformation(string.Format("Der Process : {0} wird aufgerufen.", myLogParameter));
 
             if (isInContext)
             {
@@ -509,7 +508,7 @@ namespace SBXAThemeSupport
                 SBPlusRuntime.Current.ExecuteServerProcess(myLogParameter, serverProcessFailed ?? ServerProcessFailed);
             }
 
-            SBPlusClient.LogInformation(string.Format("Der Process : {0} wurde aufgerufen.", myLogParameter));
+//            SBPlusClient.LogInformation(string.Format("Der Process : {0} wurde aufgerufen.", myLogParameter));
         }
 
         private static void ServerProcessFailed(string processName, object stateObject, Exception exception)
