@@ -1,25 +1,74 @@
-﻿using System.Timers;
-
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TimerHelper.cs" company="Ascension Technologies, Inc.">
+//   Copyright © Ascension Technologies, Inc. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport.Utilities
 {
+    using System.Timers;
+
+    /// <summary>
+    ///     The timer helper.
+    /// </summary>
     public class TimerHelper : Timer
     {
-        public TimerHelper(double interval) : base(interval) { }
+        #region Fields
 
-        private volatile object _Tag;
-        public object Tag
+        private volatile object data;
+
+        private volatile object tag;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TimerHelper"/> class.
+        /// </summary>
+        /// <param name="interval">
+        /// The interval.
+        /// </param>
+        public TimerHelper(double interval)
+            : base(interval)
         {
-            get { return _Tag; }
-            set { _Tag = value; }
         }
 
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets or sets the data.
+        /// </summary>
         public object Data
         {
-            get { return _Data; }
-            set { _Data = value; }
+            get
+            {
+                return this.data;
+            }
+
+            set
+            {
+                this.data = value;
+            }
         }
 
-        private volatile object _Data;
+        /// <summary>
+        ///     Gets or sets the tag.
+        /// </summary>
+        public object Tag
+        {
+            get
+            {
+                return this.tag;
+            }
 
+            set
+            {
+                this.tag = value;
+            }
+        }
+
+        #endregion
     }
 }

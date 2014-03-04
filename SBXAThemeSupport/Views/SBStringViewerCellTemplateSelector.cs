@@ -1,43 +1,70 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using SBXAThemeSupport.Models;
-
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SBStringViewerCellTemplateSelector.cs" company="Ascension Technologies, Inc.">
+//   Copyright © Ascension Technologies, Inc. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport.Views
 {
+    using System.Windows;
+    using System.Windows.Controls;
 
+    using SBXAThemeSupport.Models;
+
+    /// <summary>
+    ///     The sb string viewer cell template selector.
+    /// </summary>
     public class SBStringViewerCellTemplateSelector : DataTemplateSelector
     {
-        private DataTemplate _defaultTemplate;
-        public DataTemplate DefaultTemplate
-        {
-            get { return _defaultTemplate; }
-            set { _defaultTemplate = value; }
-        }
+        #region Fields
 
-        private DataTemplate _alternateTemplate;
-        public DataTemplate AlternateTemplate
-        {
-            get { return _alternateTemplate; }
-            set { _alternateTemplate = value; }
-        }
+        #endregion
 
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets or sets the alternate template.
+        /// </summary>
+        public DataTemplate AlternateTemplate { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the default template.
+        /// </summary>
+        public DataTemplate DefaultTemplate { get; set; }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// The select template.
+        /// </summary>
+        /// <param name="item">
+        /// The item.
+        /// </param>
+        /// <param name="container">
+        /// The container.
+        /// </param>
+        /// <returns>
+        /// The <see cref="DataTemplate"/>.
+        /// </returns>
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             var dataUnit = item as NestedAttribute;
 
-            if (dataUnit == null) return DefaultTemplate;
+            if (dataUnit == null)
+            {
+                return this.DefaultTemplate;
+            }
 
             //lets see what template we need to select according to the specified property value
             if (dataUnit.IsNested)
             {
-                return AlternateTemplate;
+                return this.AlternateTemplate;
             }
-            return DefaultTemplate;
+
+            return this.DefaultTemplate;
         }
+
+        #endregion
     }
 }

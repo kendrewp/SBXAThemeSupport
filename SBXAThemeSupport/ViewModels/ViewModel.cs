@@ -1,20 +1,42 @@
-﻿using System.ComponentModel;
-
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ViewModel.cs" company="Ascension Technologies, Inc.">
+//   Copyright © Ascension Technologies, Inc. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport.ViewModels
 {
+    using System.ComponentModel;
+
+    /// <summary>
+    ///     The view model.
+    /// </summary>
     public abstract class ViewModel : INotifyPropertyChanged
     {
-        #region INotifyPropertyChanged Members
+        #region Public Events
 
+        /// <summary>
+        ///     The property changed.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// The raise property changed.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The property name.
+        /// </param>
         protected void RaisePropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
-        #endregion INotifyPropertyChanged Members
-
+        #endregion
     }
 }

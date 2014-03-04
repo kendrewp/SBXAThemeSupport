@@ -76,6 +76,9 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NavigationPane">
+      <HintPath>..\..\RocketDeliveries\RichClient\NavigationPane.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="SBXAEditor">
@@ -138,6 +141,7 @@
     <Compile Include="Converters\CommandParameterConverter.cs" />
     <Compile Include="Converters\InfoButtonConverter.cs" />
     <Compile Include="DebugAssistant\DebugWindowManager.cs" />
+    <Compile Include="DebugAssistant\ViewModels\CommonVariables.cs" />
     <Compile Include="DebugAssistant\ViewModels\DebugViewModel.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GlassExtensions.cs" />

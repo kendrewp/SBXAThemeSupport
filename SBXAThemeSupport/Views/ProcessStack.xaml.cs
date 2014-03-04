@@ -1,44 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using SBXAThemeSupport.DebugAssistant.ViewModels;
-
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ProcessStack.xaml.cs" company="Ascension Technologies, Inc.">
+//   Copyright © Ascension Technologies, Inc. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport.Views
 {
+    using System.Windows.Controls;
+    using System.Windows.Input;
+
+    using SBXAThemeSupport.DebugAssistant.ViewModels;
+
     /// <summary>
-    /// Interaction logic for ProcessStack.xaml
+    ///     Interaction logic for ProcessStack.xaml
     /// </summary>
     public partial class ProcessStack : UserControl
     {
-        public static readonly RoutedUICommand ClearStackCommand = new RoutedUICommand("ClearStackCommand", "ClearStackCommand", typeof(ProcessStack));
-        public static CommandBinding ClearStackCommandBinding = new CommandBinding(ClearStackCommand);
+        #region Static Fields
 
+        public static readonly RoutedUICommand ClearStackCommand = new RoutedUICommand(
+            "ClearStackCommand", 
+            "ClearStackCommand", 
+            typeof(ProcessStack));
+
+        private static readonly CommandBinding ClearStackCommandBinding = new CommandBinding(ClearStackCommand);
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        ///     Initializes static members of the <see cref="ProcessStack" /> class.
+        /// </summary>
         static ProcessStack()
         {
             ClearStackCommandBinding.Executed += ExecutedClearStackCommand;
         }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ProcessStack" /> class.
+        /// </summary>
         public ProcessStack()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
-            CommandBindings.Add(ClearStackCommandBinding);
+            this.CommandBindings.Add(ClearStackCommandBinding);
         }
 
-        static void ExecutedClearStackCommand(object sender, ExecutedRoutedEventArgs e)
+        #endregion
+
+        #region Methods
+
+        private static void ExecutedClearStackCommand(object sender, ExecutedRoutedEventArgs e)
         {
             DebugViewModel.Instance.ProcessHistoryStack.Clear();
         }
 
+        #endregion
     }
 }

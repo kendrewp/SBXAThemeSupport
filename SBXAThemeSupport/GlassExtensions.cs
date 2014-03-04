@@ -1,101 +1,145 @@
-﻿using System;
-using System.Drawing;
-using System.Windows;
-using System.Windows.Media;
-using System.Runtime.InteropServices;
-using System.Windows.Interop;
-
-namespace SBXAThemeSupport
+﻿namespace SBXAThemeSupport
 {
+    using System;
+    using System.Runtime.InteropServices;
+    using System.Windows;
+    using System.Windows.Interop;
 
     /// <summary>
-    /// public partial class Window1 : Window
-    /// {
-      /// public Window1()
-      /// {
-          /// InitializeComponent();
-          /// this.GlassBackground();
-    /// }
-    /// 
-    /// http://ciantic.blogspot.com.au/2009/10/wpf-window-with-areo-glass-background-c.html
+    ///     public partial class Window1 : Window
+    ///     {
+    ///     public Window1()
+    ///     {
+    ///     InitializeComponent();
+    ///     this.GlassBackground();
+    ///     }
+    ///     http://ciantic.blogspot.com.au/2009/10/wpf-window-with-areo-glass-background-c.html
+    /// </summary>
+    public static class GlassingExtension
+    {
+        #region Public Methods and Operators
 
-    /// </summary>
-public static class GlassingExtension
-{
-    /// <summary>
-    /// Sets glass background to whole window.
-    /// </summary>
-    /// <remarks>Remember to set your WPF Window Background to "Transparent"!</remarks>
-    /// <param name="win"></param>
-    public static void GlassBackground(this Window win)
-    {
-        // Glass extend WINAPI thingie http://msdn.microsoft.com/en-us/library/aa969512%28VS.85%29.aspx form more details
-        // If any of the margins is "-1" the whole window is glass!
-        win.GlassBackground(-1, 0, 0, 0);
-    }
-    /// <summary>
-    /// Sets glass background to custom margins in the window.
-    /// </summary>
-    /// <param name="win"></param>
-    public static void GlassBackground(this Window win, int left, int right, int top, int bottom)
-    {
-        // Why would you read the inner workings? Why? If you need to know why...
-        // DwmExtendFrameIntoClientArea http://msdn.microsoft.com/en-us/library/aa969512%28VS.85%29.aspx is the magical WINAPI call
-        // rest is just crap to get its parameters populated.
-        win.Loaded += delegate(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Sets glass background to whole window.
+        /// </summary>
+        /// <remarks>
+        /// Remember to set your WPF Window Background to "Transparent"!
+        /// </remarks>
+        /// <param name="win">
+        /// The Window to apply the glass background.
+        /// </param>
+        public static void GlassBackground(this Window win)
         {
-            try
-            {
-                // Obtain the window handle for WPF application
-                IntPtr mainWindowPtr = new WindowInteropHelper(win).Handle;
-                HwndSource mainWindowSrc = HwndSource.FromHwnd(mainWindowPtr);
+            // Glass extend WINAPI thingie http://msdn.microsoft.com/en-us/library/aa969512%28VS.85%29.aspx form more details
+            // If any of the margins is "-1" the whole window is glass!
+            win.GlassBackground(-1, 0, 0, 0);
+        }
 
-                // Transparent shall be glassed!
-                mainWindowSrc.CompositionTarget.BackgroundColor = System.Windows.Media.Colors.Transparent;
-
-                // Margin for the DwmExtendFrameIntoClientArea WINAPI call.
-                NonClientRegionAPI.MARGINS margins = new NonClientRegionAPI.MARGINS();
-                margins.cxLeftWidth = left;
-                margins.cxRightWidth = right;
-                margins.cyBottomHeight = bottom;
-                margins.cyTopHeight = top;
-
-                // Glass extend WINAPI thingie http://msdn.microsoft.com/en-us/library/aa969512%28VS.85%29.aspx form more details
-                int hr = NonClientRegionAPI.DwmExtendFrameIntoClientArea(mainWindowSrc.Handle, ref margins);
-                if (hr < 0)
+        /// <summary>
+        /// Sets glass background to custom margins in the window.
+        /// </summary>
+        /// <param name="win">
+        /// The Window to apply the glass background.
+        /// </param>
+        /// <param name="left">
+        /// The left.
+        /// </param>
+        /// <param name="right">
+        /// The right.
+        /// </param>
+        /// <param name="top">
+        /// The top.
+        /// </param>
+        /// <param name="bottom">
+        /// The bottom.
+        /// </param>
+        public static void GlassBackground(this Window win, int left, int right, int top, int bottom)
+        {
+            // Why would you read the inner workings? Why? If you need to know why...
+            // DwmExtendFrameIntoClientArea http://msdn.microsoft.com/en-us/library/aa969512%28VS.85%29.aspx is the magical WINAPI call
+            // rest is just crap to get its parameters populated.
+            win.Loaded += delegate
                 {
-                    //DwmExtendFrameIntoClientArea Failed
-                } else {
-                    win.Background = System.Windows.Media.Brushes.Transparent;
-                }
-            }
-            // If not glassing capabilities (Windows XP...), paint background white.
-            catch (DllNotFoundException)
-            {
-                Application.Current.MainWindow.Background = System.Windows.Media.Brushes.White;
-            }
-        };
-    }
+                    try
+                    {
+                        // Obtain the window handle for WPF application
+                        IntPtr mainWindowPtr = new WindowInteropHelper(win).Handle;
+                        HwndSource mainWindowSrc = HwndSource.FromHwnd(mainWindowPtr);
 
-    #region WINAPI Crap, none should handle this in 21st century
-    private class NonClientRegionAPI
-    {
-        [StructLayout(LayoutKind.Sequential)]
-        public struct MARGINS
+                        // Transparent shall be glassed!
+                        if (mainWindowSrc != null)
+                        {
+                            if (mainWindowSrc.CompositionTarget != null)
+                            {
+                                mainWindowSrc.CompositionTarget.BackgroundColor = System.Windows.Media.Colors.Transparent;
+                            }
+
+                            // Margin for the DwmExtendFrameIntoClientArea WINAPI call.
+                            var margins = new NonClientRegionApi.Margins
+                                              {
+                                                  CxLeftWidth = left, 
+                                                  CxRightWidth = right, 
+                                                  CyBottomHeight = bottom, 
+                                                  CyTopHeight = top
+                                              };
+
+                            // Glass extend WINAPI thingie http://msdn.microsoft.com/en-us/library/aa969512%28VS.85%29.aspx form more details
+                            int hr = NonClientRegionApi.DwmExtendFrameIntoClientArea(mainWindowSrc.Handle, ref margins);
+                            if (hr < 0)
+                            {
+                                //DwmExtendFrameIntoClientArea Failed
+                            }
+                            else
+                            {
+                                win.Background = System.Windows.Media.Brushes.Transparent;
+                            }
+                        }
+                    }
+                    catch (DllNotFoundException)
+                    {
+                        // If not glassing capabilities (Windows XP...), paint background white.
+                        Application.Current.MainWindow.Background = System.Windows.Media.Brushes.White;
+                    }
+                };
+        }
+
+        #endregion
+
+        private static class NonClientRegionApi
         {
-            public int cxLeftWidth;      // width of left border that retains its size
-            public int cxRightWidth;     // width of right border that retains its size
-            public int cyTopHeight;      // height of top border that retains its size
-            public int cyBottomHeight;   // height of bottom border that retains its size
-        };
+            #region Public Methods and Operators
 
+            /// <summary>
+            /// The dwm extend frame into client area.
+            /// </summary>
+            /// <param name="hwnd">
+            /// The hwnd.
+            /// </param>
+            /// <param name="pMarInset">
+            /// The p mar inset.
+            /// </param>
+            /// <returns>
+            /// The <see cref="int"/>.
+            /// </returns>
+            [DllImport("DwmApi.dll")]
+            public static extern int DwmExtendFrameIntoClientArea(IntPtr hwnd, ref Margins pMarInset);
 
-        [DllImport("DwmApi.dll")]
-        public static extern int DwmExtendFrameIntoClientArea(
-            IntPtr hwnd,
-            ref MARGINS pMarInset);
+            #endregion
 
+            /// <summary>
+            ///     The margins.
+            /// </summary>
+            [StructLayout(LayoutKind.Sequential)]
+            public struct Margins
+            {
+                public int CxLeftWidth; // width of left border that retains its size
+
+                public int CxRightWidth; // width of right border that retains its size
+
+                public int CyTopHeight; // height of top border that retains its size
+
+                public int CyBottomHeight; // height of bottom border that retains its size
+            }
+        }
     }
-    #endregion
 }
-} 

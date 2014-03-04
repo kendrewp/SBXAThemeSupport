@@ -1,24 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ObservableEntity.cs" company="Ascension Technologies, Inc.">
+//   Copyright © Ascension Technologies, Inc. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport.Models
 {
+    using System.ComponentModel;
+
+    /// <summary>
+    ///     The observable entity.
+    /// </summary>
     public class ObservableEntity : INotifyPropertyChanged
     {
-        #region INotifyPropertyChanged Members
+        #region Public Events
 
+        /// <summary>
+        ///     The property changed.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// The raise property changed.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The property name.
+        /// </param>
         protected void RaisePropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
-        #endregion INotifyPropertyChanged Members
-    
+        #endregion
     }
 }

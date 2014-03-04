@@ -1,45 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using SBXA.Shared;
-using SBXAThemeSupport.DebugAssistant.ViewModels;
-using SBXAThemeSupport.Models;
-
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CommonViewer.xaml.cs" company="Ascension Technologies, Inc.">
+//   Copyright © Ascension Technologies, Inc. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport.Views
 {
+    using System.Windows.Controls;
+    using System.Windows.Input;
+
+    using SBXAThemeSupport.DebugAssistant.ViewModels;
+    using SBXAThemeSupport.Models;
+
     /// <summary>
-    /// Interaction logic for CommonViewer.xaml
+    ///     Interaction logic for CommonViewer.xaml
     /// </summary>
     public partial class CommonViewer : UserControl
     {
-        public static readonly RoutedUICommand RefreshCommonCommand = new RoutedUICommand("RefreshCommonCommand", "RefreshCommonCommand", typeof(CommonViewer));
-        public static CommandBinding RefreshCommonCommandBinding = new CommandBinding(RefreshCommonCommand);
+        #region Static Fields
 
+        public static readonly RoutedUICommand RefreshCommonCommand = new RoutedUICommand(
+            "RefreshCommonCommand", 
+            "RefreshCommonCommand", 
+            typeof(CommonViewer));
+
+        private static readonly CommandBinding RefreshCommonCommandBinding = new CommandBinding(RefreshCommonCommand);
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        ///     Initializes static members of the <see cref="CommonViewer" /> class.
+        /// </summary>
         static CommonViewer()
         {
             RefreshCommonCommandBinding.Executed += ExecutedRefreshCommonCommand;
             RefreshCommonCommandBinding.CanExecute += CanExecuteRefreshCommonCommand;
-
-            
         }
 
-        static void CanExecuteRefreshCommonCommand(object sender, CanExecuteRoutedEventArgs e)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CommonViewer" /> class.
+        /// </summary>
+        public CommonViewer()
+        {
+            this.InitializeComponent();
+
+            this.CommandBindings.Add(RefreshCommonCommandBinding);
+        }
+
+        #endregion
+
+        #region Methods
+
+        private static void CanExecuteRefreshCommonCommand(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = DebugViewModel.Instance.IsDebugEnabled;
         }
 
-
-        static void ExecutedRefreshCommonCommand(object sender, ExecutedRoutedEventArgs e)
+        private static void ExecutedRefreshCommonCommand(object sender, ExecutedRoutedEventArgs e)
         {
             var which = e.Parameter as string;
             if (!string.IsNullOrEmpty(which))
@@ -48,11 +66,18 @@ namespace SBXAThemeSupport.Views
             else
             {
                 var nestedAttribute = e.Parameter as NestedAttribute;
-                if (nestedAttribute == null) return;
+                if (nestedAttribute == null)
+                {
+                    return;
+                }
 
                 which = nestedAttribute.Index;
             }
-            if (string.IsNullOrEmpty(which)) return;
+
+            if (string.IsNullOrEmpty(which))
+            {
+                return;
+            }
 
             switch (which)
             {
@@ -69,12 +94,6 @@ namespace SBXAThemeSupport.Views
             }
         }
 
-        public CommonViewer()
-        {
-            InitializeComponent();
-
-            CommandBindings.Add(RefreshCommonCommandBinding);
-        }
-
+        #endregion
     }
 }
