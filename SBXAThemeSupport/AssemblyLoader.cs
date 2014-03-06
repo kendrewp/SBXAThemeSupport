@@ -1,8 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AssemblyLoader.cs" company="Ruf Informatik AG">
+//   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
 // <copyright file="AssemblyLoader.cs" company="Ascension Technologies, Inc.">
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport
 {
     using System;

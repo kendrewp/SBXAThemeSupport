@@ -1,8 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="UiAssistant.cs" company="Ascension Technologies, Inc.">
+// <copyright file="AssemblyLoader.cs" company="Ruf Informatik AG">
+//   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
+// <copyright file="AssemblyLoader.cs" company="Ascension Technologies, Inc.">
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport
 {
     using System;
@@ -11,7 +15,9 @@ namespace SBXAThemeSupport
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media;
+    using System.Windows.Threading;
 
+    using SBXA.Runtime;
     using SBXA.Shared;
     using SBXA.Shared.Definitions;
     using SBXA.UI.Client;
@@ -136,6 +142,12 @@ namespace SBXAThemeSupport
             typeof(UiAssistant), 
             new PropertyMetadata(true, OnSetDrawableChanged));
 
+        // Using a DependencyProperty as the backing store for IsConnected.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsConnectedProperty = DependencyProperty.Register(
+            "IsConnected", 
+            typeof(bool), 
+            typeof(UiAssistant));
+
         private static readonly CommandBinding ExecuteProcessInContextCommandBinding = new CommandBinding(ExecuteProcessInContextCommand);
 
         private static AssemblyLoader assemblyLoader;
@@ -164,6 +176,8 @@ namespace SBXAThemeSupport
             SBPlus.Current.ApplicationShutdown += HandleApplicationShutdown;
 
             SBPlus.Current.CommandBindings.Add(ExecuteProcessInContextCommandBinding);
+
+            SBPlusClient.Connected += this.HandleConnected;
         }
 
         #endregion
@@ -217,6 +231,29 @@ namespace SBXAThemeSupport
                 return FileVersionInfo.GetVersionInfo(typeof(UiAssistant).Assembly.Location).FileVersion;
             }
         }
+
+        #region IsConnected
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [is connected].
+        /// </summary>
+        /// <example>
+        /// <code lang="XAML">
+        /// ...
+        /// {Binding Path=IsConnected, Source={Static SBXAThemeSupport:UiAssitant.Current}}
+        /// ...
+        /// </code>
+        /// </example>
+        /// <value>
+        ///   <c>true</c> if [is connected]; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsConnected
+        {
+            get { return (bool)GetValue(IsConnectedProperty); }
+            set { this.SetValue(IsConnectedProperty, value); }
+        }
+
+        #endregion IsConnected
 
         #endregion
 
@@ -899,6 +936,16 @@ namespace SBXAThemeSupport
             }
 
             // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
+        }
+
+        private void HandleConnected(object sender, ConnectedEventArgs e)
+        {
+            this.SetIsConnected(e.Connected);
+        }
+
+        private void SetIsConnected(bool newValue)
+        {
+            JobManager.RunInUIThread(DispatcherPriority.Input, () => this.IsConnected = newValue);
         }
 
         #endregion
