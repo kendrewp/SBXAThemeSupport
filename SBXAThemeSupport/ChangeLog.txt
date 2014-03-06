@@ -1,0 +1,1 @@
+﻿March 6, 2014	Kendrew Peacey	Added IsConnected property to UiAssistant
