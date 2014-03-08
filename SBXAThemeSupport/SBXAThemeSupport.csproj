@@ -141,6 +141,7 @@
     <Compile Include="Converters\CommandParameterConverter.cs" />
     <Compile Include="Converters\InfoButtonConverter.cs" />
     <Compile Include="DebugAssistant\DebugWindowManager.cs" />
+    <Compile Include="DebugAssistant\Models\ProcessStack.cs" />
     <Compile Include="DebugAssistant\ViewModels\CommonVariables.cs" />
     <Compile Include="DebugAssistant\ViewModels\DebugViewModel.cs" />
     <Compile Include="Extensions.cs" />
@@ -228,6 +229,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\StringViewer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\refresh_forward.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ChangeLog.txt" />

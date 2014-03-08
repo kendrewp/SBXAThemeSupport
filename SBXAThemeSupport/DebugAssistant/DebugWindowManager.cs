@@ -297,20 +297,22 @@ namespace SBXAThemeSupport.DebugAssistant
             {
                 try
                 {
-                    if (((SBPlus.Current != null) && (DebugConsoleWindow == null)) && !SBPlus.Current.IsSBPlusClosing)
+                    if (((SBPlus.Current == null) || (DebugConsoleWindow != null)) || SBPlus.Current.IsSBPlusClosing)
                     {
-                        try
-                        {
-                            DebugConsoleWindow = new DebugConsoleWindow();
-                            DebugConsoleWindow.Closed += DebugConsoleIsClosed;
-                            DebugConsoleWindow.Show();
-                            Dispatcher.Run();
-                        }
-                        catch (Exception exception)
-                        {
-                            SBPlusClient.LogError("An exception was caught when creating the Debug Console.", exception);
-                            DebugConsoleWindow = null;
-                        }
+                        return;
+                    }
+
+                    try
+                    {
+                        DebugConsoleWindow = new DebugConsoleWindow();
+                        DebugConsoleWindow.Closed += DebugConsoleIsClosed;
+                        DebugConsoleWindow.Show();
+                        Dispatcher.Run();
+                    }
+                    catch (Exception exception)
+                    {
+                        SBPlusClient.LogError("An exception was caught when creating the Debug Console.", exception);
+                        DebugConsoleWindow = null;
                     }
                 }
                 catch (Exception exception2)

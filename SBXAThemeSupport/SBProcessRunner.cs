@@ -206,7 +206,9 @@ namespace SBXAThemeSupport
             SBPlusClient.LogInformation(
                 string.Format("CheckIsServerReady: {0}, process call: {1}", CanSendServerCommands(false), procIncludingParam));
 
-            Instance.ExecuteSbPlusProcess(CallProcessInternal, isInContext, procIncludingParam, SBPlus.Current, null, name);
+            ExecuteSbPlusProcess(procIncludingParam, isInContext);
+
+            // Instance.ExecuteSbPlusProcess(CallProcessInternal, isInContext, procIncludingParam, SBPlus.Current, null, name);
         }
 
         /// <summary>
@@ -243,8 +245,9 @@ namespace SBXAThemeSupport
             {
                 procIncludingParam = string.Format("{0},{1}", processName, param);
             }
+            ExecuteSbPlusProcess(procIncludingParam, isInContext);
 
-            Instance.ExecuteSbPlusProcess(CallProcessInternal, isInContext, procIncludingParam, SBPlus.Current, serverProcessFailed, name);
+            // Instance.ExecuteSbPlusProcess(CallProcessInternal, isInContext, procIncludingParam, SBPlus.Current, serverProcessFailed, name);
         }
 
         /// <summary>
@@ -611,7 +614,8 @@ namespace SBXAThemeSupport
         /// <param name="name">
         /// The name.
         /// </param>
-        public void ExecuteSbPlusProcess(
+/*
+        internal void ExecuteSbPlusProcess(
             SBPlusProcess sbPlusProcess, 
             bool isInContext, 
             object parameter, 
@@ -621,6 +625,7 @@ namespace SBXAThemeSupport
         {
             this.RunProcess();
         }
+*/
 
         /// <summary>
         /// The invoke can send command changed.

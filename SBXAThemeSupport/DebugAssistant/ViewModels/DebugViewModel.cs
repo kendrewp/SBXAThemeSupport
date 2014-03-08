@@ -3,6 +3,9 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
+using SBXAThemeSupport.DebugAssistant.Models;
+
 namespace SBXAThemeSupport.DebugAssistant.ViewModels
 {
     using System;
@@ -33,9 +36,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         #region Fields
 
-        private readonly ObservableStack<string> processHistoryStack = new ObservableStack<string>();
+        private readonly ProcessStack processHistoryStack = new ProcessStack();
 
-        private readonly ObservableStack<string> processStack = new ObservableStack<string>();
+        private readonly ProcessStack processStack = new ProcessStack();
 
         private readonly StringCollection section1 = new StringCollection
                                                           {
@@ -281,6 +284,23 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        public bool IsConnected
+        {
+            get
+            {
+                return this.isConnected;
+            }
+
+            set
+            {
+                if (this.isConnected != value)
+                {
+                    this.isConnected = value;
+                    this.RaisePropertyChanged("IsConnected");
+                }
+            }
+        }
+
         /// <summary>
         ///     Gets or sets a value indicating whether the SB/XA Debug Window is OPen or not. This property will raise a
         ///     <see cref="ViewModel.PropertyChanged" /> event.
@@ -350,7 +370,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// <summary>
         ///     Gets the process history stack.
         /// </summary>
-        public ObservableStack<string> ProcessHistoryStack
+        public ProcessStack ProcessHistoryStack
         {
             get
             {
@@ -361,7 +381,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// <summary>
         ///     Gets the process stack.
         /// </summary>
-        public ObservableStack<string> ProcessStack
+        public ProcessStack ProcessStack
         {
             get
             {
@@ -451,6 +471,23 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 {
                     this.section3Collection = value;
                     this.RaisePropertyChanged("Section3Collection");
+                }
+            }
+        }
+
+        public ProcessDescription CurrentProcess
+        {
+            get { return _CurrentProcess; }
+            set
+            {
+                if (_CurrentProcess != null)
+                {
+                    _CurrentProcess.IsCurrent = false;
+                }
+                _CurrentProcess = value;
+                if (_CurrentProcess != null)
+                {
+                    _CurrentProcess.IsCurrent = true;
                 }
             }
         }
@@ -636,6 +673,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             return variable;
         }
 
+        private ProcessDescription _CurrentProcess;
+        private bool isConnected;
+
         private static void DoUpdateProcessStack(bool add, string processName)
         {
             try
@@ -644,9 +684,10 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 {
                     if (add)
                     {
+                        var historyProcess = new ProcessDescription(processName);
                         try
                         {
-                            Instance.ProcessStack.Push(processName);
+                            PushProcess(Instance.ProcessStack, new ProcessDescription(processName) { HistoryProcessDescription = historyProcess });
                         }
                         catch (Exception exception)
                         {
@@ -657,7 +698,17 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         {
                             try
                             {
-                                Instance.ProcessHistoryStack.Push(processName); // only push it to the history never pop it.
+                                // Instance.ProcessHistoryStack.Push(processName); // only push it to the history never pop it.
+                                if (Instance.CurrentProcess == null)
+                                {
+                                    Instance.ProcessHistoryStack.Push(historyProcess);
+                                    // PushProcess(Instance.ProcessHistoryStack, historyProcess);
+                                }
+                                else
+                                {
+                                    Instance.CurrentProcess.Children.Push(historyProcess);
+                                }
+                                Instance.CurrentProcess = historyProcess;
                             }
                             catch (Exception exception)
                             {
@@ -669,8 +720,8 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     {
                         try
                         {
-                            if (Instance.ProcessHistoryStack.Count == 0) return;
-                            Instance.ProcessStack.Pop();
+                            if (Instance.ProcessStack.Count == 0) return;
+                            PopProcess(Instance.ProcessStack);
                         }
                         catch (Exception exception)
                         {
@@ -751,13 +802,88 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             this.ProcessStack.Clear();
         }
 
-        /*
-                private void SetSingleVariables(CommonVariables which, SBString value)
+        public void ClearHistoryStack()
+        {
+            
+            this.ProcessHistoryStack.Clear();
+            // remove all the references
+
+            foreach (var processDescription in this.ProcessStack)
+            {
+                processDescription.ClearHistoryReferences();
+            }
+            CurrentProcess = null;
+            // add back the current process
+//            CurrentProcess.Clear();
+//            ProcessHistoryStack.Push(CurrentProcess);
+        }
+        
+
+        private static void PushProcess(ProcessStack stack, ProcessDescription process)
+        {
+           // check if there is a process on the stack, if there is add it to the list of children, not just push it.
+            if (stack.Count == 0)
+            {
+                stack.Push(process);
+            }
+            else
+            {
+                var lowestParent = FindLowestProcess(stack.Peek());
+                if (lowestParent != null)
                 {
-                    if (Section1Collection == null) Section1Collection = new NestedAttributeCollection();
-                    SetItemData(value, which.ToString(), Section1Collection);
+                    lowestParent.Children.Push(process);
                 }
-        */
+            }
+        }
+
+        private static void PopProcess(ProcessStack stack)
+        {
+            // Check to see if the process on top of the stack has children, if so pop from the child, otherwise pop the top of the stack - recursively.
+            if (stack.Count == 0)
+            {
+                return;
+            }
+            // want to find the process with no children and pop it from it's parent.
+            var parentProcess = FindLowestProcessParent(stack.Peek());
+            var processStack = parentProcess.Children;
+            if (processStack.Count > 0)
+            {
+                var processDescription = processStack.Pop();
+                processDescription.HistoryProcessDescription = null;
+                Instance.CurrentProcess = parentProcess.HistoryProcessDescription;
+            }
+        }
+
+        private static ProcessDescription FindLowestProcess(ProcessDescription process)
+        {
+            if (process.Children.Count == 0)
+            {
+                return process;
+            }
+            return (FindLowestProcess(process.Children.Peek()));
+
+        }
+
+        private static ProcessDescription FindLowestProcessParent(ProcessDescription process)
+        {
+            // The zero is to prevent an infinite loop - it should never happen.
+            if (process.Children.Count == 0)
+            {
+                return process;
+            }
+            if (process.Children.Count == 1)
+            {
+                // I need to look if the child has a process in it's children.
+                var childProcessDescription = process.Children.Peek();
+                if (childProcessDescription.Children.Count == 0)
+                {
+                    return process;
+                }
+            }
+            return (FindLowestProcessParent(process.Children.Peek()));
+
+        }
+
         private void CreateParmsCollection()
         {
             if (this.Parms != null)
@@ -819,6 +945,13 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             {
                 this.IsDebugEnabled = false;
             }
+            // Set the IsConnected property on the correc thread.
+            JobManager.RunInDispatcherThread(DebugWindowManager.DebugConsoleWindow.Dispatcher, DispatcherPriority.Normal,
+                delegate
+                {
+                    this.IsConnected = e.Connected;
+                });
+
         }
 
         private void HandleReadyToSendCommands(object sender, ReadyToSendCommandsEventArgs e)
@@ -847,6 +980,8 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     new object(), 
                     this.SetIsDebugEnabledCompleted));
         }
+
+        
 
         private void SetIsDebugEnabled()
         {

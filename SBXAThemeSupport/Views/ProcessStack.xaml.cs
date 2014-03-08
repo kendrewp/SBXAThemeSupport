@@ -52,7 +52,7 @@ namespace SBXAThemeSupport.Views
 
         private static void ExecutedClearStackCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            DebugViewModel.Instance.ProcessHistoryStack.Clear();
+            DebugViewModel.Instance.ClearHistoryStack();
         }
 
         #endregion
