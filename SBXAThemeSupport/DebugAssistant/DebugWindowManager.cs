@@ -1,6 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DebugWindowManager.cs" company="Ascension Technologies, Inc.">
+// <copyright file="AssemblyLoader.cs" company="Ruf Informatik AG">
+//   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
+// <copyright file="AssemblyLoader.cs" company="Ascension Technologies, Inc.">
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
+// </copyright>
+// <copyright file="AssemblyLoader.cs" company="Woolworths, Limited.">
+//   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport.DebugAssistant
@@ -18,9 +24,9 @@ namespace SBXAThemeSupport.DebugAssistant
     using SBXA.UI.WPFControls.SBDebug;
 
     using SBXAThemeSupport.Models;
-    using SBXAThemeSupport.Utilities;
+    using Utilities;
     using SBXAThemeSupport.ViewModels;
-    using SBXAThemeSupport.Views;
+    using Views;
 
     /// <summary>
     ///     This class provides a means to manage the debug window.
@@ -29,15 +35,15 @@ namespace SBXAThemeSupport.DebugAssistant
     {
         #region Static Fields
 
-        private static readonly Hashtable WindowTable = new Hashtable();
+        private static readonly Hashtable _WindowTable = new Hashtable();
 
-        private static DebugWindowManager debugWindowManager;
+        private static DebugWindowManager _DebugWindowManager;
 
         #endregion
 
         #region Fields
 
-        private readonly object syncobj = new object();
+        private readonly object _Syncobj = new object();
 
         #endregion
 
@@ -72,9 +78,9 @@ namespace SBXAThemeSupport.DebugAssistant
 
             try
             {
-                if (!WindowTable.ContainsKey(key))
+                if (!_WindowTable.ContainsKey(key))
                 {
-                    WindowTable.Add(key, window);
+                    _WindowTable.Add(key, window);
                 }
             }
             catch (Exception)
@@ -137,9 +143,9 @@ namespace SBXAThemeSupport.DebugAssistant
                 return;
             }
 
-            if (WindowTable.Count != 0)
+            if (_WindowTable.Count != 0)
             {
-                WindowTable.Clear();
+                _WindowTable.Clear();
             }
 
             DebugConsoleWindow.Dispatcher.BeginInvokeShutdown(DispatcherPriority.Normal);
@@ -179,9 +185,9 @@ namespace SBXAThemeSupport.DebugAssistant
 
             try
             {
-                if (WindowTable.ContainsKey(key))
+                if (_WindowTable.ContainsKey(key))
                 {
-                    return WindowTable[key] as Window;
+                    return _WindowTable[key] as Window;
                 }
             }
             catch (Exception)
@@ -201,7 +207,7 @@ namespace SBXAThemeSupport.DebugAssistant
         /// </returns>
         public static DebugWindowManager Instance()
         {
-            return debugWindowManager ?? (debugWindowManager = new DebugWindowManager());
+            return _DebugWindowManager ?? (_DebugWindowManager = new DebugWindowManager());
         }
 
         /// <summary>
@@ -219,9 +225,9 @@ namespace SBXAThemeSupport.DebugAssistant
 
             try
             {
-                if (WindowTable.ContainsKey(key))
+                if (_WindowTable.ContainsKey(key))
                 {
-                    WindowTable.Remove(key);
+                    _WindowTable.Remove(key);
                 }
             }
             catch (Exception)
@@ -293,7 +299,7 @@ namespace SBXAThemeSupport.DebugAssistant
 
         private static void CreateDebugConsole()
         {
-            lock (Instance().syncobj)
+            lock (Instance()._Syncobj)
             {
                 try
                 {

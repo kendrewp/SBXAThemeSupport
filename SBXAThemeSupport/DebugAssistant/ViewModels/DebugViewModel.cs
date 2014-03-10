@@ -1,6 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DebugViewModel.cs" company="Ruf Informatik AG">
+// <copyright file="AssemblyLoader.cs" company="Ruf Informatik AG">
 //   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
+// <copyright file="AssemblyLoader.cs" company="Ascension Technologies, Inc.">
+//   Copyright © Ascension Technologies, Inc. All rights reserved.
+// </copyright>
+// <copyright file="AssemblyLoader.cs" company="Woolworths, Limited.">
+//   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -185,12 +191,11 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                             return;
                         }
 
-                        if (DebugWindowManager.DebugConsoleWindow == null)
+                        if (DebugWindowManager.DebugConsoleWindow != null)
                         {
-                            return;
+                            this.SetIsDebugEnabled();
                         }
-
-                        this.SetIsDebugEnabled();
+                        SetIsConnected(true);
                     });
             // SBPlus.Current.ConnectionStatusChanged += HandleConnectionStatusChanged;
             SBPlusClient.Connected += this.HandleConnected;
@@ -288,14 +293,14 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         {
             get
             {
-                return this.isConnected;
+                return this._IsConnected;
             }
 
             set
             {
-                if (this.isConnected != value)
+                if (this._IsConnected != value)
                 {
-                    this.isConnected = value;
+                    this._IsConnected = value;
                     this.RaisePropertyChanged("IsConnected");
                 }
             }
@@ -674,7 +679,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         private ProcessDescription _CurrentProcess;
-        private bool isConnected;
+        private bool _IsConnected;
 
         private static void DoUpdateProcessStack(bool add, string processName)
         {
@@ -945,13 +950,15 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             {
                 this.IsDebugEnabled = false;
             }
-            // Set the IsConnected property on the correc thread.
-            JobManager.RunInDispatcherThread(DebugWindowManager.DebugConsoleWindow.Dispatcher, DispatcherPriority.Normal,
-                delegate
-                {
-                    this.IsConnected = e.Connected;
-                });
+            SetIsConnected(e.Connected);
+        }
 
+        private void SetIsConnected(bool connected)
+        {
+            // Set the IsConnected property on the correct thread.
+            if (DebugWindowManager.DebugConsoleWindow == null) return;
+            JobManager.RunInDispatcherThread(DebugWindowManager.DebugConsoleWindow.Dispatcher, DispatcherPriority.Normal,
+                                             delegate { this.IsConnected = connected; });
         }
 
         private void HandleReadyToSendCommands(object sender, ReadyToSendCommandsEventArgs e)

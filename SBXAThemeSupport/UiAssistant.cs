@@ -5,6 +5,9 @@
 // <copyright file="AssemblyLoader.cs" company="Ascension Technologies, Inc.">
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
+// <copyright file="AssemblyLoader.cs" company="Woolworths, Limited.">
+//   Copyright © Woolworths, Limited. All rights reserved.
+// </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace SBXAThemeSupport

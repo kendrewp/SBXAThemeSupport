@@ -26,7 +26,7 @@
                         <Border x:Name="innerBorder"
                                     SnapsToDevicePixels="True"
                                     BorderThickness="1"
-                                    Padding="2"
+                                    Padding="0"
                                     CornerRadius="3,3,3,3">
                             <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"

@@ -8,17 +8,27 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         
-        <DataTemplate x:Key="IndexColumnTemplate">
-            <TextBlock Text="{Binding Index}" />
-        </DataTemplate>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SBXAThemeSupport;component/Resources/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
+            <DataTemplate x:Key="IndexColumnTemplate">
+                <TextBlock Text="{Binding Index}" />
+            </DataTemplate>
 
-        <DataTemplate x:Key="IndexButtonColumnTemplate">
-            <Button Content="{Binding Index}" Command="views:SBStringViewer.DrillDownCommand" CommandParameter="{Binding}"/>
-        </DataTemplate>
+            <DataTemplate x:Key="IndexButtonColumnTemplate">
+                <Button Content="{Binding Index}" Command="views:SBStringViewer.DrillDownCommand" CommandParameter="{Binding}"/>
+            </DataTemplate>
+            
+        </ResourceDictionary>
+        
 
+<!--
         <ControlTemplate x:Key="RefreshButtonTemplate">
             <Image Source="/SBXAThemeSupport;component/Images/reload.png" />
         </ControlTemplate>
+-->
 
     </UserControl.Resources>
     <Grid>
@@ -49,11 +59,16 @@
                 <DataGridTemplateColumn Header="" Width="Auto" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Refresh" Width="16" Height="16"
+                            <Button Width="20" Height="20"
                                     Command="views:CommonViewer.RefreshCommonCommand"
                                     CommandParameter="{Binding}"
-                                    Template="{StaticResource RefreshButtonTemplate}"
-                                    />
+                                    Style="{DynamicResource IconButtonStyle}"
+                                    ToolTip="Refresh data from server."
+                                    Background="LightGray"
+                                    BorderBrush="DarkGray"
+                                    >
+                                    <Image Source="/SBXAThemeSupport;component/Images/reload.png" />
+                                </Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -1,3 +1,4 @@
-﻿March 8, 2014	Kendrew	Peacey	Changed the process trace to show the process is a nested tree.
+﻿March 8, 2014	Kendrew Peacey	Fixed the IsConnect property in DebugViewModel to get set correctly if the window was opened after the connection was established.
+March 8, 2014	Kendrew	Peacey	Changed the process trace to show the process is a nested tree.
 March 8, 2014	Kendrew	Peacey	Added IsConnected property to DebugViewModel that is set on the DebugWindowManagers dispatcher thread.
 March 6, 2014	Kendrew Peacey	Added IsConnected property to UiAssistant
