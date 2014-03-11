@@ -1,4 +1,7 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AssemblyInfo.cs" company="Ruf Informatik AG">
+//   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
 // <copyright file="AssemblyInfo.cs" company="Ascension Technologies, Inc.">
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>

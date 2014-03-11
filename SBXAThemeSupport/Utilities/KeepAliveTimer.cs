@@ -1,11 +1,11 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AssemblyLoader.cs" company="Ruf Informatik AG">
+// <copyright file="KeepAliveTimer.cs" company="Ruf Informatik AG">
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
-// <copyright file="AssemblyLoader.cs" company="Ascension Technologies, Inc.">
+// <copyright file="KeepAliveTimer.cs" company="Ascension Technologies, Inc.">
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
-// <copyright file="AssemblyLoader.cs" company="Woolworths, Limited.">
+// <copyright file="KeepAliveTimer.cs" company="Woolworths, Limited.">
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------

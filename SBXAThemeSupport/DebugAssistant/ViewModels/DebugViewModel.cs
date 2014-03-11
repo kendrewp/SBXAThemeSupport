@@ -1,11 +1,11 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AssemblyLoader.cs" company="Ruf Informatik AG">
+// <copyright file="DebugViewModel.cs" company="Ruf Informatik AG">
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
-// <copyright file="AssemblyLoader.cs" company="Ascension Technologies, Inc.">
+// <copyright file="DebugViewModel.cs" company="Ascension Technologies, Inc.">
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
-// <copyright file="AssemblyLoader.cs" company="Woolworths, Limited.">
+// <copyright file="DebugViewModel.cs" company="Woolworths, Limited.">
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -183,20 +183,21 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         private DebugViewModel()
         {
             JobManager.RunInUIThread(
-                DispatcherPriority.Input, 
+                DispatcherPriority.Input,
                 delegate
+                {
+                    if (SBPlusClient.Current == null || SBPlusClient.Current.ConnectionStatus != ConnectionStatuses.Connected)
                     {
-                        if (SBPlusClient.Current == null || SBPlusClient.Current.ConnectionStatus != ConnectionStatuses.Connected)
-                        {
-                            return;
-                        }
+                        return;
+                    }
 
-                        if (DebugWindowManager.DebugConsoleWindow != null)
-                        {
-                            this.SetIsDebugEnabled();
-                        }
-                        SetIsConnected(true);
-                    });
+                    if (DebugWindowManager.DebugConsoleWindow == null)
+                    {
+                        return;
+                    }
+
+                    this.GetIsDebugEnabled();
+                });
             // SBPlus.Current.ConnectionStatusChanged += HandleConnectionStatusChanged;
             SBPlusClient.Connected += this.HandleConnected;
             this.CreateParmsCollection();
@@ -944,13 +945,15 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         {
             if (e.Connected)
             {
-                this.SetIsDebugEnabled();
+                this.GetIsDebugEnabled();
             }
             else
             {
-                this.IsDebugEnabled = false;
+                if (this.isDebugEnabled)
+                {
+                    this.IsDebugEnabled = false;
+                }
             }
-            SetIsConnected(e.Connected);
         }
 
         private void SetIsConnected(bool connected)
@@ -963,7 +966,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         private void HandleReadyToSendCommands(object sender, ReadyToSendCommandsEventArgs e)
         {
-            this.SetIsDebugEnabled();
+            this.GetIsDebugEnabled();
         }
 
         private void SetIsDebugEnabled(bool newValue)
@@ -973,24 +976,19 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 this.ClearStacks();
             }
 
+            // First check to see it XUI.DEBUG is there in the VOC, if not never set IsDebugEnabled.
             JobManager.RunInUIThread(
-                DispatcherPriority.Input, 
+                DispatcherPriority.Input,
                 () =>
                 SBProcessRunner.Instance.CallSubroutine(
-                    "XUI.DEBUG", 
-                    6, 
-                    new[]
-                        {
-                            new SBString("1"), new SBString(this.IsDebugEnabled ? "1" : "0"), new SBString(), new SBString(), new SBString(), 
-                            new SBString()
-                        }, 
-                    new object(), 
-                    this.SetIsDebugEnabledCompleted));
+                    "UT.XUI.READ",
+                    6,
+                    new[] { new SBString("VOC"), new SBString("XUI.DEBUG"), new SBString(), new SBString(), new SBString("0"), new SBString() },
+                    new object(),
+                    this.ReadForSetXuiDebugCompleted));
         }
 
-        
-
-        private void SetIsDebugEnabled()
+        private void GetIsDebugEnabled()
         {
             if (!SBPlusClient.Current.CanSendServerCommands)
             {
@@ -1000,14 +998,71 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
             SBPlusClient.Current.ReadyToSendCommands -= this.HandleReadyToSendCommands;
 
+            // SUBROUTINE UT.XUI.READ (FILE.NAME, ID, ATTR, ITEM, MODE, READ.STATUS)
+            // First check to see it XUI.DEBUG is there in the VOC, if not never set IsDebugEnabled.
             JobManager.RunInUIThread(
-                DispatcherPriority.Input, 
+                DispatcherPriority.Input,
                 () =>
                 SBProcessRunner.Instance.CallSubroutine(
-                    "XUI.DEBUG", 
-                    6, 
-                    new[] { new SBString("6"), new SBString(), new SBString(), new SBString(), new SBString(), new SBString() }, 
-                    new object(), 
+                    "UT.XUI.READ",
+                    6,
+                    new[]
+                        {
+                            new SBString("VOC"), new SBString("XUI.DEBUG"), new SBString(), new SBString(), new SBString("0"), new SBString()
+                        },
+                    new object(),
+                    this.ReadXuiDebugCompleted));
+        }
+
+        private void ReadForSetXuiDebugCompleted(string subroutineName, SBString[] parameters, object userState)
+        {
+            var status = parameters[5];
+            if (status.Count != 1 || !status.Value.Equals("0"))
+            {
+                if (this.isDebugEnabled)
+                {
+                    this.IsDebugEnabled = false;
+                }
+
+                return;
+            }
+
+            JobManager.RunInUIThread(
+                DispatcherPriority.Input,
+                () =>
+                SBProcessRunner.Instance.CallSubroutine(
+                    "XUI.DEBUG",
+                    6,
+                    new[]
+                        {
+                            new SBString("1"), new SBString(this.IsDebugEnabled ? "1" : "0"), new SBString(), new SBString(), new SBString(), 
+                            new SBString()
+                        },
+                    new object(),
+                    this.SetIsDebugEnabledCompleted));
+        }
+
+        private void ReadXuiDebugCompleted(string subroutineName, SBString[] parameters, object userState)
+        {
+            var status = parameters[5];
+            if (status.Count != 1 || !status.Value.Equals("0"))
+            {
+                if (this.isDebugEnabled)
+                {
+                    this.IsDebugEnabled = false;
+                }
+
+                return;
+            }
+
+            JobManager.RunInUIThread(
+                DispatcherPriority.Input,
+                () =>
+                SBProcessRunner.Instance.CallSubroutine(
+                    "XUI.DEBUG",
+                    6,
+                    new[] { new SBString("6"), new SBString(), new SBString(), new SBString(), new SBString(), new SBString() },
+                    new object(),
                     this.SetIsDebugEnabledCompleted));
         }
 
@@ -1017,7 +1072,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             {
                 if (parameters[1].Dcount() == 1 && !string.IsNullOrEmpty(parameters[1].Value))
                 {
-                    this.IsDebugEnabled = parameters[1].Value.Equals("1");
+                    this.isDebugEnabled = parameters[1].Value.Equals("1");
                 }
             }
             catch (Exception exception)

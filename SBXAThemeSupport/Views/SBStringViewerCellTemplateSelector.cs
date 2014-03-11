@@ -1,11 +1,11 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AssemblyLoader.cs" company="Ruf Informatik AG">
+// <copyright file="SBStringViewerCellTemplateSelector.cs" company="Ruf Informatik AG">
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
-// <copyright file="AssemblyLoader.cs" company="Ascension Technologies, Inc.">
+// <copyright file="SBStringViewerCellTemplateSelector.cs" company="Ascension Technologies, Inc.">
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
-// <copyright file="AssemblyLoader.cs" company="Woolworths, Limited.">
+// <copyright file="SBStringViewerCellTemplateSelector.cs" company="Woolworths, Limited.">
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------

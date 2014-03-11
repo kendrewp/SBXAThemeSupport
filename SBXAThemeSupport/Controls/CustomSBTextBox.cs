@@ -1,4 +1,7 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CustomSBTextBox.cs" company="Ruf Informatik AG">
+//   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
 // <copyright file="CustomSBTextBox.cs" company="Ascension Technologies, Inc.">
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
@@ -94,7 +97,7 @@ namespace SBXAThemeSupport.Controls
             {
                 try
                 {
-// ReSharper disable once UnusedVariable
+                    // ReSharper disable once UnusedVariable
                     var textBox = SBUISupport.FindParentByType(e.Source as DependencyObject, typeof(SBTextBox)) as SBTextBox;
                 }
                 catch (Exception)

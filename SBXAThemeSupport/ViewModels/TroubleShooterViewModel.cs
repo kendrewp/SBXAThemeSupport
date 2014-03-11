@@ -1,97 +1,166 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Threading;
-using SBXA.Runtime;
-using SBXA.Shared;
-using SBXA.UI.WPFControls;
-
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TroubleShooterViewModel.cs" company="Ruf Informatik AG">
+//   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
+// <copyright file="TroubleShooterViewModel.cs" company="Ascension Technologies, Inc.">
+//   Copyright © Ascension Technologies, Inc. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Windows.Forms;
+
+    using SBXA.Runtime;
+    using SBXA.Shared;
+    using SBXA.UI.WPFControls;
+
     /// <summary>
-    /// TroubleShooterViewModel contraols the actions and behavior of the trouble shooter.
+    /// TroubleShooterViewModel controls the actions and behavior of the trouble shooter.
     /// </summary>
     public class TroubleShooterViewModel : ViewModel
     {
-        const string START_STOP_ITEM_ID = "ApplicationStartStopLog";
-        private static string _FileName = string.Empty;
-        private const bool ENABLE_TROUBLESHOOTING = true;
+        #region Constants
+
+        private const bool EnableTroubleshooting = false;
+
+        private const string StartStopItemId = "ApplicationStartStopLog";
+
+        private const string ActiveApplicationListId = "ActiveApplicationList";
+
+        #endregion
+
+        #region Static Fields
+
+        #endregion
+
+        #region Public Methods and Operators
 
         /// <summary>
-        /// Applications the start.
+        ///     The application start.
         /// </summary>
         public static void ApplicationStart()
         {
-            // First check if I already have an log item and if the last exit was clean.
-            if (SBPlus.Current.GlobalStateFile.Exists(START_STOP_ITEM_ID))
+            try
             {
-                var existingLogItem = SBPlus.Current.GlobalStateFile.GetItem(START_STOP_ITEM_ID);
-                if (!((ApplicationStartStopLog) existingLogItem.Object).CleanExit)
+                // remove old logs.
+                JobManager.RunAsyncOnPooledThread(delegate { LocalMachineCleanup.CleanLogs(DateTime.Now); });
+                JobManager.RunAsyncOnPooledThread(delegate { LocalMachineCleanup.CleanVersionFolders(); });
+
+                // first get the colleciton or create it if it does not already exist
+                if (!SBPlus.Current.GlobalStateFile.Exists(ActiveApplicationListId))
                 {
-                    LogBadClose();
+                    SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, new ActiveApplicationList()), true);
                 }
-                else
+                // first get the collection, if it does not exist create a new one.
+                var activeApplicationList = SBPlus.Current.GlobalStateFile.GetItem(ActiveApplicationListId).Object as ActiveApplicationList ?? new ActiveApplicationList();
+                // get the process id and name
+                var currentProcess = Process.GetCurrentProcess();
+                var currentProcessId = currentProcess.Id;
+                var currentProcessName = currentProcess.ProcessName;
+                if (currentProcessName.EndsWith("vshost"))
                 {
-                    JobManager.RunAsyncOnPooledThread(delegate { LocalMachineCleanup.CleanLogs(DateTime.Now); });
-                    JobManager.RunAsyncOnPooledThread(delegate { LocalMachineCleanup.CleanVersionFolders(); });
+                    currentProcessName = currentProcessName.Substring(0, currentProcessName.Length - 7);
                 }
+
+                // create a new log entry with the process id
+                if (activeApplicationList.ContainsProcessId(currentProcessId))
+                {
+                    // this is an error condition - there should not be a process with the same id already.
+                    activeApplicationList.RemoveProcessId(currentProcessId);
+                }
+                // write it out.
+                activeApplicationList.Add(new ApplicationStartStopLog { ProcessId = currentProcessId, Start = DateTime.Now, CleanExit = false });
+                SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), true);
+
+                // check for left over entries, but getting the list of active process ids, then going through the list of entries in the log collection
+                // if an entry in the collection is not active, and not marked as a clean exit, we have a problem. If it is a clean exit removed it.
+                var processCollection = Process.GetProcessesByName(currentProcessName);
+                var toRemove = new List<ApplicationStartStopLog>();
+
+                foreach (var appLog in activeApplicationList.Where(appLog => appLog.ProcessId != currentProcessId).Where(appLog => processCollection.All(process => process.Id != appLog.ProcessId)))
+                {
+                    // now we have an orphan
+                    if (appLog.CleanExit)
+                    {
+                        // application exited normally, so just remove the entry and commit it
+                        toRemove.Add(appLog); // cannot remove it while I am processing it.
+                        continue;
+                    }
+                    // and finally a bad entry, so do the required notifications.
+                    LogBadClose(); // only log an exception if this is the only process running.
+
+                    // log the error so remove the entry from the logs.
+                    toRemove.Add(appLog); // cannot remove it while I am processing it.
+                }
+
+                foreach (var log in toRemove)
+                {
+                    activeApplicationList.Remove(log);
+                }
+                // commit the updated collection.
+                SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), true);
             }
-            var logItem = new ApplicationStartStopLog {Start = DateTime.Now, CleanExit = false};
-            SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(START_STOP_ITEM_ID, logItem), true);
+            catch (Exception exception)
+            {
+                Debug.WriteLine("[TroubleShooterViewModel.ApplicationStart(73)] " + exception.Message);
+            }
         }
 
         /// <summary>
-        /// Applications the stop.
+        ///     The application stop.
         /// </summary>
         public static void ApplicationStop()
         {
-            try
+            // first get the colleciton or create it if it does not already exist
+            if (!SBPlus.Current.GlobalStateFile.Exists(ActiveApplicationListId))
             {
-                if (!SBPlus.Current.GlobalStateFile.Exists(START_STOP_ITEM_ID)) return;
-
-                var logItem = SBPlus.Current.GlobalStateFile.GetItem(START_STOP_ITEM_ID);
-                ((ApplicationStartStopLog) logItem.Object).Stop = DateTime.Now;
-
-                // ((ApplicationStartStopLog)logItem.Object).CleanExit = SBPlus.Current.ConnectionStatus == ConnectionStatuses.Disconnected;
-                ((ApplicationStartStopLog) logItem.Object).CleanExit = true;
-                SBPlus.Current.GlobalStateFile.SetItem(logItem, false);
+                // As we are closing down this case should never be hit, but in order to prevent problem we keep it here.
+                SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, new ActiveApplicationList()), true);
             }
-            catch (Exception)
+            // first get the collection, if it does not exist create a new one.
+            var activeApplicationList = SBPlus.Current.GlobalStateFile.GetItem(ActiveApplicationListId).Object as ActiveApplicationList ?? new ActiveApplicationList();
+            // get the process id and name
+            var currentProcess = Process.GetCurrentProcess();
+            var currentProcessId = currentProcess.Id;
+
+            // create a new log entry with the process id
+            if (!activeApplicationList.ContainsProcessId(currentProcessId))
             {
-                ;
+                return;
             }
+
+            activeApplicationList[currentProcessId].CleanExit = true;
+            activeApplicationList[currentProcessId].Stop = DateTime.Now;
+
+            // commit the updated collection.
+            SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), false);
         }
 
         /// <summary>
-        /// Logs the bad close.
+        /// The send abnormal close.
         /// </summary>
-        private static void LogBadClose()
-        {
-            if (ENABLE_TROUBLESHOOTING) SendAbnormalClose("Application was not closed correctly.");
-        }
-
-        /// <summary>
-        /// Sends the abnormal close.
-        /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public static void SendAbnormalClose(string message)
         {
             try
             {
-                var windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
-
-                var userId = windowsIdentity.Split(@"\".ToCharArray()).Count() == 2 ? windowsIdentity.Split(@"\".ToCharArray())[1] : windowsIdentity.Split(@"\".ToCharArray())[0];
+                string windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
                 var sessionId = SBPlus.Current.SessionId;
 
+                string userId = windowsIdentity.Split(@"\".ToCharArray()).Count() == 2
+                                    ? windowsIdentity.Split(@"\".ToCharArray())[1]
+                                    : windowsIdentity.Split(@"\".ToCharArray())[0];
 
                 var fileName = Path.GetRandomFileName();
-                var logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
+                string logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
 
                 fileName = Path.Combine(logFolder, fileName);
 
@@ -113,32 +182,56 @@ namespace SBXAThemeSupport.ViewModels
 
                 ExecuteExceptionReporter(fileName.Replace(" ", "%20%"), (userId + "(" + DateTime.Now.ToString() + ") AC").Replace(" ", "%20%"), logFolder.Replace(" ", "%20%"));
             }
-            catch (Exception exception)
+                // ReSharper disable once EmptyGeneralCatchClause
+            catch
             {
-                ;
             }
         }
 
         /// <summary>
-        /// Executes the exception reporter.
+        /// The send exception.
         /// </summary>
-        /// <param name="fileName">Name of the file.</param>
-        /// <param name="uniqueId">The unique identifier.</param>
-        /// <param name="logFolder">The log folder.</param>
-        private static void ExecuteExceptionReporter(string fileName, string uniqueId, string logFolder)
+        /// <param name="exception">
+        /// The exception.
+        /// </param>
+        public static void SendException(Exception exception)
         {
-            // string processInfo = "ExceptionReporter.exe "+fileName;
-            var processInfo = new ProcessStartInfo("SBXAExceptionReporter.exe") { UseShellExecute = false, Arguments = fileName + " " + uniqueId + " " + logFolder };
-            Process.Start(processInfo);
-        }
+            var windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
 
-        /// <summary>
-        /// Gets the log file path.
-        /// </summary>
-        /// <returns></returns>
-        private static string GetLogFilePath()
-        {
-            return (Log.LOG_DIRECTORY + @"\Client\");
+            var userId = windowsIdentity.Split(@"\".ToCharArray()).Count() == 2
+                             ? windowsIdentity.Split(@"\".ToCharArray())[1]
+                             : windowsIdentity.Split(@"\".ToCharArray())[0];
+            var fileName = Path.GetRandomFileName();
+            var logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
+
+            fileName = Path.Combine(logFolder, fileName);
+
+            var existingData = string.Empty;
+
+            if (File.Exists(fileName))
+            {
+                existingData = File.ReadAllText(fileName);
+            }
+
+            var logText = new StringBuilder(existingData);
+
+            logText.AppendLine("Exception : " + exception.Message);
+            logText.AppendLine(exception.StackTrace);
+
+            Exception innerException = exception.InnerException;
+            while (innerException != null)
+            {
+                logText.AppendLine("Inner Exception : " + innerException.Message);
+                logText.AppendLine(innerException.StackTrace);
+                innerException = innerException.InnerException;
+            }
+
+            File.WriteAllText(fileName, logText.ToString());
+
+            ExecuteExceptionReporter(
+                fileName.Replace(" ", "%20%"), 
+                (userId + "(" + DateTime.Now + ")").Replace(" ", "%20%"), 
+                logFolder.Replace(" ", "%20%"));
         }
 
         /// <summary>
@@ -151,10 +244,11 @@ namespace SBXAThemeSupport.ViewModels
             {
                 var windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
 
-                var userId = windowsIdentity.Split(@"\".ToCharArray()).Count() == 2 ? windowsIdentity.Split(@"\".ToCharArray())[1] : windowsIdentity.Split(@"\".ToCharArray())[0];
+                var userId = windowsIdentity.Split(@"\".ToCharArray()).Count() == 2
+                                 ? windowsIdentity.Split(@"\".ToCharArray())[1]
+                                 : windowsIdentity.Split(@"\".ToCharArray())[0];
+
                 var sessionId = SBPlus.Current.SessionId;
-
-
                 var fileName = Path.GetRandomFileName();
                 var logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
 
@@ -176,7 +270,6 @@ namespace SBXAThemeSupport.ViewModels
                 logText.AppendLine(string.Format("Session Id {0}", sessionId));
 
                 // Now get form stack
-
                 logText.AppendLine("Form Stack:");
                 foreach (var form in SBPlus.Current.FormStack.RealStack)
                 {
@@ -209,141 +302,205 @@ namespace SBXAThemeSupport.ViewModels
                         logText.AppendLine("Blank form handle");
                     }
                 }
-                
+
                 File.WriteAllText(fileName, logText.ToString());
 
                 ExecuteExceptionReporter(fileName.Replace(" ", "%20%"), (userId + "(" + DateTime.Now.ToString() + ") Freeze").Replace(" ", "%20%"), logFolder.Replace(" ", "%20%"));
             }
-            catch (Exception exception)
+                // ReSharper disable once EmptyGeneralCatchClause
+            catch
             {
-                ;
             }
         }
 
-        /// <summary>
-        /// Sends the ctrol shift g.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        public static void SendCtrolShiftG(string message)
+        #endregion
+
+        #region Methods
+
+        private static void ExecuteExceptionReporter(string fileName, string uniqueId, string logFolder)
         {
-            try
-            {
-                var windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
-
-                var userId = windowsIdentity.Split(@"\".ToCharArray()).Count() == 2 ? windowsIdentity.Split(@"\".ToCharArray())[1] : windowsIdentity.Split(@"\".ToCharArray())[0];
-                var sessionId = SBPlus.Current.SessionId;
-
-
-                var fileName = Path.GetRandomFileName();
-                var logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
-
-                fileName = Path.Combine(logFolder, fileName);
-
-                var existingData = string.Empty;
-
-                if (File.Exists(fileName))
-                {
-                    existingData = File.ReadAllText(fileName);
-                }
-
-                var logText = new StringBuilder(existingData);
-                logText.Append("Ctrl-Shit-G was hit by the user.");
-                logText.AppendLine(message);
-
-                logText.AppendLine(string.Format("User Id : {0} ", userId));
-                logText.AppendLine(string.Format("Machine Name {0}", SystemInformation.ComputerName));
-                logText.AppendLine(string.Format("Session Id {0}", sessionId));
-
-                // Now get form stack
-
-                logText.AppendLine("Form Stack:");
-                foreach (var form in SBPlus.Current.FormStack.RealStack)
-                {
-                    if (form.ObjectHandle != null)
-                    {
-                        if (form.ObjectHandle is SBForm)
-                        {
-                            var gobj = form.ObjectHandle.GuiObjectDefinition as SBXA.Shared.Definitions.FormObjectDefinition;
-
-                            if (gobj != null && !string.IsNullOrEmpty(gobj.ProcessName))
-                            {
-                                logText.AppendLine(string.Format(" {0} {1} IsActive = {2}", form.ObjectHandle.GetType().Name, gobj.ProcessName, (form.ObjectHandle.ParentSBWindow != null && ((Window)form.ObjectHandle.ParentSBWindow).IsActive)));
-                            }
-                        }
-                        else
-                        {
-                            var menu = form.ObjectHandle as SBMenu;
-                            if (menu != null && menu.MenuDefinition != null)
-                            {
-                                logText.AppendLine(string.Format(" {0} {1} IsActive = {2}", form.ObjectHandle.GetType().Name, menu.MenuDefinition.Name, (menu.ParentSBWindow != null && ((Window)menu.ParentSBWindow).IsActive)));
-                            }
-                            else
-                            {
-                                logText.AppendLine(form.ObjectHandle.GetType().Name);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        logText.AppendLine("Blank form handle");
-                    }
-                }
-
-                File.WriteAllText(fileName, logText.ToString());
-
-                ExecuteExceptionReporter(fileName.Replace(" ", "%20%"), (userId + "(" + DateTime.Now.ToString() + ") CSG").Replace(" ", "%20%"), logFolder.Replace(" ", "%20%"));
-            }
-            catch (Exception exception)
-            {
-                ;
-            }
+            // string processInfo = "ExceptionReporter.exe "+fileName;
+            var processInfo = new ProcessStartInfo("SBXAExceptionReporter.exe")
+                                  {
+                                      UseShellExecute = false, 
+                                      Arguments = fileName + " " + uniqueId + " " + logFolder
+                                  };
+            Process.Start(processInfo);
         }
 
-        /// <summary>
-        /// Sends the exception.
-        /// </summary>
-        /// <param name="exception">The exception.</param>
-        public static void SendException(Exception exception)
+/*
+        private static string GetLogFilePath()
         {
-            var windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
-
-            var userId = windowsIdentity.Split(@"\".ToCharArray()).Count() == 2 ? windowsIdentity.Split(@"\".ToCharArray())[1] : windowsIdentity.Split(@"\".ToCharArray())[0];
-            var fileName = Path.GetRandomFileName();
-            var logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
-
-            fileName = Path.Combine(logFolder, fileName);
-
-            var existingData = string.Empty;
-
-            if (File.Exists(fileName))
-            {
-                existingData = File.ReadAllText(fileName);
-            }
-
-            var logText = new StringBuilder(existingData);
-
-            logText.AppendLine("Exception : " + exception.Message);
-            logText.AppendLine(exception.StackTrace);
-
-            Exception innerException = exception.InnerException;
-            while (innerException != null)
-            {
-                logText.AppendLine("Inner Exception : " + innerException.Message);
-                logText.AppendLine(innerException.StackTrace);
-                innerException = innerException.InnerException;
-            }
-
-            File.WriteAllText(fileName, logText.ToString());
-
-            ExecuteExceptionReporter(fileName.Replace(" ", "%20%"), (userId + "(" + DateTime.Now.ToString() + ")").Replace(" ", "%20%"), logFolder.Replace(" ", "%20%"));
+            return Log.LOG_DIRECTORY + @"\Client\";
         }
+*/
+
+        private static void LogBadClose()
+        {
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (EnableTroubleshooting)
+            {
+                SendAbnormalClose("Application was not closed correctly.");
+            }
+        }
+
+        private bool ContainsProcess(IEnumerable<Process> activeProcesses, int processId)
+        {
+            return activeProcesses.Any(process => process.Id == processId);
+        }
+
+        #endregion
     }
 
+    /// <summary>
+    ///     The application start stop log.
+    /// </summary>
     [Serializable]
     public class ApplicationStartStopLog : SBEntityBase
     {
-        public DateTime Start;
-        public DateTime Stop;
-        public bool CleanExit;
+        #region Fields
+
+        private bool cleanExit;
+
+        private DateTime start;
+
+        private DateTime stop;
+
+        private int processId;
+
+        #endregion
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [clean exit].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [clean exit]; otherwise, <c>false</c>.
+        /// </value>
+        public bool CleanExit
+        {
+            get
+            {
+                return this.cleanExit;
+            }
+
+            set
+            {
+                this.cleanExit = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the start.
+        /// </summary>
+        /// <value>
+        /// The start.
+        /// </value>
+        public DateTime Start
+        {
+            get
+            {
+                return this.start;
+            }
+
+            set
+            {
+                this.start = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the stop.
+        /// </summary>
+        /// <value>
+        /// The stop.
+        /// </value>
+        public DateTime Stop
+        {
+            get
+            {
+                return this.stop;
+            }
+
+            set
+            {
+                this.stop = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the process identifier.
+        /// </summary>
+        /// <value>
+        /// The process identifier.
+        /// </value>
+        public int ProcessId
+        {
+            get
+            {
+                return this.processId;
+            }
+
+            set
+            {
+                this.processId = value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// This is a collection of application start stop logs.
+    /// </summary>
+    [Serializable]
+    public class ActiveApplicationList : List<ApplicationStartStopLog>
+    {
+        /// <summary>
+        /// Gets or sets the <see cref="ApplicationStartStopLog"/> with the specified pid.
+        /// </summary>
+        /// <value>
+        /// The <see cref="ApplicationStartStopLog"/>.
+        /// </value>
+        /// <param name="pid">The pid.</param>
+        /// <returns>An instance of <see cref="ApplicationStartStopLog"/> or null.</returns>
+        public new ApplicationStartStopLog this[int pid]
+        {
+            get
+            {
+                return this.FirstOrDefault(item => item.ProcessId == pid);
+            }
+
+            set
+            {
+                var logItem = this.FirstOrDefault(item => item.ProcessId == pid);
+                if (logItem != null)
+                {
+                    this.Remove(logItem);
+                }
+
+                this.Add(value);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether [contains] [the specified pid].
+        /// </summary>
+        /// <param name="pid">The pid.</param>
+        /// <returns>True if the item exists in the colleciton.</returns>
+        public bool ContainsProcessId(int pid)
+        {
+            return this.Any(item => item.ProcessId == pid);
+        }
+
+        /// <summary>
+        /// Removes the process identifier.
+        /// </summary>
+        /// <param name="pid">The pid.</param>
+        public void RemoveProcessId(int pid)
+        {
+            var logItem = this.FirstOrDefault(item => item.ProcessId == pid);
+            if (logItem != null)
+            {
+                this.Remove(logItem);
+            }
+        }
     }
 }
