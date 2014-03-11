@@ -2,8 +2,11 @@
 // <copyright file="LocalMachineCleanup.cs" company="Ruf Informatik AG">
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
-// ----// <copyright file="LocalMachineCleanup.cs" company="Ascension Technologies, Inc.">
+// <copyright file="LocalMachineCleanup.cs" company="Ascension Technologies, Inc.">
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
+// </copyright>
+// <copyright file="LocalMachineCleanup.cs" company="American Auto Shield, LLC.">
+//   Copyright © American Auto Shield, LLC. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport
@@ -54,7 +57,7 @@ namespace SBXAThemeSupport
         /// <summary>
         /// Calling this routine will remove all the SB/XA folders from previous versions.
         /// </summary>
-        public static void CleanVersionFolders()
+        public static void CleanVersionFolders(bool deleteAll = false)
         {
             try
             {
@@ -69,7 +72,7 @@ namespace SBXAThemeSupport
                 foreach (var dirInfo in directories)
                 {
                     // delete all except current version.
-                    if (!dirInfo.Name.Equals(version) && !dirInfo.FullName.Equals(Log.LOG_DIRECTORY))
+                    if ((!dirInfo.Name.Equals(version) && !dirInfo.FullName.Equals(Log.LOG_DIRECTORY)) || deleteAll)
                     {
                         Directory.Delete(dirInfo.FullName, true);
                         versionDeleted = true;

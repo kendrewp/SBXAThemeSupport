@@ -204,6 +204,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             this.Section1Collection = this.CreateSection(this.section1);
             this.Section2Collection = this.CreateSection(this.section2);
             this.Section3Collection = this.CreateSection(this.section3);
+
+            // create instance of ProcessAnalysisViewModel
+            ProcessAnalysisViewModel = new ProcessAnalysisViewModel();
         }
 
         #endregion
@@ -498,6 +501,8 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        public ProcessAnalysisViewModel ProcessAnalysisViewModel { get; private set; }
+
         #endregion
 
         #region Public Methods and Operators
@@ -645,6 +650,10 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        public static void CheckConnection()
+        {
+            JobManager.RunInUIThread(DispatcherPriority.Normal, () => Instance.SetIsConnected(SBPlusClient.Current.IsConnected));
+        }
         /// <summary>
         /// The refresh collection.
         /// </summary>
@@ -954,6 +963,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     this.IsDebugEnabled = false;
                 }
             }
+            SetIsConnected(e.Connected);
         }
 
         private void SetIsConnected(bool connected)

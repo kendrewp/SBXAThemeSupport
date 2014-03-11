@@ -1,4 +1,7 @@
-﻿March 11, 2014  Kendrew Peacey	Improved the Trouble Shooter to recognize multiple session on the same client and not report an error.
+﻿March 11, 2014	Kendrew Peacey	Added RunOnce methods to Troubleshooter
+March 11, 2014	Kendrew Peacey	Improved the check connection routines for the DebugConsoleWindow
+March 11, 2014  Kendrew Peacey	Added an option to LocalMachineCleanup that will blow away the entire client cache.
+March 11, 2014  Kendrew Peacey	Improved the Trouble Shooter to recognize multiple session on the same client and not report an error.
 March 8, 2014	Kendrew Peacey	Fixed the IsConnect property in DebugViewModel to get set correctly if the window was opened after the connection was established.
 March 8, 2014	Kendrew	Peacey	Changed the process trace to show the process is a nested tree.
 March 8, 2014	Kendrew	Peacey	Added IsConnected property to DebugViewModel that is set on the DebugWindowManagers dispatcher thread.

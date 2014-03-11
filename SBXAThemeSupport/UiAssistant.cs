@@ -868,7 +868,7 @@ namespace SBXAThemeSupport
         private static void KeyUpCommandExecuted(object parameter)
         {
             var keyEventArgs = parameter as KeyEventArgs;
-            if (keyEventArgs == null)
+            if (keyEventArgs == null || keyEventArgs.Handled)
             {
                 return;
             }
@@ -891,15 +891,19 @@ namespace SBXAThemeSupport
             {
                 case Key.O:
                     // Settings.Instance.IsOptionsVisible = Visibility.Visible;
+                    keyEventArgs.Handled = true;
                     Current.OptionsVisibility = Current.OptionsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
                     break;
                 case Key.D:
+                    keyEventArgs.Handled = true;
                     DebugWindowManager.FlipDebugConsole();
                     break;
                 case Key.G:
+                    keyEventArgs.Handled = true;
                     DebugWindowManager.BringTopMost();
                     break;
                 case Key.K:
+                    keyEventArgs.Handled = true;
                     DebugWindowManager.FlipDebugConsole();
                     break;
             }

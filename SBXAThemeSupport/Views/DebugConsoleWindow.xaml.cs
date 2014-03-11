@@ -9,6 +9,9 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
+using SBXAThemeSupport.DebugAssistant.ViewModels;
+
 namespace SBXAThemeSupport.Views
 {
     using System.Windows;
@@ -26,6 +29,7 @@ namespace SBXAThemeSupport.Views
         public DebugConsoleWindow()
         {
             this.InitializeComponent();
+            DebugViewModel.CheckConnection();
         }
 
         #endregion
