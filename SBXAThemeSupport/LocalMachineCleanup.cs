@@ -55,7 +55,7 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Calling this routine will remove all the SB/XA folders from previous versions.
+        ///     Calling this routine will remove all the SB/XA folders from previous versions.
         /// </summary>
         public static void CleanVersionFolders(bool deleteAll = false)
         {
