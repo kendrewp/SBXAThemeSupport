@@ -86,7 +86,6 @@ namespace SBXAThemeSupport.Utilities
         /// </summary>
         public static void Stop()
         {
-            if (instance == null) return;
             if (instance.timerHelper != null)
             {
                 instance.timerHelper.Stop();

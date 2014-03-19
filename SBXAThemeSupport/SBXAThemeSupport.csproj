@@ -12,11 +12,11 @@
     <AssemblyName>SBXAThemeSupport</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>Svn</SccProjectName>
-    <SccLocalPath>Svn</SccLocalPath>
-    <SccAuxPath>Svn</SccAuxPath>
-    <SccProvider>SubversionScc</SccProvider>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -82,27 +82,22 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="SBXAEditor">
-      <HintPath>..\..\..\..\..\U2\SBXA3410\Extra\RichClient\SBXAEditor.dll</HintPath>
+      <HintPath>..\..\RocketDeliveries\RichClient\SBXAEditor.dll</HintPath>
     </Reference>
     <Reference Include="SBXAGridTheme">
-      <HintPath>..\..\..\..\..\U2\SBXA3410\Extra\RichClient\SBXAGridTheme.dll</HintPath>
-    </Reference>
-    <Reference Include="SBXAMAPIBridge64Lib">
-      <HintPath>..\..\..\..\..\U2\SBXA3410\Extra\RichClient\SBXAMAPIBridge64Lib.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="SBXAMAPIBridgeLib">
-      <HintPath>..\..\..\..\..\U2\SBXA3410\Extra\RichClient\SBXAMAPIBridgeLib.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\RocketDeliveries\RichClient\SBXAGridTheme.dll</HintPath>
     </Reference>
     <Reference Include="SBXARuntime">
-      <HintPath>..\..\..\..\..\U2\SBXA3410\Extra\RichClient\SBXARuntime.dll</HintPath>
+      <HintPath>..\..\RocketDeliveries\RichClient\SBXARuntime.dll</HintPath>
+    </Reference>
+    <Reference Include="SBXAScriptControls">
+      <HintPath>..\..\RocketDeliveries\RichClient\SBXAScriptControls.dll</HintPath>
     </Reference>
     <Reference Include="SBXAShared">
-      <HintPath>..\..\..\..\..\U2\SBXA3410\Extra\RichClient\SBXAShared.dll</HintPath>
+      <HintPath>..\..\RocketDeliveries\RichClient\SBXAShared.dll</HintPath>
     </Reference>
     <Reference Include="SBXAWinFxControls">
-      <HintPath>..\..\..\..\..\U2\SBXA3410\Extra\RichClient\SBXAWinFxControls.dll</HintPath>
+      <HintPath>..\..\RocketDeliveries\RichClient\SBXAWinFxControls.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -119,17 +114,14 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
-    <Reference Include="Xceed.Wpf.Controls.v4.0, Version=4.0.10228.11470, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\U2\SBXA3410\Extra\RichClient\Xceed.Wpf.Controls.v4.0.dll</HintPath>
+    <Reference Include="Xceed.Wpf.Controls.v4.0">
+      <HintPath>..\..\RocketDeliveries\RichClient\Xceed.Wpf.Controls.v4.0.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid.v4.0, Version=4.0.10228.11470, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\U2\SBXA3410\Extra\RichClient\Xceed.Wpf.DataGrid.v4.0.dll</HintPath>
+    <Reference Include="Xceed.Wpf.DataGrid.v4.0">
+      <HintPath>..\..\RocketDeliveries\RichClient\Xceed.Wpf.DataGrid.v4.0.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid.Views3D.v4.0, Version=4.0.10228.11470, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\U2\SBXA3410\Extra\RichClient\Xceed.Wpf.DataGrid.Views3D.v4.0.dll</HintPath>
+    <Reference Include="Xceed.Wpf.DataGrid.Views3D.v4.0">
+      <HintPath>..\..\RocketDeliveries\RichClient\Xceed.Wpf.DataGrid.Views3D.v4.0.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -144,7 +136,6 @@
     <Compile Include="DebugAssistant\Models\ProcessStack.cs" />
     <Compile Include="DebugAssistant\ViewModels\CommonVariables.cs" />
     <Compile Include="DebugAssistant\ViewModels\DebugViewModel.cs" />
-    <Compile Include="DebugAssistant\ViewModels\ProcessAnalysisViewModel.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GlassExtensions.cs" />
     <Compile Include="KeyboardBehaviors.cs">
@@ -236,12 +227,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ChangeLog.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\StopButton.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="emergency005.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

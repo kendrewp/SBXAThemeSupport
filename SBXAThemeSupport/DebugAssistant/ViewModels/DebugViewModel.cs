@@ -213,19 +213,6 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         #region Public Properties
 
-        public static void CheckConnection()
-        {
-            JobManager.RunInUIThread(DispatcherPriority.Normal, () => Instance.SetIsConnected(SBPlusClient.Current.IsConnected));
-        }
-
-        private void SetIsConnected(bool connected)
-        {
-            // Set the IsConnected property on the correct thread.
-            if (DebugWindowManager.DebugConsoleWindow == null) return;
-            JobManager.RunInDispatcherThread(DebugWindowManager.DebugConsoleWindow.Dispatcher, DispatcherPriority.Normal,
-                                             delegate { this.IsConnected = connected; });
-        }
-
         /// <summary>
         ///     Gets the instance.
         /// </summary>
