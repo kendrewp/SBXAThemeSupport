@@ -15,10 +15,17 @@ namespace SBXAThemeSupport.ViewModels
     using System.Linq;
     using System.Text;
     using System.Windows.Forms;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Threading;
+using SBXA.UI.Client;
+using SBXAThemeSupport.DebugAssistant;
 
     using SBXA.Runtime;
     using SBXA.Shared;
     using SBXA.UI.WPFControls;
+
+    using ICommand = System.Windows.Input.ICommand;
 
     /// <summary>
     /// TroubleShooterViewModel controls the actions and behavior of the trouble shooter.
@@ -29,11 +36,22 @@ namespace SBXAThemeSupport.ViewModels
 
         private const bool EnableTroubleshooting = false;
 
-        private const string StartStopItemId = "ApplicationStartStopLog";
+        // private const string StartStopItemId = "ApplicationStartStopLog";
 
         private const string ActiveApplicationListId = "ActiveApplicationList";
 
         #endregion
+
+        static TroubleShooterViewModel()
+        {
+            PanicButtonPressedCommand = new RelayCommand(PanicButtonPressedCommandExecuted);
+        }
+
+        /// <summary>
+        ///     Gets the key up command.
+        /// </summary>
+        public static ICommand PanicButtonPressedCommand { get; private set; }
+
 
         #region Static Fields
 
@@ -117,29 +135,38 @@ namespace SBXAThemeSupport.ViewModels
         /// </summary>
         public static void ApplicationStop()
         {
-            // first get the colleciton or create it if it does not already exist
-            if (!SBPlus.Current.GlobalStateFile.Exists(ActiveApplicationListId))
+            try
             {
-                // As we are closing down this case should never be hit, but in order to prevent problem we keep it here.
-                SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, new ActiveApplicationList()), true);
-            }
-            // first get the collection, if it does not exist create a new one.
-            var activeApplicationList = SBPlus.Current.GlobalStateFile.GetItem(ActiveApplicationListId).Object as ActiveApplicationList ?? new ActiveApplicationList();
-            // get the process id and name
-            var currentProcess = Process.GetCurrentProcess();
-            var currentProcessId = currentProcess.Id;
+                // first get the colleciton or create it if it does not already exist
+                if (!SBPlus.Current.GlobalStateFile.Exists(ActiveApplicationListId))
+                {
+                    // As we are closing down this case should never be hit, but in order to prevent problem we keep it here.
+                    SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, new ActiveApplicationList()), true);
+                }
+                // first get the collection, if it does not exist create a new one.
+                var activeApplicationList = SBPlus.Current.GlobalStateFile.GetItem(ActiveApplicationListId).Object as ActiveApplicationList ?? new ActiveApplicationList();
+                // get the process id and name
+                var currentProcess = Process.GetCurrentProcess();
+                var currentProcessId = currentProcess.Id;
 
-            // create a new log entry with the process id
-            if (!activeApplicationList.ContainsProcessId(currentProcessId))
+                // create a new log entry with the process id
+                if (!activeApplicationList.ContainsProcessId(currentProcessId))
+                {
+                    return;
+                }
+
+                activeApplicationList[currentProcessId].CleanExit = true;
+                activeApplicationList[currentProcessId].Stop = DateTime.Now;
+
+                // commit the updated collection.
+                SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), false);
+            }
+            catch (Exception exception)
             {
-                return;
+                var fileName = Path.Combine(Path.Combine(Log.LOG_DIRECTORY, "Client"), "AppStop" + Path.GetRandomFileName());
+                var exceptionText = exception.ToExceptionDetails();
+                File.WriteAllText(fileName, exceptionText.ToString());
             }
-
-            activeApplicationList[currentProcessId].CleanExit = true;
-            activeApplicationList[currentProcessId].Stop = DateTime.Now;
-
-            // commit the updated collection.
-            SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), false);
         }
 
         /// <summary>
@@ -152,35 +179,11 @@ namespace SBXAThemeSupport.ViewModels
         {
             try
             {
-                string windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
-                var sessionId = SBPlus.Current.SessionId;
+                string fileName;
+                string logFolder;
+                var userId = CreateLogFile("Abnormal close", message, out fileName, out logFolder);
 
-                string userId = windowsIdentity.Split(@"\".ToCharArray()).Count() == 2
-                                    ? windowsIdentity.Split(@"\".ToCharArray())[1]
-                                    : windowsIdentity.Split(@"\".ToCharArray())[0];
-
-                var fileName = Path.GetRandomFileName();
-                string logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
-
-                fileName = Path.Combine(logFolder, fileName);
-
-                var existingData = string.Empty;
-
-                if (File.Exists(fileName))
-                {
-                    existingData = File.ReadAllText(fileName);
-                }
-
-                var logText = new StringBuilder(existingData);
-                logText.AppendLine(message);
-
-                logText.AppendLine(string.Format("User Id : {0} ", userId));
-                logText.AppendLine(string.Format("Machine Name {0}", SystemInformation.ComputerName));
-                logText.AppendLine(string.Format("Session Id {0}", sessionId));
-
-                File.WriteAllText(fileName, logText.ToString());
-
-                ExecuteExceptionReporter(fileName.Replace(" ", "%20%"), (userId + "(" + DateTime.Now.ToString() + ") AC").Replace(" ", "%20%"), logFolder.Replace(" ", "%20%"));
+                ExecuteExceptionReporter(fileName.Replace(" ", "%20%"), (userId + "(" + DateTime.Now.ToString(CultureInfo.InvariantCulture) + ") AC").Replace(" ", "%20%"), logFolder.Replace(" ", "%20%"));
             }
                 // ReSharper disable once EmptyGeneralCatchClause
             catch
@@ -242,70 +245,12 @@ namespace SBXAThemeSupport.ViewModels
         {
             try
             {
-                var windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
+                SessionManager.SessionsLog.LogMessage("XXXXXXXXX User Hit Ctrl-Shift-G XXXXXXXXX", Log.LL_UI, Log.MT_ERROR);
+                string fileName;
+                string logFolder;
+                var userId = CreateLogFile("Ctrl-Shit-G was hit by the user.", message, out fileName, out logFolder);
 
-                var userId = windowsIdentity.Split(@"\".ToCharArray()).Count() == 2
-                                 ? windowsIdentity.Split(@"\".ToCharArray())[1]
-                                 : windowsIdentity.Split(@"\".ToCharArray())[0];
-
-                var sessionId = SBPlus.Current.SessionId;
-                var fileName = Path.GetRandomFileName();
-                var logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
-
-                fileName = Path.Combine(logFolder, fileName);
-
-                var existingData = string.Empty;
-
-                if (File.Exists(fileName))
-                {
-                    existingData = File.ReadAllText(fileName);
-                }
-
-                var logText = new StringBuilder(existingData);
-                logText.Append("Ctrl-Shit-G was hit by the user.");
-                logText.AppendLine(message);
-
-                logText.AppendLine(string.Format("User Id : {0} ", userId));
-                logText.AppendLine(string.Format("Machine Name {0}", SystemInformation.ComputerName));
-                logText.AppendLine(string.Format("Session Id {0}", sessionId));
-
-                // Now get form stack
-                logText.AppendLine("Form Stack:");
-                foreach (var form in SBPlus.Current.FormStack.RealStack)
-                {
-                    if (form.ObjectHandle != null)
-                    {
-                        if (form.ObjectHandle is SBForm)
-                        {
-                            var gobj = form.ObjectHandle.GuiObjectDefinition as SBXA.Shared.Definitions.FormObjectDefinition;
-
-                            if (gobj != null && !string.IsNullOrEmpty(gobj.ProcessName))
-                            {
-                                logText.AppendLine(string.Format(" {0} {1}", form.ObjectHandle.GetType().Name, gobj.ProcessName));
-                            }
-                        }
-                        else
-                        {
-                            var menu = form.ObjectHandle as SBMenu;
-                            if (menu != null && menu.MenuDefinition != null)
-                            {
-                                logText.AppendLine(string.Format(" {0} {1}", form.ObjectHandle.GetType().Name, menu.MenuDefinition.Name));
-                            }
-                            else
-                            {
-                                logText.AppendLine(form.ObjectHandle.GetType().Name);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        logText.AppendLine("Blank form handle");
-                    }
-                }
-
-                File.WriteAllText(fileName, logText.ToString());
-
-                ExecuteExceptionReporter(fileName.Replace(" ", "%20%"), (userId + "(" + DateTime.Now.ToString() + ") Freeze").Replace(" ", "%20%"), logFolder.Replace(" ", "%20%"));
+                ExecuteExceptionReporter(fileName.Replace(" ", "%20%"), (userId + "(" + DateTime.Now.ToString(CultureInfo.InvariantCulture) + ") Freeze").Replace(" ", "%20%"), logFolder.Replace(" ", "%20%"));
             }
                 // ReSharper disable once EmptyGeneralCatchClause
             catch
@@ -313,6 +258,129 @@ namespace SBXAThemeSupport.ViewModels
             }
         }
 
+        /// <summary>
+        /// Sends the freeze.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public static void SendPanic(string message)
+        {
+            try
+            {
+                SessionManager.SessionsLog.LogMessage("XXXXXXXXX User Hit Panic Button XXXXXXXXX", Log.LL_UI, Log.MT_ERROR);
+                string fileName;
+                string logFolder;
+                var userId = CreateLogFile("Panic", message, out fileName, out logFolder);
+
+                ExecuteExceptionReporter(fileName.Replace(" ", "%20%"), (userId + "(" + DateTime.Now.ToString(CultureInfo.InvariantCulture) + ") Panic").Replace(" ", "%20%"), logFolder.Replace(" ", "%20%"));
+            }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch
+            {
+            }
+        }
+
+        private static string CreateLogFile(string whichAction, string message, out string fileName, out string logFolder)
+        {
+            var windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
+
+            var userId = windowsIdentity.Split(@"\".ToCharArray()).Count() == 2
+                             ? windowsIdentity.Split(@"\".ToCharArray())[1]
+                             : windowsIdentity.Split(@"\".ToCharArray())[0];
+
+            var sessionId = SBPlus.Current.SessionId;
+            fileName = Path.GetRandomFileName();
+            logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
+
+            fileName = Path.Combine(logFolder, fileName);
+
+            var existingData = string.Empty;
+
+            if (File.Exists(fileName))
+            {
+                existingData = File.ReadAllText(fileName);
+            }
+
+            var logText = new StringBuilder(existingData);
+            logText.AppendLine(whichAction);
+            logText.AppendLine(message);
+
+            logText.AppendLine(string.Format("User Id : {0} ", userId));
+            logText.AppendLine(string.Format("Machine Name {0}", SystemInformation.ComputerName));
+            logText.AppendLine(string.Format("Session Id {0}", sessionId));
+
+            JobManager.RunSyncInUIThread(DispatcherPriority.Normal,
+                                     delegate
+                                         {
+                                             if (SBPlusClient.Current.IsConnected)
+                                             {
+                                                 logText.AppendLine(string.Format("Keyboard Buffer state = {0}, enabled {1} ", KeyboardBuffer.IsKeyboardBufferingRequested, KeyboardBuffer.IsKeyboardBufferEnabled));
+                                                 logText.AppendLine(string.Format("Input state = {0}.", SBPlus.Current.InputState));
+
+                                                 
+                                             }
+                                         });
+
+            // Now get form stack
+            logText.AppendLine("Form Stack:");
+            foreach (var form in SBPlus.Current.FormStack.RealStack)
+            {
+                if (form.ObjectHandle != null)
+                {
+                    if (form.ObjectHandle is SBForm)
+                    {
+                        var gobj = form.ObjectHandle.GuiObjectDefinition as SBXA.Shared.Definitions.FormObjectDefinition;
+
+                        if (gobj != null && !string.IsNullOrEmpty(gobj.ProcessName))
+                        {
+                            logText.AppendLine(string.Format(" {0} {1} {2}", form.ObjectHandle.GetType().Name, gobj.ProcessName, (form.ObjectHandle.ParentSBWindow != null ? ((Window)form.ObjectHandle.ParentSBWindow).IsActive.ToString() : "Null")));
+                        }
+                    }
+                    else
+                    {
+                        var menu = form.ObjectHandle as SBMenu;
+                        if (menu != null && menu.MenuDefinition != null)
+                        {
+                            logText.AppendLine(string.Format(" {0} {1} {2}", form.ObjectHandle.GetType().Name, menu.MenuDefinition.Name, (form.ObjectHandle.ParentSBWindow != null ? ((Window)form.ObjectHandle.ParentSBWindow).IsActive.ToString() : "Null")));
+                        }
+                        else
+                        {
+                            logText.AppendLine(form.ObjectHandle.GetType().Name);
+                        }
+                    }
+                }
+                else
+                {
+                    logText.AppendLine("Blank form handle");
+                }
+            }
+
+            File.WriteAllText(fileName, logText.ToString());
+            return userId;
+        }
+
+        /// <summary>
+        /// Forces the keyboard buffer to debuffer.
+        /// </summary>
+        public static void ForceKeyboardBufferToDebuffer()
+        {
+            try
+            {
+                SendPanic("User hit the panic button.");
+                JobManager.RunInUIThread(DispatcherPriority.Normal, 
+                    delegate
+                        { 
+                            KeyboardBuffer.InvokeDebuffer();
+                            SBPlus.Current.SetInputState(SBInputState.WaitingForInput, "State force but panic button.");
+                        });
+            }
+            // ReSharper disable EmptyGeneralCatchClause
+            catch
+            {
+                
+            }
+            // ReSharper restore EmptyGeneralCatchClause
+        }
+        
         #endregion
 
         #region Methods
@@ -344,6 +412,30 @@ namespace SBXAThemeSupport.ViewModels
             }
         }
 
+        private static void PanicButtonPressedCommandExecuted(object parameter)
+        {
+            try
+            {
+                SendPanic("Panic");
+                ForceKeyboardBufferToDebuffer();
+                DebugWindowManager.BringTopMost(false);
+/*
+                using (var stream = typeof(TroubleShooterViewModel).Assembly.GetManifestResourceStream("SBXAThemeSupport.emergency005.wav"))
+                {
+                    if (stream != null)
+                    {
+                        var soundPlayer = new SoundPlayer(stream);
+                        soundPlayer.Play();
+                    }
+                }
+*/
+
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+        
         private bool ContainsProcess(IEnumerable<Process> activeProcesses, int processId)
         {
             return activeProcesses.Any(process => process.Id == processId);
@@ -367,7 +459,7 @@ namespace SBXAThemeSupport.ViewModels
                 return (File.Exists(fileName));
             }
 // ReSharper disable once EmptyGeneralCatchClause
-            catch (Exception)
+            catch
             {
             }
             return false;
@@ -392,7 +484,7 @@ namespace SBXAThemeSupport.ViewModels
                 File.WriteAllText(fileName, name);
             }
 // ReSharper disable once EmptyGeneralCatchClause
-            catch (Exception exception)
+            catch
             {
             }
 

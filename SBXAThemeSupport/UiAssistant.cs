@@ -187,6 +187,18 @@ namespace SBXAThemeSupport
 
         #region Public Properties
 
+        public static readonly DependencyProperty FormBorderColorProperty =
+            DependencyProperty.RegisterAttached("FormBorderColor", typeof (Brush), typeof (UiAssistant), new PropertyMetadata(default(Brush)));
+
+        public static void SetFormBorderColor(UIElement element, Brush value)
+        {
+            element.SetValue(FormBorderColorProperty, value);
+        }
+
+        public static Brush GetFormBorderColor(UIElement element)
+        {
+            return (Brush) element.GetValue(FormBorderColorProperty);
+        }
         /// <summary>
         ///     Gets or sets the current.
         /// </summary>

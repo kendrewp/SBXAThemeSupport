@@ -32,10 +32,12 @@ using System.Windows.Markup;
 [assembly: Guid("f2402ea7-ab88-4bb9-a75b-50a340fe0ceb")]
 
 // Version information for an assembly consists of the following four values:
+//
 //      Major Version
 //      Minor Version 
 //      Build Number
 //      Revision
+//
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]

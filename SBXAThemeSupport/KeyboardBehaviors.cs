@@ -30,6 +30,7 @@ namespace SBXAThemeSupport
         /// </summary>
         public KeyboardBehaviors()
         {
+            if (Application.Current == null || Application.Current.MainWindow == null) return;
             Application.Current.MainWindow.KeyUp += this.HandleMainWindowKeyUp;
         }
 

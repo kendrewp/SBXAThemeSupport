@@ -93,7 +93,7 @@ namespace SBXAThemeSupport.DebugAssistant
         /// <summary>
         ///     The bring top most.
         /// </summary>
-        public static void BringTopMost()
+        public static void BringTopMost(bool sendReport = true)
         {
             Type sbPlusWindowType = typeof(SBPlusWindow);
             var fieldInfo = sbPlusWindowType.GetField("_Ghost", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -130,7 +130,10 @@ namespace SBXAThemeSupport.DebugAssistant
             sbWindow.Top = 0d;
             sbWindow.Left = 0d;
 
-            TroubleShooterViewModel.SendFreeze("User struck 'Ctrl-Shft-G");
+            if (sendReport)
+            {
+                TroubleShooterViewModel.SendFreeze("User struck 'Ctrl-Shft-G");
+            }
         }
 
         /// <summary>
