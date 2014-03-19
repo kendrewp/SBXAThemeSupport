@@ -10,8 +10,6 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using SBXAThemeSupport.DebugAssistant.Models;
-
 namespace SBXAThemeSupport.DebugAssistant.ViewModels
 {
     using System;
@@ -24,6 +22,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
     using SBXA.UI.Client;
     using SBXA.UI.WPFControls;
 
+    using SBXAThemeSupport.DebugAssistant.Models;
     using SBXAThemeSupport.Models;
     using SBXAThemeSupport.ViewModels;
 
@@ -176,6 +175,10 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         private NestedAttributeCollection section3Collection;
 
+        private ProcessDescription currentProcess;
+
+        private bool isConnected;
+
         #endregion
 
         #region Constructors and Destructors
@@ -204,14 +207,24 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             this.Section1Collection = this.CreateSection(this.section1);
             this.Section2Collection = this.CreateSection(this.section2);
             this.Section3Collection = this.CreateSection(this.section3);
-
-            // create instance of ProcessAnalysisViewModel
-            ProcessAnalysisViewModel = new ProcessAnalysisViewModel();
         }
 
         #endregion
 
         #region Public Properties
+
+        public static void CheckConnection()
+        {
+            JobManager.RunInUIThread(DispatcherPriority.Normal, () => Instance.SetIsConnected(SBPlusClient.Current.IsConnected));
+        }
+
+        private void SetIsConnected(bool connected)
+        {
+            // Set the IsConnected property on the correct thread.
+            if (DebugWindowManager.DebugConsoleWindow == null) return;
+            JobManager.RunInDispatcherThread(DebugWindowManager.DebugConsoleWindow.Dispatcher, DispatcherPriority.Normal,
+                                             delegate { this.IsConnected = connected; });
+        }
 
         /// <summary>
         ///     Gets the instance.
@@ -293,18 +306,24 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [is connected].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [is connected]; otherwise, <c>false</c>.
+        /// </value>
         public bool IsConnected
         {
             get
             {
-                return this._IsConnected;
+                return this.isConnected;
             }
 
             set
             {
-                if (this._IsConnected != value)
+                if (this.isConnected != value)
                 {
-                    this._IsConnected = value;
+                    this.isConnected = value;
                     this.RaisePropertyChanged("IsConnected");
                 }
             }
@@ -484,24 +503,33 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets the current process.
+        /// </summary>
+        /// <value>
+        /// The current process.
+        /// </value>
         public ProcessDescription CurrentProcess
         {
-            get { return _CurrentProcess; }
+            get
+            {
+                return this.currentProcess;
+            }
+
             set
             {
-                if (_CurrentProcess != null)
+                if (this.currentProcess != null)
                 {
-                    _CurrentProcess.IsCurrent = false;
+                    this.currentProcess.IsCurrent = false;
                 }
-                _CurrentProcess = value;
-                if (_CurrentProcess != null)
+
+                this.currentProcess = value;
+                if (this.currentProcess != null)
                 {
-                    _CurrentProcess.IsCurrent = true;
+                    this.currentProcess.IsCurrent = true;
                 }
             }
         }
-
-        public ProcessAnalysisViewModel ProcessAnalysisViewModel { get; private set; }
 
         #endregion
 
@@ -594,13 +622,13 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         public static void GetCommonVariable(string whichVariable)
         {
             JobManager.RunInUIThread(
-                DispatcherPriority.Input, 
+                DispatcherPriority.Input,
                 () =>
                 SBProcessRunner.Instance.CallSubroutine(
-                    "XUI.DEBUG", 
-                    6, 
-                    new[] { new SBString("4"), new SBString(whichVariable), new SBString(), new SBString(), new SBString(), new SBString() }, 
-                    new object(), 
+                    "XUI.DEBUG",
+                    6,
+                    new[] { new SBString("4"), new SBString(whichVariable), new SBString(), new SBString(), new SBString(), new SBString() },
+                    new object(),
                     GetCommonVariableCompleted));
         }
 
@@ -635,8 +663,8 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 if (DebugWindowManager.DebugConsoleWindow != null)
                 {
                     JobManager.RunInDispatcherThread(
-                        DebugWindowManager.DebugConsoleWindow.Dispatcher, 
-                        DispatcherPriority.Send, 
+                        DebugWindowManager.DebugConsoleWindow.Dispatcher,
+                        DispatcherPriority.Send,
                         () => DoUpdateProcessStack(add, processName));
                 }
                 else
@@ -650,10 +678,25 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
-        public static void CheckConnection()
+        /// <summary>
+        /// Clears the history stack.
+        /// </summary>
+        public void ClearHistoryStack()
         {
-            JobManager.RunInUIThread(DispatcherPriority.Normal, () => Instance.SetIsConnected(SBPlusClient.Current.IsConnected));
+            this.ProcessHistoryStack.Clear();
+            
+            // remove all the references
+            foreach (var processDescription in this.ProcessStack)
+            {
+                processDescription.ClearHistoryReferences();
+            }
+
+            this.CurrentProcess = null;
+            // add back the current process
+            //            CurrentProcess.Clear();
+            //            ProcessHistoryStack.Push(CurrentProcess);
         }
+
         /// <summary>
         /// The refresh collection.
         /// </summary>
@@ -688,9 +731,6 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             return variable;
         }
 
-        private ProcessDescription _CurrentProcess;
-        private bool _IsConnected;
-
         private static void DoUpdateProcessStack(bool add, string processName)
         {
             try
@@ -723,6 +763,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                                 {
                                     Instance.CurrentProcess.Children.Push(historyProcess);
                                 }
+
                                 Instance.CurrentProcess = historyProcess;
                             }
                             catch (Exception exception)
@@ -735,7 +776,11 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     {
                         try
                         {
-                            if (Instance.ProcessStack.Count == 0) return;
+                            if (Instance.ProcessStack.Count == 0)
+                            {
+                                return;
+                            }
+
                             PopProcess(Instance.ProcessStack);
                         }
                         catch (Exception exception)
@@ -811,32 +856,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
-        private void ClearStacks()
-        {
-            this.ProcessHistoryStack.Clear();
-            this.ProcessStack.Clear();
-        }
-
-        public void ClearHistoryStack()
-        {
-            
-            this.ProcessHistoryStack.Clear();
-            // remove all the references
-
-            foreach (var processDescription in this.ProcessStack)
-            {
-                processDescription.ClearHistoryReferences();
-            }
-            CurrentProcess = null;
-            // add back the current process
-//            CurrentProcess.Clear();
-//            ProcessHistoryStack.Push(CurrentProcess);
-        }
-        
-
         private static void PushProcess(ProcessStack stack, ProcessDescription process)
         {
-           // check if there is a process on the stack, if there is add it to the list of children, not just push it.
+            // check if there is a process on the stack, if there is add it to the list of children, not just push it.
             if (stack.Count == 0)
             {
                 stack.Push(process);
@@ -875,8 +897,8 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             {
                 return process;
             }
-            return (FindLowestProcess(process.Children.Peek()));
 
+            return FindLowestProcess(process.Children.Peek());
         }
 
         private static ProcessDescription FindLowestProcessParent(ProcessDescription process)
@@ -886,6 +908,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             {
                 return process;
             }
+
             if (process.Children.Count == 1)
             {
                 // I need to look if the child has a process in it's children.
@@ -895,8 +918,14 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     return process;
                 }
             }
-            return (FindLowestProcessParent(process.Children.Peek()));
 
+            return FindLowestProcessParent(process.Children.Peek());
+        }
+
+        private void ClearStacks()
+        {
+            this.ProcessHistoryStack.Clear();
+            this.ProcessStack.Clear();
         }
 
         private void CreateParmsCollection()
@@ -963,16 +992,20 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     this.IsDebugEnabled = false;
                 }
             }
-            SetIsConnected(e.Connected);
         }
 
+/*
         private void SetIsConnected(bool connected)
         {
             // Set the IsConnected property on the correct thread.
-            if (DebugWindowManager.DebugConsoleWindow == null) return;
-            JobManager.RunInDispatcherThread(DebugWindowManager.DebugConsoleWindow.Dispatcher, DispatcherPriority.Normal,
-                                             delegate { this.IsConnected = connected; });
+            if (DebugWindowManager.DebugConsoleWindow == null)
+            {
+                return;
+            }
+
+            JobManager.RunInDispatcherThread(DebugWindowManager.DebugConsoleWindow.Dispatcher, DispatcherPriority.Normal, delegate { this.IsConnected = connected; });
         }
+*/
 
         private void HandleReadyToSendCommands(object sender, ReadyToSendCommandsEventArgs e)
         {

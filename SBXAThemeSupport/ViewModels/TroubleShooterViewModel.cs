@@ -6,6 +6,8 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
+
 namespace SBXAThemeSupport.ViewModels
 {
     using System;
@@ -15,15 +17,15 @@ namespace SBXAThemeSupport.ViewModels
     using System.Linq;
     using System.Text;
     using System.Windows.Forms;
-using System.Globalization;
-using System.Windows;
-using System.Windows.Threading;
-using SBXA.UI.Client;
-using SBXAThemeSupport.DebugAssistant;
+    using System.Globalization;
+    using System.Windows;
+    using System.Windows.Threading;
+    using SBXA.UI.Client;
 
     using SBXA.Runtime;
     using SBXA.Shared;
     using SBXA.UI.WPFControls;
+    using SBXAThemeSupport.DebugAssistant;
 
     using ICommand = System.Windows.Input.ICommand;
 

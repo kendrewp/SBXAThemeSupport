@@ -18,6 +18,8 @@ namespace SBXAThemeSupport
     using SBXA.UI.Client;
     using SBXA.UI.WPFControls;
 
+    using ICommand = System.Windows.Input.ICommand;
+
     /// <summary>
     ///     The keyboard behaviors.
     /// </summary>
@@ -36,6 +38,44 @@ namespace SBXAThemeSupport
 
         #endregion
 
+        /// <summary>
+        /// Gets or sets the Ctrl-X key up command.
+        /// </summary>
+        /// <value>
+        /// The control x key up command.
+        /// </value>
+        public ICommand CtrlXKeyUpCommand { get; set; }
+
+        /// <summary>
+        /// Gets or sets the command to execute when Ctrl-Shift-T is executed.
+        /// </summary>
+        public ICommand CtrlShiftTKeyUpCommand { get; set; }
+
+        /// <summary>
+        /// Gets or sets the command to execute when Ctrl-Shift-T is executed.
+        /// </summary>
+        public ICommand CtrlShiftOKeyUpCommand { get; set; }
+
+        /// <summary>
+        /// Gets or sets the command to execute when Ctrl-Shift-O is executed.
+        /// </summary>
+        public ICommand CtrlShiftDKeyUpCommand { get; set; }
+
+        /// <summary>
+        /// Gets or sets the command to execute when Ctrl-Shift-K is executed.
+        /// </summary>
+        public ICommand CtrlShiftKKeyUpCommand { get; set; }
+
+        /// <summary>
+        /// Gets or sets the command to execute when Ctrl-Shift-L is executed.
+        /// </summary>
+        public ICommand CtrlShiftLKeyUpCommand { get; set; }
+
+        /// <summary>
+        /// Gets or sets the command to execute when Ctrl-Shift-G is executed.
+        /// </summary>
+        public ICommand CtrlShiftGKeyUpCommand { get; set; }
+
         #region Methods
 
         /// <summary>
@@ -44,7 +84,7 @@ namespace SBXAThemeSupport
         protected override void OnAttached()
         {
             base.OnAttached();
-            this.AssociatedObject.KeyUp += HandleAssociatedObjectKeyUp;
+            this.AssociatedObject.KeyUp += this.HandleAssociatedObjectKeyUp;
             this.Dispatcher.BeginInvoke(
                 DispatcherPriority.Input, 
                 new DispatcherOperationCallback(
@@ -62,20 +102,93 @@ namespace SBXAThemeSupport
         protected override void OnDetaching()
         {
             base.OnDetaching();
-            this.AssociatedObject.KeyUp -= HandleAssociatedObjectKeyUp;
+            this.AssociatedObject.KeyUp -= this.HandleAssociatedObjectKeyUp;
         }
 
-        private static void HandleAssociatedObjectKeyUp(object sender, KeyEventArgs e)
+        /// <summary>
+        /// Handles the associated object key up.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="KeyEventArgs"/> instance containing the event data.</param>
+        private void HandleAssociatedObjectKeyUp(object sender, KeyEventArgs e)
         {
-            if (UiAssistant.Current.KeyUpCommand != null && UiAssistant.Current.KeyUpCommand.CanExecute(e))
+            // first check to see if there is a command registered for the key combination.
+            var keyEventArgs = e;
+            if (keyEventArgs == null)
             {
-                UiAssistant.Current.KeyUpCommand.Execute(e);
+                return;
+            }
+
+            var isCtrlShift = (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift))
+                               == (ModifierKeys.Control | ModifierKeys.Shift);
+
+            if (!isCtrlShift)
+            {
+                // Check if the user hit Ctrl-X, if so send a Ctr-X to the server.
+                if (keyEventArgs.Key == Key.X && Keyboard.Modifiers == ModifierKeys.Control && !keyEventArgs.Handled && this.CtrlXKeyUpCommand != null)
+                {
+                    this.CtrlXKeyUpCommand.Execute(e);
+                }
+
+                return;
+            }
+
+            switch (e.Key)
+            {
+                case Key.T:
+                    if (this.CtrlShiftTKeyUpCommand != null)
+                    {
+                        this.CtrlShiftTKeyUpCommand.Execute(e);
+                        return;
+                    }
+
+                    break;
+                case Key.O:
+                    if (this.CtrlShiftOKeyUpCommand != null)
+                    {
+                        this.CtrlShiftOKeyUpCommand.Execute(e);
+                        return;
+                    }
+
+                    break;
+                case Key.D:
+                    if (this.CtrlShiftDKeyUpCommand != null)
+                    {
+                        this.CtrlShiftDKeyUpCommand.Execute(e);
+                        return;
+                    }
+
+                    break;
+                case Key.K:
+                    if (this.CtrlShiftKKeyUpCommand != null)
+                    {
+                        this.CtrlShiftKKeyUpCommand.Execute(e);
+                        return;
+                    }
+
+                    break;
+                case Key.L:
+                    if (this.CtrlShiftLKeyUpCommand != null)
+                    {
+                        this.CtrlShiftLKeyUpCommand.Execute(e);
+                        return;
+                    }
+
+                    break;
+                case Key.G:
+                    if (this.CtrlShiftLKeyUpCommand != null)
+                    {
+                        this.CtrlShiftGKeyUpCommand.Execute(e);
+                        return;
+                    }
+
+                    break;
             }
         }
 
         private void HandleMainWindowKeyUp(object sender, KeyEventArgs e)
         {
-            HandleAssociatedObjectKeyUp(sender, e);
+            this.HandleAssociatedObjectKeyUp(sender, e);
             e.Handled = true;
         }
 
@@ -87,7 +200,7 @@ namespace SBXAThemeSupport
                 if (window != null)
                 {
                     window.Closed -= this.HandleSBWindowClosed;
-                    this.AssociatedObject.KeyUp -= HandleAssociatedObjectKeyUp;
+                    this.AssociatedObject.KeyUp -= this.HandleAssociatedObjectKeyUp;
                 }
 
                 if (Application.Current != null && Application.Current.MainWindow != null)

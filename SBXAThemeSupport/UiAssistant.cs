@@ -16,6 +16,7 @@ namespace SBXAThemeSupport
     using System.Diagnostics;
     using System.Reflection;
     using System.Windows;
+    using System.Windows.Controls.Primitives;
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Threading;
@@ -36,6 +37,13 @@ namespace SBXAThemeSupport
     public class UiAssistant : DependencyObject
     {
         #region Static Fields
+
+        public static readonly DependencyProperty ResizeGripVisiblityProperty =
+            DependencyProperty.RegisterAttached(
+                "ResizeGripVisiblity",
+                typeof(Visibility),
+                typeof(UiAssistant),
+                new PropertyMetadata(Visibility.Visible, OnResizeGripVisiblityChanged));
 
         /// <summary>
         ///     Determines the visiblity of the close (X) on the main window.
@@ -161,12 +169,19 @@ namespace SBXAThemeSupport
 
         #region Constructors and Destructors
 
+        static UiAssistant()
+        {
+            ShowHideOptionsCommand = new RelayCommand(ShowHideOptionsCommandExecuted);
+            ShowHideApplicationInsightCommand = new RelayCommand(ShowHideApplicationInsightCommandExecuted);
+            BringCurrentFormTopMostUpCommand = new RelayCommand(BringCurrentFormTopMostCommandExecuted);
+            SendControlXCommand = new RelayCommand(SendControlXCommandExecuted);
+        }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="UiAssistant" /> class.
         /// </summary>
         public UiAssistant()
         {
-            this.KeyUpCommand = new RelayCommand(KeyUpCommandExecuted);
             ExecuteProcessInContextCommandBinding.CanExecute += CanExecuteExecuteProcessInContextCommand;
             ExecuteProcessInContextCommandBinding.Executed += ExecutedExecuteProcessInContextCommand;
 
@@ -200,6 +215,38 @@ namespace SBXAThemeSupport
             return (Brush) element.GetValue(FormBorderColorProperty);
         }
         /// <summary>
+        /// Gets the show hide options command.
+        /// </summary>
+        /// <value>
+        /// The show hide options command.
+        /// </value>
+        public static ICommand ShowHideOptionsCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the show hide application insight command.
+        /// </summary>
+        /// <value>
+        /// The show hide application insight command.
+        /// </value>
+        public static ICommand ShowHideApplicationInsightCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the bring current form top most up command.
+        /// </summary>
+        /// <value>
+        /// The bring current form top most up command.
+        /// </value>
+        public static ICommand BringCurrentFormTopMostUpCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the send control x command command.
+        /// </summary>
+        /// <value>
+        /// The send control x command command.
+        /// </value>
+        public static ICommand SendControlXCommand { get; private set; }
+
+        /// <summary>
         ///     Gets or sets the current.
         /// </summary>
         public static UiAssistant Current
@@ -214,11 +261,6 @@ namespace SBXAThemeSupport
                 current = value;
             }
         }
-
-        /// <summary>
-        ///     Gets the key up command.
-        /// </summary>
-        public ICommand KeyUpCommand { get; private set; }
 
         /// <summary>
         ///     Gets or sets the IsOptionsVisibleProperty. This is a DependencyProperty.
@@ -273,6 +315,26 @@ namespace SBXAThemeSupport
         #endregion
 
         #region Public Methods and Operators
+
+        /// <summary>
+        /// Sets the resize grip visiblity.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="value">The value.</param>
+        public static void SetResizeGripVisiblity(DependencyObject target, Visibility value)
+        {
+            target.SetValue(ResizeGripVisiblityProperty, value);
+        }
+
+        /// <summary>
+        /// Gets the resize grip visiblity.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <returns>Returns if the proerpty is visible or not.</returns>
+        public static Visibility GetResizeGripVisiblity(DependencyObject target)
+        {
+            return (Visibility)target.GetValue(ResizeGripVisiblityProperty);
+        }
 
         /// <summary>
         /// Gets the value of CloseWindowButtonVisiblity
@@ -792,6 +854,47 @@ namespace SBXAThemeSupport
 
         #region Methods
 
+        /// <summary>
+        /// Called when [resize grip visiblity changed].
+        /// </summary>
+        /// <param name="d">The <see cref="DependencyObject"/> that the property will act on.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        private static void OnResizeGripVisiblityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            try
+            {
+                // find the parent window, then use that to find the resizegrip
+                var parentWindow = SBUISupport.FindParentByType(d, typeof(Window)) as Window;
+                if (parentWindow == null)
+                {
+                    var sbForm = d as SBForm;
+                    if (sbForm == null)
+                    {
+                        return;
+                    }
+
+                    if (sbForm.ParentSBWindow == null)
+                    {
+                        return;
+                    }
+
+                    parentWindow = sbForm.ParentSBWindow as Window;
+                }
+
+                var resizeGrip = SBUISupport.FindChildByType(parentWindow, typeof(ResizeGrip)) as ResizeGrip;
+                if (resizeGrip == null)
+                {
+                    return;
+                }
+
+                resizeGrip.Visibility = (Visibility)e.NewValue;
+            }
+            catch (Exception exception)
+            {
+                SBPlusClient.LogError("Exception caught setting resize grip visiblity.", exception);
+            }
+        }
+
         private static void CanExecuteExecuteProcessInContextCommand(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = SBProcessRunner.CanSendServerCommands();
@@ -877,7 +980,7 @@ namespace SBXAThemeSupport
             SetMainWindowBorderBackground(SBPlus.Current, GetDefaultBackground(SBPlus.Current));
         }
 
-        private static void KeyUpCommandExecuted(object parameter)
+        private static void ShowHideApplicationInsightCommandExecuted(object parameter)
         {
             var keyEventArgs = parameter as KeyEventArgs;
             if (keyEventArgs == null || keyEventArgs.Handled)
@@ -885,40 +988,52 @@ namespace SBXAThemeSupport
                 return;
             }
 
-            bool isCtrlShift = (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift))
-                               == (ModifierKeys.Control | ModifierKeys.Shift);
+            DebugWindowManager.FlipDebugConsole();
+            keyEventArgs.Handled = true;
+        }
 
-            if (!isCtrlShift)
+        private static void ShowHideOptionsCommandExecuted(object parameter)
+        {
+            var keyEventArgs = parameter as KeyEventArgs;
+            if (keyEventArgs == null || keyEventArgs.Handled)
             {
-                // Check if the user hit Ctrl-X, if so send a Ctr-X to the server.
-                if (keyEventArgs.Key == Key.X && Keyboard.Modifiers == ModifierKeys.Control && !keyEventArgs.Handled)
-                {
-                    SendControlX();
-                }
+                return;
+            }
+            // If there is an application definition which is defined then recognize the DisplayOptionsMenu, otherwise just switch it.
+            if (SBPlus.Current != null && SBPlus.Current.ApplicationDefinition != null && SBPlus.Current.ApplicationDefinition.DisplayOptionsMenu)
+            {
+                Current.OptionsVisibility = Current.OptionsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            }
+            else
+            {
+                Current.OptionsVisibility = Current.OptionsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            }
 
+            keyEventArgs.Handled = true;
+        }
+
+        private static void BringCurrentFormTopMostCommandExecuted(object parameter)
+        {
+            var keyEventArgs = parameter as KeyEventArgs;
+            if (keyEventArgs == null || keyEventArgs.Handled)
+            {
                 return;
             }
 
-            switch (keyEventArgs.Key)
+            DebugWindowManager.BringTopMost();
+            keyEventArgs.Handled = true;
+        }
+
+        private static void SendControlXCommandExecuted(object parameter)
+        {
+            var keyEventArgs = parameter as KeyEventArgs;
+            if (keyEventArgs == null || keyEventArgs.Handled)
             {
-                case Key.O:
-                    // Settings.Instance.IsOptionsVisible = Visibility.Visible;
-                    keyEventArgs.Handled = true;
-                    Current.OptionsVisibility = Current.OptionsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-                    break;
-                case Key.D:
-                    keyEventArgs.Handled = true;
-                    DebugWindowManager.FlipDebugConsole();
-                    break;
-                case Key.G:
-                    keyEventArgs.Handled = true;
-                    DebugWindowManager.BringTopMost();
-                    break;
-                case Key.K:
-                    keyEventArgs.Handled = true;
-                    DebugWindowManager.FlipDebugConsole();
-                    break;
+                return;
             }
+
+            SendControlX();
+            keyEventArgs.Handled = true;
         }
 
         private static void OnSetDrawableChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)

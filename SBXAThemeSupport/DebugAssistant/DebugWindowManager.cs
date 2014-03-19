@@ -24,9 +24,9 @@ namespace SBXAThemeSupport.DebugAssistant
     using SBXA.UI.WPFControls.SBDebug;
 
     using SBXAThemeSupport.Models;
-    using Utilities;
+    using SBXAThemeSupport.Utilities;
     using SBXAThemeSupport.ViewModels;
-    using Views;
+    using SBXAThemeSupport.Views;
 
     /// <summary>
     ///     This class provides a means to manage the debug window.
@@ -35,15 +35,15 @@ namespace SBXAThemeSupport.DebugAssistant
     {
         #region Static Fields
 
-        private static readonly Hashtable _WindowTable = new Hashtable();
+        private static readonly Hashtable WindowTable = new Hashtable();
 
-        private static DebugWindowManager _DebugWindowManager;
+        private static DebugWindowManager debugWindowManager;
 
         #endregion
 
         #region Fields
 
-        private readonly object _Syncobj = new object();
+        private readonly object syncobj = new object();
 
         #endregion
 
@@ -78,9 +78,9 @@ namespace SBXAThemeSupport.DebugAssistant
 
             try
             {
-                if (!_WindowTable.ContainsKey(key))
+                if (!WindowTable.ContainsKey(key))
                 {
-                    _WindowTable.Add(key, window);
+                    WindowTable.Add(key, window);
                 }
             }
             catch (Exception)
@@ -146,9 +146,9 @@ namespace SBXAThemeSupport.DebugAssistant
                 return;
             }
 
-            if (_WindowTable.Count != 0)
+            if (WindowTable.Count != 0)
             {
-                _WindowTable.Clear();
+                WindowTable.Clear();
             }
 
             DebugConsoleWindow.Dispatcher.BeginInvokeShutdown(DispatcherPriority.Normal);
@@ -188,9 +188,9 @@ namespace SBXAThemeSupport.DebugAssistant
 
             try
             {
-                if (_WindowTable.ContainsKey(key))
+                if (WindowTable.ContainsKey(key))
                 {
-                    return _WindowTable[key] as Window;
+                    return WindowTable[key] as Window;
                 }
             }
             catch (Exception)
@@ -210,7 +210,7 @@ namespace SBXAThemeSupport.DebugAssistant
         /// </returns>
         public static DebugWindowManager Instance()
         {
-            return _DebugWindowManager ?? (_DebugWindowManager = new DebugWindowManager());
+            return debugWindowManager ?? (debugWindowManager = new DebugWindowManager());
         }
 
         /// <summary>
@@ -228,9 +228,9 @@ namespace SBXAThemeSupport.DebugAssistant
 
             try
             {
-                if (_WindowTable.ContainsKey(key))
+                if (WindowTable.ContainsKey(key))
                 {
-                    _WindowTable.Remove(key);
+                    WindowTable.Remove(key);
                 }
             }
             catch (Exception)
@@ -302,7 +302,7 @@ namespace SBXAThemeSupport.DebugAssistant
 
         private static void CreateDebugConsole()
         {
-            lock (Instance()._Syncobj)
+            lock (Instance().syncobj)
             {
                 try
                 {

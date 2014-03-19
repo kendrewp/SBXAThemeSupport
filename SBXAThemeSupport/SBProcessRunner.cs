@@ -251,6 +251,7 @@ namespace SBXAThemeSupport
             {
                 procIncludingParam = string.Format("{0},{1}", processName, param);
             }
+
             ExecuteSbPlusProcess(procIncludingParam, isInContext);
 
             // Instance.ExecuteSbPlusProcess(CallProcessInternal, isInContext, procIncludingParam, SBPlus.Current, serverProcessFailed, name);

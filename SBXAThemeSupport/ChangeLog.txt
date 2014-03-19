@@ -1,4 +1,5 @@
-﻿March 20, 2014  Kendrew Peacey	Minor cleanup and error checking in TroubleShooter
+March 20, 2014  Kendrew Peacey	Minor cleanup and error checking in TroubleShooter
+March 18, 2014	Kendrew Peacey	Cleaned up Keyboard Behaviors to use specific commands.
 March 11, 2014	Kendrew Peacey	Added RunOnce methods to Troubleshooter
 March 11, 2014	Kendrew Peacey	Improved the check connection routines for the DebugConsoleWindow
 March 11, 2014  Kendrew Peacey	Added an option to LocalMachineCleanup that will blow away the entire client cache.
