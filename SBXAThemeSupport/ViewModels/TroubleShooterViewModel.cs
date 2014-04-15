@@ -22,7 +22,7 @@ namespace SBXAThemeSupport.ViewModels
     using SBXA.UI.Client;
     using SBXA.UI.WPFControls;
 
-    using SBXAThemeSupport.Utilities;
+    using Utilities;
 
     /// <summary>
     ///     The report problems to.
@@ -825,7 +825,55 @@ namespace SBXAThemeSupport.ViewModels
         {
         }
 
+        /// <summary>
+        /// Doeses the run once exist.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public static bool DoesRunOnceExist(string name)
+        {
+            try
+            {
+                string logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
+
+                var fileName = Path.Combine(logFolder, "RunOnce_" + name);
+
+                return (File.Exists(fileName));
+            }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch (Exception)
+            {
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Haves the run once.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        public static void HaveRunOnce(string name)
+        {
+            try
+            {
+                string logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
+
+                if (!Directory.Exists(logFolder))
+                {
+                    Directory.CreateDirectory(logFolder);
+                }
+                var fileName = Path.Combine(logFolder, "RunOnce_" + name);
+
+                File.WriteAllText(fileName, name);
+            }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch (Exception exception)
+            {
+            }
+
+        }
+
         #endregion
+
     }
 
     /// <summary>
