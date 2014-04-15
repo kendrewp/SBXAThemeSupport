@@ -9,18 +9,19 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.DebugAssistant.Models
 {
     using SBXAThemeSupport.Models;
 
     /// <summary>
-    /// This class if a specialized version of ObservableStack/>.
+    ///     This class if a specialized version of ObservableStack/>.
     /// </summary>
     public class ProcessStack : ObservableStack<ProcessDescription>
     {
+        #region Public Methods and Operators
+
         /// <summary>
-        /// Clears this instance.
+        ///     Clears this instance.
         /// </summary>
         public override void Clear()
         {
@@ -31,54 +32,60 @@ namespace SBXAThemeSupport.DebugAssistant.Models
 
             base.Clear();
         }
+
+        #endregion
     }
 
     /// <summary>
-    /// This class contains the description of the process.
+    ///     This class contains the description of the process.
     /// </summary>
     public class ProcessDescription : ObservableEntity
     {
+        #region Fields
+
         private bool isCurrent;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProcessDescription"/> class.
         /// </summary>
-        /// <param name="name">The name.</param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
         public ProcessDescription(string name)
         {
             this.Name = name;
             this.Children = new ProcessStack();
         }
 
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
-        public string Name { get; private set; }
+        #endregion
+
+        #region Public Properties
 
         /// <summary>
-        /// Gets the children.
+        ///     Gets the children.
         /// </summary>
         /// <value>
-        /// The children.
+        ///     The children.
         /// </value>
         public ProcessStack Children { get; private set; }
 
         /// <summary>
-        /// Gets or sets the history process description.
+        ///     Gets or sets the history process description.
         /// </summary>
         /// <value>
-        /// The history process description.
+        ///     The history process description.
         /// </value>
         public ProcessDescription HistoryProcessDescription { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [is current].
+        ///     Gets or sets a value indicating whether [is current].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [is current]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [is current]; otherwise, <c>false</c>.
         /// </value>
         public bool IsCurrent
         {
@@ -95,7 +102,19 @@ namespace SBXAThemeSupport.DebugAssistant.Models
         }
 
         /// <summary>
-        /// Clears this instance.
+        ///     Gets the name.
+        /// </summary>
+        /// <value>
+        ///     The name.
+        /// </value>
+        public string Name { get; private set; }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        ///     Clears this instance.
         /// </summary>
         public void Clear()
         {
@@ -108,7 +127,7 @@ namespace SBXAThemeSupport.DebugAssistant.Models
         }
 
         /// <summary>
-        /// Clears the history references.
+        ///     Clears the history references.
         /// </summary>
         public void ClearHistoryReferences()
         {
@@ -118,5 +137,7 @@ namespace SBXAThemeSupport.DebugAssistant.Models
                 item.ClearHistoryReferences();
             }
         }
+
+        #endregion
     }
 }

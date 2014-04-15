@@ -72,10 +72,18 @@ namespace SBXAThemeSupport.Utilities
         /// <summary>
         /// Gets the instance.
         /// </summary>
-        /// <param name="interval">The interval in milliseconds.</param>
-        /// <param name="processName">Name of the process.</param>
-        /// <param name="timeout">The timeout in seconds.</param>
-        /// <returns>Returns an instance of <see cref="KeepAliveTimer"/>.</returns>
+        /// <param name="interval">
+        /// The interval in milliseconds.
+        /// </param>
+        /// <param name="processName">
+        /// Name of the process.
+        /// </param>
+        /// <param name="timeout">
+        /// The timeout in seconds.
+        /// </param>
+        /// <returns>
+        /// Returns an instance of <see cref="KeepAliveTimer"/>.
+        /// </returns>
         public static KeepAliveTimer GetInstance(double interval, string processName, int timeout)
         {
             return instance ?? (instance = new KeepAliveTimer(interval, processName, timeout));
@@ -156,7 +164,7 @@ namespace SBXAThemeSupport.Utilities
                 "Executing " + processName + ", current time " + currentTime.ToShortTimeString() + ", last message "
                 + instance.lastMessage.ToShortTimeString());
 
-            SBProcessRunner.ExecuteSbPlusProcess(processName, false);
+            SbProcessHandler.CallProcess(processName, false);
         }
 
         private static void OnExecuteSBProcessTimerTick(object sender, ElapsedEventArgs e)
@@ -175,7 +183,7 @@ namespace SBXAThemeSupport.Utilities
 
             SBPlusClient.LogInformation("[" + DateTime.Now.ToShortDateString() + "] Executing " + processName);
 
-            SBProcessRunner.ExecuteSbPlusProcess(processName, false);
+            SbProcessHandler.CallProcess(processName, false);
         }
 
         private void HandleInputManagerPostProcessInput(object sender, ProcessInputEventArgs e)

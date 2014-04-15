@@ -9,7 +9,6 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.DebugAssistant.ViewModels
 {
     using System;
@@ -46,118 +45,122 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         private readonly ProcessStack processStack = new ProcessStack();
 
         private readonly StringCollection section1 = new StringCollection
-                                                          {
-                                                              "RECORD", 
-                                                              "ORIG.REC", 
-                                                              "KEY", 
-                                                              "WORK", 
-                                                              "OTHER.REC", 
-                                                              "CNT", 
-                                                              "ACTION", 
-                                                              "GUI", 
-                                                              "LINE", 
-                                                              "MAINFILE", 
-                                                              "LOCK.KEY", 
-                                                              "HEAD", 
-                                                              "STATUS.LINE", 
-                                                              "USERDATA(1)", 
-                                                              "USERDATA(2)", 
-                                                              "USERDATA(3)", 
-                                                              "USERDATA(4)", 
-                                                              "USERDATA(5)", 
-                                                              "USERDATA(6)", 
-                                                              "USERDATA(7)", 
-                                                              "USERDATA(8)", 
-                                                              "USERDATA(9)", 
-                                                              "USERDATA(10)", 
-                                                              "SCREENNO", 
-                                                              "LF.INFO", 
-                                                              "XUI"
-                                                          };
+                                                         {
+                                                             "RECORD", 
+                                                             "ORIG.REC", 
+                                                             "KEY", 
+                                                             "WORK", 
+                                                             "OTHER.REC", 
+                                                             "CNT", 
+                                                             "ACTION", 
+                                                             "GUI", 
+                                                             "LINE", 
+                                                             "MAINFILE", 
+                                                             "LOCK.KEY", 
+                                                             "HEAD", 
+                                                             "STATUS.LINE", 
+                                                             "USERDATA(1)", 
+                                                             "USERDATA(2)", 
+                                                             "USERDATA(3)", 
+                                                             "USERDATA(4)", 
+                                                             "USERDATA(5)", 
+                                                             "USERDATA(6)", 
+                                                             "USERDATA(7)", 
+                                                             "USERDATA(8)", 
+                                                             "USERDATA(9)", 
+                                                             "USERDATA(10)", 
+                                                             "SCREENNO", 
+                                                             "LF.INFO", 
+                                                             "XUI"
+                                                         };
 
         private readonly StringCollection section2 = new StringCollection
-                                                          {
-                                                              "VALUE", 
-                                                              "RTN.FLAG", 
-                                                              "PARAM", 
-                                                              "REFRESH", 
-                                                              "PROC.NAME", 
-                                                              "MENU.OPT", 
-                                                              "LEVEL.NO", 
-                                                              "FILES.OPENED", 
-                                                              "OTHER(1)", 
-                                                              "OTHER(2)", 
-                                                              "OTHER(3)", 
-                                                              "OTHER(4)", 
-                                                              "OTHER(5)", 
-                                                              "OTHER(6)", 
-                                                              "OTHER(7)", 
-                                                              "OTHER(8)", 
-                                                              "OTHER(9)", 
-                                                              "OTHER(10)", 
-                                                              "OTHER(11)", 
-                                                              "OTHER(12)", 
-                                                              "OTHER(13)", 
-                                                              "OTHER(14)", 
-                                                              "OTHER(15)", 
-                                                              "OTHER(16)", 
-                                                              "OTHER(17)", 
-                                                              "OTHER(18)", 
-                                                              "OTHER(19)", 
-                                                              "OTHER(20)", 
-                                                              "SBPARM(1)", 
-                                                              "SBPARM(2)", 
-                                                              "SBPARM(3)", 
-                                                              "SBPARM(4)", 
-                                                              "SBPARM(5)", 
-                                                              "SBPARM(6)", 
-                                                              "SBPARM(7)", 
-                                                              "SBPARM(8)", 
-                                                              "SBPARM(9)", 
-                                                              "SBPARM(10)", 
-                                                              "SBPARM(11)", 
-                                                              "SBPARM(12)", 
-                                                              "SBPARM(13)", 
-                                                              "SBPARM(14)", 
-                                                              "SBPARM(15)", 
-                                                              "SBPARM(16)", 
-                                                              "SBPARM(17)", 
-                                                              "SBPARM(18)", 
-                                                              "SBPARM(19)", 
-                                                              "SBPARM(20)"
-                                                          };
+                                                         {
+                                                             "VALUE", 
+                                                             "RTN.FLAG", 
+                                                             "PARAM", 
+                                                             "REFRESH", 
+                                                             "PROC.NAME", 
+                                                             "MENU.OPT", 
+                                                             "LEVEL.NO", 
+                                                             "FILES.OPENED", 
+                                                             "OTHER(1)", 
+                                                             "OTHER(2)", 
+                                                             "OTHER(3)", 
+                                                             "OTHER(4)", 
+                                                             "OTHER(5)", 
+                                                             "OTHER(6)", 
+                                                             "OTHER(7)", 
+                                                             "OTHER(8)", 
+                                                             "OTHER(9)", 
+                                                             "OTHER(10)", 
+                                                             "OTHER(11)", 
+                                                             "OTHER(12)", 
+                                                             "OTHER(13)", 
+                                                             "OTHER(14)", 
+                                                             "OTHER(15)", 
+                                                             "OTHER(16)", 
+                                                             "OTHER(17)", 
+                                                             "OTHER(18)", 
+                                                             "OTHER(19)", 
+                                                             "OTHER(20)", 
+                                                             "SBPARM(1)", 
+                                                             "SBPARM(2)", 
+                                                             "SBPARM(3)", 
+                                                             "SBPARM(4)", 
+                                                             "SBPARM(5)", 
+                                                             "SBPARM(6)", 
+                                                             "SBPARM(7)", 
+                                                             "SBPARM(8)", 
+                                                             "SBPARM(9)", 
+                                                             "SBPARM(10)", 
+                                                             "SBPARM(11)", 
+                                                             "SBPARM(12)", 
+                                                             "SBPARM(13)", 
+                                                             "SBPARM(14)", 
+                                                             "SBPARM(15)", 
+                                                             "SBPARM(16)", 
+                                                             "SBPARM(17)", 
+                                                             "SBPARM(18)", 
+                                                             "SBPARM(19)", 
+                                                             "SBPARM(20)"
+                                                         };
 
         private readonly StringCollection section3 = new StringCollection
-                                                          {
-                                                              "SB.CONT", 
-                                                              "CONTROL", 
-                                                              "PORT", 
-                                                              "SYSID", 
-                                                              "ACNT.NAME", 
-                                                              "USER.ID", 
-                                                              "GUIDATA", 
-                                                              "SBCLIENT", 
-                                                              "XUIDATA", 
-                                                              "TERM.DEFN", 
-                                                              "PRINT.DEFN", 
-                                                              "PASS.DEFN", 
-                                                              "USER.KEYS", 
-                                                              "PCTERM", 
-                                                              "BT.NODE(1)", 
-                                                              "BT.NODE(2)", 
-                                                              "BT.NODE(3)", 
-                                                              "BT.NODE(4)", 
-                                                              "BT.NODE(5)", 
-                                                              "BT.NODE(6)", 
-                                                              "BT.NODE(7)", 
-                                                              "BT.LEV.NO", 
-                                                              "BT.ID", 
-                                                              "BT.POS"
-                                                          };
+                                                         {
+                                                             "SB.CONT", 
+                                                             "CONTROL", 
+                                                             "PORT", 
+                                                             "SYSID", 
+                                                             "ACNT.NAME", 
+                                                             "USER.ID", 
+                                                             "GUIDATA", 
+                                                             "SBCLIENT", 
+                                                             "XUIDATA", 
+                                                             "TERM.DEFN", 
+                                                             "PRINT.DEFN", 
+                                                             "PASS.DEFN", 
+                                                             "USER.KEYS", 
+                                                             "PCTERM", 
+                                                             "BT.NODE(1)", 
+                                                             "BT.NODE(2)", 
+                                                             "BT.NODE(3)", 
+                                                             "BT.NODE(4)", 
+                                                             "BT.NODE(5)", 
+                                                             "BT.NODE(6)", 
+                                                             "BT.NODE(7)", 
+                                                             "BT.LEV.NO", 
+                                                             "BT.ID", 
+                                                             "BT.POS"
+                                                         };
+
+        private ProcessDescription currentProcess;
 
         private double debugConsoleWindowHeight = 600d;
 
         private double debugConsoleWindowWidth = 600d;
+
+        private bool isConnected;
 
         private bool isDebugEnabled;
 
@@ -175,10 +178,6 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         private NestedAttributeCollection section3Collection;
 
-        private ProcessDescription currentProcess;
-
-        private bool isConnected;
-
         #endregion
 
         #region Constructors and Destructors
@@ -186,21 +185,21 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         private DebugViewModel()
         {
             JobManager.RunInUIThread(
-                DispatcherPriority.Input,
+                DispatcherPriority.Input, 
                 delegate
-                {
-                    if (SBPlusClient.Current == null || SBPlusClient.Current.ConnectionStatus != ConnectionStatuses.Connected)
                     {
-                        return;
-                    }
+                        if (SBPlusClient.Current == null || SBPlusClient.Current.ConnectionStatus != ConnectionStatuses.Connected)
+                        {
+                            return;
+                        }
 
-                    if (DebugWindowManager.DebugConsoleWindow == null)
-                    {
-                        return;
-                    }
+                        if (DebugWindowManager.DebugConsoleWindow == null)
+                        {
+                            return;
+                        }
 
-                    this.GetIsDebugEnabled();
-                });
+                        this.GetIsDebugEnabled();
+                    });
             // SBPlus.Current.ConnectionStatusChanged += HandleConnectionStatusChanged;
             SBPlusClient.Connected += this.HandleConnected;
             this.CreateParmsCollection();
@@ -221,6 +220,34 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             get
             {
                 return debugViewModel ?? (debugViewModel = new DebugViewModel());
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the current process.
+        /// </summary>
+        /// <value>
+        ///     The current process.
+        /// </value>
+        public ProcessDescription CurrentProcess
+        {
+            get
+            {
+                return this.currentProcess;
+            }
+
+            set
+            {
+                if (this.currentProcess != null)
+                {
+                    this.currentProcess.IsCurrent = false;
+                }
+
+                this.currentProcess = value;
+                if (this.currentProcess != null)
+                {
+                    this.currentProcess.IsCurrent = true;
+                }
             }
         }
 
@@ -269,11 +296,35 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether debugging is enabled. This property will raise a <see cref="ViewModel.PropertyChanged" />
-        /// event.
+        ///     Gets or sets a value indicating whether [is connected].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [is debug enabled]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [is connected]; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsConnected
+        {
+            get
+            {
+                return this.isConnected;
+            }
+
+            set
+            {
+                if (this.isConnected != value)
+                {
+                    this.isConnected = value;
+                    this.RaisePropertyChanged("IsConnected");
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether debugging is enabled. This property will raise a
+        ///     <see cref="ViewModel.PropertyChanged" />
+        ///     event.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if [is debug enabled]; otherwise, <c>false</c>.
         /// </value>
         public bool IsDebugEnabled
         {
@@ -289,29 +340,6 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     this.isDebugEnabled = value;
                     this.RaisePropertyChanged("IsDebugEnabled");
                     this.SetIsDebugEnabled(this.IsDebugEnabled);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether [is connected].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [is connected]; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsConnected
-        {
-            get
-            {
-                return this.isConnected;
-            }
-
-            set
-            {
-                if (this.isConnected != value)
-                {
-                    this.isConnected = value;
-                    this.RaisePropertyChanged("IsConnected");
                 }
             }
         }
@@ -490,34 +518,6 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
-        /// <summary>
-        /// Gets or sets the current process.
-        /// </summary>
-        /// <value>
-        /// The current process.
-        /// </value>
-        public ProcessDescription CurrentProcess
-        {
-            get
-            {
-                return this.currentProcess;
-            }
-
-            set
-            {
-                if (this.currentProcess != null)
-                {
-                    this.currentProcess.IsCurrent = false;
-                }
-
-                this.currentProcess = value;
-                if (this.currentProcess != null)
-                {
-                    this.currentProcess.IsCurrent = true;
-                }
-            }
-        }
-
         #endregion
 
         #region Public Methods and Operators
@@ -608,15 +608,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// </param>
         public static void GetCommonVariable(string whichVariable)
         {
-            JobManager.RunInUIThread(
-                DispatcherPriority.Input,
-                () =>
-                SBProcessRunner.Instance.CallSubroutine(
-                    "XUI.DEBUG",
-                    6,
-                    new[] { new SBString("4"), new SBString(whichVariable), new SBString(), new SBString(), new SBString(), new SBString() },
-                    new object(),
-                    GetCommonVariableCompleted));
+            JobManager.RunInUIThread(DispatcherPriority.Input, () => XuiDebug.GetCommonVariable(GetCommonVariableCompleted, whichVariable));
         }
 
         /// <summary>
@@ -650,8 +642,8 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 if (DebugWindowManager.DebugConsoleWindow != null)
                 {
                     JobManager.RunInDispatcherThread(
-                        DebugWindowManager.DebugConsoleWindow.Dispatcher,
-                        DispatcherPriority.Send,
+                        DebugWindowManager.DebugConsoleWindow.Dispatcher, 
+                        DispatcherPriority.Send, 
                         () => DoUpdateProcessStack(add, processName));
                 }
                 else
@@ -666,12 +658,12 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         /// <summary>
-        /// Clears the history stack.
+        ///     Clears the history stack.
         /// </summary>
         public void ClearHistoryStack()
         {
             this.ProcessHistoryStack.Clear();
-            
+
             // remove all the references
             foreach (var processDescription in this.ProcessStack)
             {
@@ -729,7 +721,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         var historyProcess = new ProcessDescription(processName);
                         try
                         {
-                            PushProcess(Instance.ProcessStack, new ProcessDescription(processName) { HistoryProcessDescription = historyProcess });
+                            PushProcess(
+                                Instance.ProcessStack, 
+                                new ProcessDescription(processName) { HistoryProcessDescription = historyProcess });
                         }
                         catch (Exception exception)
                         {
@@ -783,6 +777,37 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        private static ProcessDescription FindLowestProcess(ProcessDescription process)
+        {
+            if (process.Children.Count == 0)
+            {
+                return process;
+            }
+
+            return FindLowestProcess(process.Children.Peek());
+        }
+
+        private static ProcessDescription FindLowestProcessParent(ProcessDescription process)
+        {
+            // The zero is to prevent an infinite loop - it should never happen.
+            if (process.Children.Count == 0)
+            {
+                return process;
+            }
+
+            if (process.Children.Count == 1)
+            {
+                // I need to look if the child has a process in it's children.
+                var childProcessDescription = process.Children.Peek();
+                if (childProcessDescription.Children.Count == 0)
+                {
+                    return process;
+                }
+            }
+
+            return FindLowestProcessParent(process.Children.Peek());
+        }
+
         private static void GetCommonVariableCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             try
@@ -802,6 +827,42 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             catch (Exception exception)
             {
                 SBPlusClient.LogError("Exception caught.", exception);
+            }
+        }
+
+        private static void PopProcess(ProcessStack stack)
+        {
+            // Check to see if the process on top of the stack has children, if so pop from the child, otherwise pop the top of the stack - recursively.
+            if (stack.Count == 0)
+            {
+                return;
+            }
+
+            // want to find the process with no children and pop it from it's parent.
+            var parentProcess = FindLowestProcessParent(stack.Peek());
+            var processStack = parentProcess.Children;
+            if (processStack.Count > 0)
+            {
+                var processDescription = processStack.Pop();
+                processDescription.HistoryProcessDescription = null;
+                Instance.CurrentProcess = parentProcess.HistoryProcessDescription;
+            }
+        }
+
+        private static void PushProcess(ProcessStack stack, ProcessDescription process)
+        {
+            // check if there is a process on the stack, if there is add it to the list of children, not just push it.
+            if (stack.Count == 0)
+            {
+                stack.Push(process);
+            }
+            else
+            {
+                var lowestParent = FindLowestProcess(stack.Peek());
+                if (lowestParent != null)
+                {
+                    lowestParent.Children.Push(process);
+                }
             }
         }
 
@@ -841,72 +902,6 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     Instance.UpdateCollection(parameters[1].Value, parameters[2]);
                     break;
             }
-        }
-
-        private static void PushProcess(ProcessStack stack, ProcessDescription process)
-        {
-            // check if there is a process on the stack, if there is add it to the list of children, not just push it.
-            if (stack.Count == 0)
-            {
-                stack.Push(process);
-            }
-            else
-            {
-                var lowestParent = FindLowestProcess(stack.Peek());
-                if (lowestParent != null)
-                {
-                    lowestParent.Children.Push(process);
-                }
-            }
-        }
-
-        private static void PopProcess(ProcessStack stack)
-        {
-            // Check to see if the process on top of the stack has children, if so pop from the child, otherwise pop the top of the stack - recursively.
-            if (stack.Count == 0)
-            {
-                return;
-            }
-            // want to find the process with no children and pop it from it's parent.
-            var parentProcess = FindLowestProcessParent(stack.Peek());
-            var processStack = parentProcess.Children;
-            if (processStack.Count > 0)
-            {
-                var processDescription = processStack.Pop();
-                processDescription.HistoryProcessDescription = null;
-                Instance.CurrentProcess = parentProcess.HistoryProcessDescription;
-            }
-        }
-
-        private static ProcessDescription FindLowestProcess(ProcessDescription process)
-        {
-            if (process.Children.Count == 0)
-            {
-                return process;
-            }
-
-            return FindLowestProcess(process.Children.Peek());
-        }
-
-        private static ProcessDescription FindLowestProcessParent(ProcessDescription process)
-        {
-            // The zero is to prevent an infinite loop - it should never happen.
-            if (process.Children.Count == 0)
-            {
-                return process;
-            }
-
-            if (process.Children.Count == 1)
-            {
-                // I need to look if the child has a process in it's children.
-                var childProcessDescription = process.Children.Peek();
-                if (childProcessDescription.Children.Count == 0)
-                {
-                    return process;
-                }
-            }
-
-            return FindLowestProcessParent(process.Children.Peek());
         }
 
         private void ClearStacks()
@@ -966,8 +961,24 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             return null;
         }
 
+        private void GetIsDebugEnabled()
+        {
+            if (!SBPlusClient.Current.CanSendServerCommands)
+            {
+                SBPlusClient.Current.ReadyToSendCommands += this.HandleReadyToSendCommands;
+                return;
+            }
+
+            SBPlusClient.Current.ReadyToSendCommands -= this.HandleReadyToSendCommands;
+
+            // SUBROUTINE UT.XUI.READ (FILE.NAME, ID, ATTR, ITEM, MODE, READ.STATUS)
+            // First check to see it XUI.DEBUG is there in the VOC, if not never set IsDebugEnabled.
+            XuiDebug.IsXuiDebugThere(this.ReadXuiDebugCompleted);
+        }
+
         private void HandleConnected(object sender, ConnectedEventArgs e)
         {
+            this.SetIsConnected(e.Connected);
             if (e.Connected)
             {
                 this.GetIsDebugEnabled();
@@ -981,67 +992,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
-/*
-        private void SetIsConnected(bool connected)
-        {
-            // Set the IsConnected property on the correct thread.
-            if (DebugWindowManager.DebugConsoleWindow == null)
-            {
-                return;
-            }
-
-            JobManager.RunInDispatcherThread(DebugWindowManager.DebugConsoleWindow.Dispatcher, DispatcherPriority.Normal, delegate { this.IsConnected = connected; });
-        }
-*/
-
         private void HandleReadyToSendCommands(object sender, ReadyToSendCommandsEventArgs e)
         {
             this.GetIsDebugEnabled();
-        }
-
-        private void SetIsDebugEnabled(bool newValue)
-        {
-            if (newValue)
-            {
-                this.ClearStacks();
-            }
-
-            // First check to see it XUI.DEBUG is there in the VOC, if not never set IsDebugEnabled.
-            JobManager.RunInUIThread(
-                DispatcherPriority.Input,
-                () =>
-                SBProcessRunner.Instance.CallSubroutine(
-                    "UT.XUI.READ",
-                    6,
-                    new[] { new SBString("VOC"), new SBString("XUI.DEBUG"), new SBString(), new SBString(), new SBString("0"), new SBString() },
-                    new object(),
-                    this.ReadForSetXuiDebugCompleted));
-        }
-
-        private void GetIsDebugEnabled()
-        {
-            if (!SBPlusClient.Current.CanSendServerCommands)
-            {
-                SBPlusClient.Current.ReadyToSendCommands += this.HandleReadyToSendCommands;
-                return;
-            }
-
-            SBPlusClient.Current.ReadyToSendCommands -= this.HandleReadyToSendCommands;
-
-            // SUBROUTINE UT.XUI.READ (FILE.NAME, ID, ATTR, ITEM, MODE, READ.STATUS)
-            // First check to see it XUI.DEBUG is there in the VOC, if not never set IsDebugEnabled.
-            JobManager.RunInUIThread(
-                DispatcherPriority.Input,
-                () =>
-                SBProcessRunner.Instance.CallSubroutine(
-                    "UT.XUI.READ",
-                    6,
-                    new[]
-                        {
-                            new SBString("VOC"), new SBString("XUI.DEBUG"), new SBString(), new SBString(), new SBString("0"), new SBString()
-                        },
-                    new object(),
-                    this.ReadXuiDebugCompleted));
         }
 
         private void ReadForSetXuiDebugCompleted(string subroutineName, SBString[] parameters, object userState)
@@ -1058,18 +1011,8 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
 
             JobManager.RunInUIThread(
-                DispatcherPriority.Input,
-                () =>
-                SBProcessRunner.Instance.CallSubroutine(
-                    "XUI.DEBUG",
-                    6,
-                    new[]
-                        {
-                            new SBString("1"), new SBString(this.IsDebugEnabled ? "1" : "0"), new SBString(), new SBString(), new SBString(), 
-                            new SBString()
-                        },
-                    new object(),
-                    this.SetIsDebugEnabledCompleted));
+                DispatcherPriority.Input, 
+                () => XuiDebug.EnableDebug(this.SetIsDebugEnabledCompleted, this.IsDebugEnabled));
         }
 
         private void ReadXuiDebugCompleted(string subroutineName, SBString[] parameters, object userState)
@@ -1085,15 +1028,32 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 return;
             }
 
-            JobManager.RunInUIThread(
-                DispatcherPriority.Input,
-                () =>
-                SBProcessRunner.Instance.CallSubroutine(
-                    "XUI.DEBUG",
-                    6,
-                    new[] { new SBString("6"), new SBString(), new SBString(), new SBString(), new SBString(), new SBString() },
-                    new object(),
-                    this.SetIsDebugEnabledCompleted));
+            JobManager.RunInUIThread(DispatcherPriority.Input, () => XuiDebug.IsDebugEnabled(this.SetIsDebugEnabledCompleted));
+        }
+
+        private void SetIsConnected(bool connected)
+        {
+            // Set the IsConnected property on the correct thread.
+            if (DebugWindowManager.DebugConsoleWindow == null)
+            {
+                return;
+            }
+
+            JobManager.RunInDispatcherThread(
+                DebugWindowManager.DebugConsoleWindow.Dispatcher, 
+                DispatcherPriority.Normal, 
+                delegate { this.IsConnected = connected; });
+        }
+
+        private void SetIsDebugEnabled(bool newValue)
+        {
+            if (newValue)
+            {
+                this.ClearStacks();
+            }
+
+            // First check to see it XUI.DEBUG is there in the VOC, if not never set IsDebugEnabled.
+            JobManager.RunInUIThread(DispatcherPriority.Input, () => XuiDebug.IsXuiDebugThere(this.ReadForSetXuiDebugCompleted));
         }
 
         private void SetIsDebugEnabledCompleted(string subroutineName, SBString[] parameters, object userState)

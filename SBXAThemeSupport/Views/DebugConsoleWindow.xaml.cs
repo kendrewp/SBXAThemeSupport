@@ -29,9 +29,5 @@ namespace SBXAThemeSupport.Views
         }
 
         #endregion
-
-        #region Methods
-
-        #endregion
     }
 }

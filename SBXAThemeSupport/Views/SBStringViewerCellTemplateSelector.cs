@@ -21,10 +21,6 @@ namespace SBXAThemeSupport.Views
     /// </summary>
     public class SBStringViewerCellTemplateSelector : DataTemplateSelector
     {
-        #region Fields
-
-        #endregion
-
         #region Public Properties
 
         /// <summary>

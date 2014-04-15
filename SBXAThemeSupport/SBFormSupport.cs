@@ -33,6 +33,26 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
+        /// The key up handler.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="args">
+        /// The args.
+        /// </param>
+        public static void KeyUpHandler(object sender, KeyEventArgs args)
+        {
+            if (args.Key != Key.X || Keyboard.Modifiers != ModifierKeys.Control || args.Handled)
+            {
+                return;
+            }
+
+            Debug.WriteLine("[SBFormSupport.keyUpHandler(30)] Sending Ctrl-X back to the server. ");
+            SendControlX();
+        }
+
+        /// <summary>
         /// The send response.
         /// </summary>
         /// <param name="response">
@@ -60,26 +80,6 @@ namespace SBXAThemeSupport
                 SBPlusClient.LogError("An error occurred handing a message.", exception2);
                 SBPlus.Current.SetInputState(SBInputState.WaitingForInput, "An error occurred handing a message.");
             }
-        }
-
-        /// <summary>
-        /// The key up handler.
-        /// </summary>
-        /// <param name="sender">
-        /// The sender.
-        /// </param>
-        /// <param name="args">
-        /// The args.
-        /// </param>
-        public static void KeyUpHandler(object sender, KeyEventArgs args)
-        {
-            if (args.Key != Key.X || Keyboard.Modifiers != ModifierKeys.Control || args.Handled)
-            {
-                return;
-            }
-
-            Debug.WriteLine("[SBFormSupport.keyUpHandler(30)] Sending Ctrl-X back to the server. ");
-            SendControlX();
         }
 
         #endregion

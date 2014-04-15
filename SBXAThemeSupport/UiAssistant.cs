@@ -9,7 +9,6 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport
 {
     using System;
@@ -89,6 +88,11 @@ namespace SBXAThemeSupport
             typeof(string), 
             typeof(UiAssistant));
 
+        public static readonly DependencyProperty IsConnectedProperty = DependencyProperty.Register(
+            "IsConnected", 
+            typeof(bool), 
+            typeof(UiAssistant));
+
         public static readonly DependencyProperty LiveAccountNameProperty = DependencyProperty.RegisterAttached(
             "LiveAccountName", 
             typeof(string), 
@@ -154,11 +158,6 @@ namespace SBXAThemeSupport
             new PropertyMetadata(true, OnSetDrawableChanged));
 
         // Using a DependencyProperty as the backing store for IsConnected.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsConnectedProperty = DependencyProperty.Register(
-            "IsConnected", 
-            typeof(bool), 
-            typeof(UiAssistant));
-
         private static readonly CommandBinding ExecuteProcessInContextCommandBinding = new CommandBinding(ExecuteProcessInContextCommand);
 
         private static AssemblyLoader assemblyLoader;
@@ -169,6 +168,9 @@ namespace SBXAThemeSupport
 
         #region Constructors and Destructors
 
+        /// <summary>
+        ///     Initializes static members of the <see cref="UiAssistant" /> class.
+        /// </summary>
         static UiAssistant()
         {
             ShowHideOptionsCommand = new RelayCommand(ShowHideOptionsCommandExecuted);
@@ -203,36 +205,12 @@ namespace SBXAThemeSupport
         #region Public Properties
 
         /// <summary>
-        /// Gets the show hide options command.
+        ///     Gets the bring current form top most up command.
         /// </summary>
         /// <value>
-        /// The show hide options command.
-        /// </value>
-        public static ICommand ShowHideOptionsCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the show hide application insight command.
-        /// </summary>
-        /// <value>
-        /// The show hide application insight command.
-        /// </value>
-        public static ICommand ShowHideApplicationInsightCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the bring current form top most up command.
-        /// </summary>
-        /// <value>
-        /// The bring current form top most up command.
+        ///     The bring current form top most up command.
         /// </value>
         public static ICommand BringCurrentFormTopMostUpCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the send control x command command.
-        /// </summary>
-        /// <value>
-        /// The send control x command command.
-        /// </value>
-        public static ICommand SendControlXCommand { get; private set; }
 
         /// <summary>
         ///     Gets or sets the current.
@@ -247,6 +225,56 @@ namespace SBXAThemeSupport
             set
             {
                 current = value;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the send control x command command.
+        /// </summary>
+        /// <value>
+        ///     The send control x command command.
+        /// </value>
+        public static ICommand SendControlXCommand { get; private set; }
+
+        /// <summary>
+        ///     Gets the show hide application insight command.
+        /// </summary>
+        /// <value>
+        ///     The show hide application insight command.
+        /// </value>
+        public static ICommand ShowHideApplicationInsightCommand { get; private set; }
+
+        /// <summary>
+        ///     Gets the show hide options command.
+        /// </summary>
+        /// <value>
+        ///     The show hide options command.
+        /// </value>
+        public static ICommand ShowHideOptionsCommand { get; private set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether [is connected].
+        /// </summary>
+        /// <example>
+        ///     <code lang="XAML">
+        /// ...
+        /// {Binding Path=IsConnected, Source={Static SBXAThemeSupport:UiAssitant.Current}}
+        /// ...
+        /// </code>
+        /// </example>
+        /// <value>
+        ///     <c>true</c> if [is connected]; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsConnected
+        {
+            get
+            {
+                return (bool)this.GetValue(IsConnectedProperty);
+            }
+
+            set
+            {
+                this.SetValue(IsConnectedProperty, value);
             }
         }
 
@@ -277,52 +305,9 @@ namespace SBXAThemeSupport
             }
         }
 
-        #region IsConnected
-
-        /// <summary>
-        /// Gets or sets a value indicating whether [is connected].
-        /// </summary>
-        /// <example>
-        /// <code lang="XAML">
-        /// ...
-        /// {Binding Path=IsConnected, Source={Static SBXAThemeSupport:UiAssitant.Current}}
-        /// ...
-        /// </code>
-        /// </example>
-        /// <value>
-        ///   <c>true</c> if [is connected]; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsConnected
-        {
-            get { return (bool)GetValue(IsConnectedProperty); }
-            set { this.SetValue(IsConnectedProperty, value); }
-        }
-
-        #endregion IsConnected
-
         #endregion
 
         #region Public Methods and Operators
-
-        /// <summary>
-        /// Sets the resize grip visiblity.
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <param name="value">The value.</param>
-        public static void SetResizeGripVisiblity(DependencyObject target, Visibility value)
-        {
-            target.SetValue(ResizeGripVisiblityProperty, value);
-        }
-
-        /// <summary>
-        /// Gets the resize grip visiblity.
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <returns>Returns if the proerpty is visible or not.</returns>
-        public static Visibility GetResizeGripVisiblity(DependencyObject target)
-        {
-            return (Visibility)target.GetValue(ResizeGripVisiblityProperty);
-        }
 
         /// <summary>
         /// Gets the value of CloseWindowButtonVisiblity
@@ -546,6 +531,20 @@ namespace SBXAThemeSupport
         public static bool GetRecognizesAccessKey(DependencyObject target)
         {
             return (bool)target.GetValue(RecognizesAccessKeyProperty);
+        }
+
+        /// <summary>
+        /// Gets the resize grip visiblity.
+        /// </summary>
+        /// <param name="target">
+        /// The target.
+        /// </param>
+        /// <returns>
+        /// Returns if the proerpty is visible or not.
+        /// </returns>
+        public static Visibility GetResizeGripVisiblity(DependencyObject target)
+        {
+            return (Visibility)target.GetValue(ResizeGripVisiblityProperty);
         }
 
         /// <summary>
@@ -817,6 +816,20 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
+        /// Sets the resize grip visiblity.
+        /// </summary>
+        /// <param name="target">
+        /// The target.
+        /// </param>
+        /// <param name="value">
+        /// The value.
+        /// </param>
+        public static void SetResizeGripVisiblity(DependencyObject target, Visibility value)
+        {
+            target.SetValue(ResizeGripVisiblityProperty, value);
+        }
+
+        /// <summary>
         /// Sets the value of the SetDrawable property.
         /// </summary>
         /// <param name="target">
@@ -842,55 +855,26 @@ namespace SBXAThemeSupport
 
         #region Methods
 
-        /// <summary>
-        /// Called when [resize grip visiblity changed].
-        /// </summary>
-        /// <param name="d">The <see cref="DependencyObject"/> that the property will act on.</param>
-        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
-        private static void OnResizeGripVisiblityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void BringCurrentFormTopMostCommandExecuted(object parameter)
         {
-            try
+            var keyEventArgs = parameter as KeyEventArgs;
+            if (keyEventArgs == null || keyEventArgs.Handled)
             {
-                // find the parent window, then use that to find the resizegrip
-                var parentWindow = SBUISupport.FindParentByType(d, typeof(Window)) as Window;
-                if (parentWindow == null)
-                {
-                    var sbForm = d as SBForm;
-                    if (sbForm == null)
-                    {
-                        return;
-                    }
-
-                    if (sbForm.ParentSBWindow == null)
-                    {
-                        return;
-                    }
-
-                    parentWindow = sbForm.ParentSBWindow as Window;
-                }
-
-                var resizeGrip = SBUISupport.FindChildByType(parentWindow, typeof(ResizeGrip)) as ResizeGrip;
-                if (resizeGrip == null)
-                {
-                    return;
-                }
-
-                resizeGrip.Visibility = (Visibility)e.NewValue;
+                return;
             }
-            catch (Exception exception)
-            {
-                SBPlusClient.LogError("Exception caught setting resize grip visiblity.", exception);
-            }
+
+            DebugWindowManager.BringTopMost();
+            keyEventArgs.Handled = true;
         }
 
         private static void CanExecuteExecuteProcessInContextCommand(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SBProcessRunner.CanSendServerCommands();
+            e.CanExecute = ApplicationHelper.CanSendServerCommands();
         }
 
         private static void ExecutedExecuteProcessInContextCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            SBProcessRunner.ExecuteSbPlusProcess(e.Parameter as string, true);
+            SbProcessHandler.CallProcess(e.Parameter as string, true);
         }
 
         private static void HandleApplicationShutdown(object sender, ApplicationShutdownEventArgs e)
@@ -968,60 +952,49 @@ namespace SBXAThemeSupport
             SetMainWindowBorderBackground(SBPlus.Current, GetDefaultBackground(SBPlus.Current));
         }
 
-        private static void ShowHideApplicationInsightCommandExecuted(object parameter)
+        /// <summary>
+        /// Called when [resize grip visiblity changed].
+        /// </summary>
+        /// <param name="d">
+        /// The <see cref="DependencyObject"/> that the property will act on.
+        /// </param>
+        /// <param name="e">
+        /// The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.
+        /// </param>
+        private static void OnResizeGripVisiblityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var keyEventArgs = parameter as KeyEventArgs;
-            if (keyEventArgs == null || keyEventArgs.Handled)
+            try
             {
-                return;
+                // find the parent window, then use that to find the resizegrip
+                var parentWindow = SBUISupport.FindParentByType(d, typeof(Window)) as Window;
+                if (parentWindow == null)
+                {
+                    var sbForm = d as SBForm;
+                    if (sbForm == null)
+                    {
+                        return;
+                    }
+
+                    if (sbForm.ParentSBWindow == null)
+                    {
+                        return;
+                    }
+
+                    parentWindow = sbForm.ParentSBWindow as Window;
+                }
+
+                var resizeGrip = SBUISupport.FindChildByType(parentWindow, typeof(ResizeGrip)) as ResizeGrip;
+                if (resizeGrip == null)
+                {
+                    return;
+                }
+
+                resizeGrip.Visibility = (Visibility)e.NewValue;
             }
-
-            DebugWindowManager.FlipDebugConsole();
-            keyEventArgs.Handled = true;
-        }
-
-        private static void ShowHideOptionsCommandExecuted(object parameter)
-        {
-            var keyEventArgs = parameter as KeyEventArgs;
-            if (keyEventArgs == null || keyEventArgs.Handled)
+            catch (Exception exception)
             {
-                return;
+                SBPlusClient.LogError("Exception caught setting resize grip visiblity.", exception);
             }
-            // If there is an application definition which is defined then recognize the DisplayOptionsMenu, otherwise just switch it.
-            if (SBPlus.Current != null && SBPlus.Current.ApplicationDefinition != null && SBPlus.Current.ApplicationDefinition.DisplayOptionsMenu)
-            {
-                Current.OptionsVisibility = Current.OptionsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-            }
-            else
-            {
-                Current.OptionsVisibility = Current.OptionsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-            }
-
-            keyEventArgs.Handled = true;
-        }
-
-        private static void BringCurrentFormTopMostCommandExecuted(object parameter)
-        {
-            var keyEventArgs = parameter as KeyEventArgs;
-            if (keyEventArgs == null || keyEventArgs.Handled)
-            {
-                return;
-            }
-
-            DebugWindowManager.BringTopMost();
-            keyEventArgs.Handled = true;
-        }
-
-        private static void SendControlXCommandExecuted(object parameter)
-        {
-            var keyEventArgs = parameter as KeyEventArgs;
-            if (keyEventArgs == null || keyEventArgs.Handled)
-            {
-                return;
-            }
-
-            SendControlX();
-            keyEventArgs.Handled = true;
         }
 
         private static void OnSetDrawableChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
@@ -1058,6 +1031,52 @@ namespace SBXAThemeSupport
             }
 
             // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
+        }
+
+        private static void SendControlXCommandExecuted(object parameter)
+        {
+            var keyEventArgs = parameter as KeyEventArgs;
+            if (keyEventArgs == null || keyEventArgs.Handled)
+            {
+                return;
+            }
+
+            SendControlX();
+            keyEventArgs.Handled = true;
+        }
+
+        private static void ShowHideApplicationInsightCommandExecuted(object parameter)
+        {
+            var keyEventArgs = parameter as KeyEventArgs;
+            if (keyEventArgs == null || keyEventArgs.Handled)
+            {
+                return;
+            }
+
+            DebugWindowManager.FlipDebugConsole();
+            keyEventArgs.Handled = true;
+        }
+
+        private static void ShowHideOptionsCommandExecuted(object parameter)
+        {
+            var keyEventArgs = parameter as KeyEventArgs;
+            if (keyEventArgs == null || keyEventArgs.Handled)
+            {
+                return;
+            }
+
+            // If there is an application definition which is defined then recognize the DisplayOptionsMenu, otherwise just switch it.
+            if (SBPlus.Current != null && SBPlus.Current.ApplicationDefinition != null
+                && SBPlus.Current.ApplicationDefinition.DisplayOptionsMenu)
+            {
+                Current.OptionsVisibility = Current.OptionsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            }
+            else
+            {
+                Current.OptionsVisibility = Current.OptionsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            }
+
+            keyEventArgs.Handled = true;
         }
 
         private void HandleConnected(object sender, ConnectedEventArgs e)
@@ -1102,9 +1121,15 @@ namespace SBXAThemeSupport
         /// <summary>
         /// Initializes a new instance of the <see cref="RelayCommand"/> class.
         /// </summary>
-        /// <param name="execute">The execute.</param>
-        /// <param name="canExecute">The can execute.</param>
-        /// <exception cref="System.ArgumentNullException">execute</exception>
+        /// <param name="execute">
+        /// The execute.
+        /// </param>
+        /// <param name="canExecute">
+        /// The can execute.
+        /// </param>
+        /// <exception cref="System.ArgumentNullException">
+        /// execute
+        /// </exception>
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
             if (execute == null)

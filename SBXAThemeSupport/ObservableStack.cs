@@ -123,7 +123,7 @@ namespace SBXAThemeSupport
         {
             var item = this.Peek();
 
-            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, Count - 1));
+            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, this.Count - 1));
             item = base.Pop();
 
             return item;

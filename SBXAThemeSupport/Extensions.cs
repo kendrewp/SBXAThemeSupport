@@ -12,11 +12,16 @@
 namespace SBXAThemeSupport
 {
     using System;
+    using System.Collections;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
+    using System.Runtime.InteropServices;
     using System.Runtime.Serialization.Formatters.Binary;
+    using System.Security;
     using System.Text;
     using System.Threading;
     using System.Windows;
@@ -26,7 +31,12 @@ namespace SBXAThemeSupport
     using System.Windows.Threading;
     using System.Xml.Serialization;
 
+    using Microsoft.Practices.ServiceLocation;
+    using Microsoft.Practices.Unity;
+
     using SBXA.Shared;
+    using SBXA.UI.Client;
+    using SBXA.UI.WPFControls;
 
     /// <summary>
     ///     The extensions.
@@ -34,6 +44,122 @@ namespace SBXAThemeSupport
     public static class Extensions
     {
         #region Public Methods and Operators
+
+        /// <summary>
+        /// The add object to tag.
+        /// </summary>
+        /// <param name="gridData">
+        /// The grid data.
+        /// </param>
+        /// <param name="newInstance">
+        /// The new instance.
+        /// </param>
+        /// <param name="key">
+        /// The key.
+        /// </param>
+        /// <param name="isOverwrite">
+        /// The is overwrite.
+        /// </param>
+        /// <typeparam name="T">
+        /// object to tag
+        /// </typeparam>
+        public static void AddObjectToTag<T>(this ITag gridData, T newInstance, string key = null, bool isOverwrite = false)
+        {
+            if (gridData == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(key))
+            {
+                key = typeof(T).FullName;
+            }
+
+            if (gridData.Tag == null)
+            {
+                gridData.Tag = new Dictionary<string, T>();
+            }
+
+            var data = (Dictionary<string, T>)gridData.Tag;
+            if (isOverwrite && data.ContainsKey(key))
+            {
+                data[key] = newInstance;
+            }
+            else
+            {
+                ((Dictionary<string, T>)gridData.Tag).Add(key, newInstance);
+            }
+        }
+
+        /// <summary>
+        /// The add range.
+        /// </summary>
+        /// <param name="list">
+        /// The list.
+        /// </param>
+        /// <param name="newItems">
+        /// The new items.
+        /// </param>
+        /// <typeparam name="T">
+        /// to tag
+        /// </typeparam>
+        public static void AddRange<T>(this IList<T> list, IEnumerable<T> newItems)
+        {
+            if (list == null)
+            {
+                return;
+            }
+
+            foreach (var newItem in newItems)
+            {
+                list.Add(newItem);
+            }
+        }
+
+        /// <summary>
+        /// The add range.
+        /// </summary>
+        /// <param name="list">
+        /// The list.
+        /// </param>
+        /// <param name="newItems">
+        /// The new items.
+        /// </param>
+        public static void AddRange(this IList list, IEnumerable newItems)
+        {
+            if (list == null)
+            {
+                return;
+            }
+
+            foreach (var newItem in newItems)
+            {
+                list.Add(newItem);
+            }
+        }
+
+        /// <summary>
+        /// The build up.
+        /// </summary>
+        /// <param name="serviceLocator">
+        /// The service locator.
+        /// </param>
+        /// <param name="instance">
+        /// The instance.
+        /// </param>
+        public static void BuildUp(this IServiceLocator serviceLocator, object instance)
+        {
+            if (instance == null)
+            {
+                return;
+            }
+
+            var unityContainer = ServiceLocator.Current.GetInstance<IUnityContainer>();
+            if (unityContainer != null)
+            {
+                unityContainer.BuildUp(instance.GetType(), instance);
+            }
+        }
 
         /// <summary>
         /// The deep clone.
@@ -61,12 +187,24 @@ namespace SBXAThemeSupport
         /// <summary>
         /// Dequeues the specified queue.
         /// </summary>
-        /// <typeparam name="T">The type of the object that this method is extending.</typeparam>
-        /// <param name="queue">The queue.</param>
-        /// <param name="throwException">if set to <c>true</c> [throw exception].</param>
-        /// <returns>The object that is being extended.</returns>
-        /// <exception cref="System.ArgumentNullException">queue</exception>
-        /// <exception cref="System.Exception">Not able to peek element from the queue</exception>
+        /// <typeparam name="T">
+        /// The type of the object that this method is extending.
+        /// </typeparam>
+        /// <param name="queue">
+        /// The queue.
+        /// </param>
+        /// <param name="throwException">
+        /// if set to <c>true</c> [throw exception].
+        /// </param>
+        /// <returns>
+        /// The object that is being extended.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// queue
+        /// </exception>
+        /// <exception cref="System.Exception">
+        /// Not able to peek element from the queue
+        /// </exception>
         public static T Dequeue<T>(this ConcurrentQueue<T> queue, bool throwException = false)
         {
             if (queue == null)
@@ -138,19 +276,58 @@ namespace SBXAThemeSupport
         /// </summary>
         public static void DoEvents()
         {
+            var startTime = DateTime.Now;
+            SBPlusClient.LogInformation("DoEvents Starting");
+
+            if (Application.Current == null || Application.Current.Dispatcher == null)
+            {
+                SBPlusClient.LogInformation("DoEvents Application.Current or Application.Current.Dispatcher is null");
+                return;
+            }
+
+            if (IsUiThreadSuspended())
+            {
+                SBPlusClient.LogInformation("DoEvents ui thread is suspended so go out here");
+                return;
+            }
+
             var frame = new DispatcherFrame(true);
-            Dispatcher.CurrentDispatcher.BeginInvoke(
+            Application.Current.Dispatcher.BeginInvoke(
                 DispatcherPriority.Background, 
                 (SendOrPostCallback)delegate(object arg)
                     {
                         var f = arg as DispatcherFrame;
-                        if (f != null)
+                        if (f == null)
                         {
-                            f.Continue = false;
+                            SBPlusClient.LogInformation("DoEvents BehinInvoke - DispatcherFrame is null");
+                            return;
                         }
+
+                        f.Continue = false;
                     }, 
                 frame);
-            Dispatcher.PushFrame(frame);
+
+            if (Application.Current.Dispatcher.CheckAccess())
+            {
+                try
+                {
+                    SBPlusClient.LogInformation("DoEvents Dispatcher.CheckAccess");
+
+                    Dispatcher.PushFrame(frame);
+                }
+                catch (Exception exception)
+                {
+                    SBPlusClient.LogError("A problem in DoEvents, trying to push the frame.", exception);
+                }
+            }
+            else
+            {
+                SBPlusClient.LogInformation("DoEvents Dispatcher.CheckAccess is false so call BeginInvoke");
+
+                Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => Dispatcher.PushFrame(frame)));
+            }
+
+            SBPlusClient.LogInformation("DoEvents end. Milliseconds " + (DateTime.Now - startTime).TotalMilliseconds);
         }
 
         /// <summary>
@@ -234,6 +411,53 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
+        /// The for each.
+        /// </summary>
+        /// <param name="source">
+        /// The source.
+        /// </param>
+        /// <param name="action">
+        /// The action.
+        /// </param>
+        /// <typeparam name="T">
+        /// IEnumerable
+        /// </typeparam>
+        /// <returns>
+        /// The <see cref="IEnumerable"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// not null exeption
+        /// </exception>
+        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Action<T> action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }
+
+            foreach (var item in source)
+            {
+                action(item);
+            }
+
+            return source;
+        }
+
+        /// <summary>
+        /// The get date internal.
+        /// </summary>
+        /// <param name="dateTime">
+        /// The date time.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public static string GetDateInternal(this DateTime dateTime)
+        {
+            return SBConv.IConv(dateTime.ToString("dd.MM.yyyy"), "D4.");
+        }
+
+        /// <summary>
         /// The get date internal.
         /// </summary>
         /// <param name="dateTime">
@@ -244,7 +468,7 @@ namespace SBXAThemeSupport
         /// </returns>
         public static string GetDateInternal(this DateTime? dateTime)
         {
-            return !dateTime.HasValue ? string.Empty : SBConv.IConv(dateTime.Value.ToString("dd.MM.yyyy"), "D4.");
+            return !dateTime.HasValue ? string.Empty : dateTime.Value.GetDateInternal();
         }
 
         /// <summary>
@@ -303,6 +527,58 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
+        /// The get object from tag.
+        /// </summary>
+        /// <param name="gridData">
+        /// The grid data.
+        /// </param>
+        /// <param name="key">
+        /// The key.
+        /// </param>
+        /// <typeparam name="T">
+        /// param
+        /// </typeparam>
+        /// <returns>
+        /// The <see cref="T"/>.
+        /// </returns>
+        public static T GetObjectFromTag<T>(this ITag gridData, string key = null)
+        {
+            if (gridData == null || gridData.Tag == null)
+            {
+                return default(T);
+            }
+
+            if (string.IsNullOrEmpty(key))
+            {
+                key = typeof(T).FullName;
+            }
+
+            var data = gridData.Tag as Dictionary<string, T>;
+            if (data == null)
+            {
+                return default(T);
+            }
+
+            T entry;
+            data.TryGetValue(key, out entry);
+            return entry;
+        }
+
+        /// <summary>
+        /// The get time internal.
+        /// </summary>
+        /// <param name="dateTime">
+        /// The date time.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public static string GetTimeInternal(this DateTime dateTime)
+        {
+            return SBConv.IConv(dateTime.ToString("HH:mm:ss"), "MTS");
+        }
+
+        /// <summary>
         /// The get time internal.
         /// </summary>
         /// <param name="dateTime">
@@ -313,12 +589,21 @@ namespace SBXAThemeSupport
         /// </returns>
         public static string GetTimeInternal(this DateTime? dateTime)
         {
-            if (!dateTime.HasValue)
-            {
-                return string.Empty;
-            }
+            return !dateTime.HasValue ? string.Empty : dateTime.Value.GetTimeInternal();
+        }
 
-            return SBConv.IConv(dateTime.Value.ToString("HH:mm:ss"), "MTS");
+        /// <summary>
+        /// The is nan.
+        /// </summary>
+        /// <param name="number">
+        /// The number.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        public static bool IsNan(this double number)
+        {
+            return double.IsNaN(number);
         }
 
         /// <summary>
@@ -337,14 +622,79 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
+        ///     The is ui thread suspended.
+        /// </summary>
+        /// <returns>
+        ///     The <see cref="bool" />.
+        /// </returns>
+        public static bool IsUiThreadSuspended()
+        {
+            if (Application.Current == null || Application.Current.Dispatcher == null)
+            {
+                return false;
+            }
+
+            bool isSuspended = Application.Current.Dispatcher.Thread.ThreadState == ThreadState.Suspended;
+            if (isSuspended)
+            {
+                SBPlusClient.LogInformation("Ui Thread is suspended");
+            }
+
+            return isSuspended;
+        }
+
+        /// <summary>
+        /// The no exception action.
+        /// </summary>
+        /// <param name="obj">
+        /// The obj.
+        /// </param>
+        /// <param name="action">
+        /// The action.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Exception"/>.
+        /// </returns>
+        public static Exception NoExceptionAction(this object obj, Action action)
+        {
+            if (action == null)
+            {
+                return new ArgumentNullException("action");
+            }
+
+            try
+            {
+                action();
+            }
+            catch (Exception exception)
+            {
+                return exception;
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Peeks the specified queue.
         /// </summary>
-        /// <typeparam name="T">The type of the object that this method is extending.</typeparam>
-        /// <param name="queue">The queue.</param>
-        /// <param name="throwException">if set to <c>true</c> [throw exception].</param>
-        /// <returns>The object that is being extended.</returns>
-        /// <exception cref="System.ArgumentNullException">queue</exception>
-        /// <exception cref="System.Exception">Not able to peek element from the queue</exception>
+        /// <typeparam name="T">
+        /// The type of the object that this method is extending.
+        /// </typeparam>
+        /// <param name="queue">
+        /// The queue.
+        /// </param>
+        /// <param name="throwException">
+        /// if set to <c>true</c> [throw exception].
+        /// </param>
+        /// <returns>
+        /// The object that is being extended.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// queue
+        /// </exception>
+        /// <exception cref="System.Exception">
+        /// Not able to peek element from the queue
+        /// </exception>
         public static T Peek<T>(this ConcurrentQueue<T> queue, bool throwException = false)
         {
             if (queue == null)
@@ -369,6 +719,85 @@ namespace SBXAThemeSupport
             }
 
             return default(T);
+        }
+
+        /// <summary>
+        /// The remove object from tag.
+        /// </summary>
+        /// <param name="gridData">
+        /// The grid data.
+        /// </param>
+        /// <param name="key">
+        /// The key.
+        /// </param>
+        /// <typeparam name="T">
+        /// param
+        /// </typeparam>
+        public static void RemoveObjectFromTag<T>(this ITag gridData, string key = null)
+        {
+            if (gridData == null || gridData.Tag == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(key))
+            {
+                key = typeof(T).FullName;
+            }
+
+            var data = (Dictionary<string, T>)gridData.Tag;
+            if (data.ContainsKey(key))
+            {
+                data.Remove(key);
+            }
+        }
+
+        /// <summary>
+        /// resolves the name to handle
+        /// </summary>
+        /// <param name="sbPlus">
+        /// param
+        /// </param>
+        /// <param name="handeOrSbName">
+        /// handler or sbname
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public static string ResolveServerTokensByRuf(this SBPlus sbPlus, string handeOrSbName)
+        {
+            const char Delimitter = '*';
+
+            if (string.IsNullOrEmpty(handeOrSbName))
+            {
+                return handeOrSbName;
+            }
+
+            if (handeOrSbName.ToUpper() == "@FORM")
+            {
+                return sbPlus.CurrentForm.SBObjectHandle;
+            }
+
+            if (handeOrSbName.StartsWith("@"))
+            {
+                // example @FORM*RTF1
+                string[] nameParts = handeOrSbName.Split(new[] { Delimitter });
+                if (nameParts.Length > 1 && nameParts[0].ToUpper() == "@FORM")
+                {
+                    string formHandle = sbPlus.ResolveServerTokensByRuf("@FORM");
+                    List<string> parts = nameParts.ToList();
+                    parts.RemoveAt(0);
+                    return string.Format("{0}{1}{2}", formHandle, Delimitter, string.Join(Delimitter.ToString(), parts));
+                }
+
+                string newHandle = sbPlus.ResolveServerTokens(handeOrSbName);
+                if (!string.IsNullOrEmpty(newHandle) && newHandle != "0")
+                {
+                    return newHandle;
+                }
+            }
+
+            return handeOrSbName;
         }
 
         /// <summary>
@@ -420,12 +849,102 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
+        /// The to attributes.
+        /// </summary>
+        /// <param name="sbStringValue">
+        /// The sb string value.
+        /// </param>
+        /// <param name="valPos">
+        /// The val pos.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string[]"/>.
+        /// </returns>
+        public static string[] ToAttributes(this string sbStringValue, int valPos = 1)
+        {
+            var sbData = new SbData(sbStringValue);
+            return sbData.ToAttributesArray(valPos);
+        }
+
+        /// <summary>
+        /// The to bool.
+        /// </summary>
+        /// <param name="stringValue">
+        /// The string value.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        public static bool ToBool(this string stringValue)
+        {
+            bool result;
+            if (stringValue == null)
+            {
+                return false;
+            }
+
+            if (stringValue == "1")
+            {
+                return true;
+            }
+
+            if (stringValue == "0")
+            {
+                return false;
+            }
+
+            if (stringValue.ToUpper().Trim() == "TRUE")
+            {
+                return true;
+            }
+
+            if (stringValue.ToUpper().Trim() == "FALSE")
+            {
+                return false;
+            }
+
+            if (bool.TryParse(stringValue, out result))
+            {
+                return result;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// The to bool if empty true.
+        /// </summary>
+        /// <param name="stringValue">
+        /// The string value.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        public static bool ToBoolIfEmptyTrue(this string stringValue)
+        {
+            if (string.IsNullOrEmpty(stringValue))
+            {
+                return true;
+            }
+
+            return stringValue.ToBool();
+        }
+
+        /// <summary>
         /// To the double.
         /// </summary>
-        /// <param name="stringValue">The string value.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <returns>The object as a <see cref="double"/>.</returns>
-        /// <exception cref="System.InvalidCastException">If it is not possible the exception is thrown.</exception>
+        /// <param name="stringValue">
+        /// The string value.
+        /// </param>
+        /// <param name="defaultValue">
+        /// The default value.
+        /// </param>
+        /// <returns>
+        /// The object as a <see cref="double"/>.
+        /// </returns>
+        /// <exception cref="System.InvalidCastException">
+        /// If it is not possible the exception is thrown.
+        /// </exception>
         public static double ToDouble(this string stringValue, double? defaultValue = null)
         {
             double result;
@@ -445,8 +964,12 @@ namespace SBXAThemeSupport
         /// <summary>
         /// To the exception details.
         /// </summary>
-        /// <param name="exception">The exception.</param>
-        /// <returns>A <see cref="StringBuilder"/> with the nested details of the exception.</returns>
+        /// <param name="exception">
+        /// The exception.
+        /// </param>
+        /// <returns>
+        /// A <see cref="StringBuilder"/> with the nested details of the exception.
+        /// </returns>
         public static StringBuilder ToExceptionDetails(this Exception exception)
         {
             var stringBuilder = new StringBuilder();
@@ -469,10 +992,18 @@ namespace SBXAThemeSupport
         /// <summary>
         /// To the int.
         /// </summary>
-        /// <param name="stringValue">The string value.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <returns>The object as a <see cref="int"/>.</returns>
-        /// <exception cref="System.InvalidCastException">If it is not possible the exception is thrown.</exception>
+        /// <param name="stringValue">
+        /// The string value.
+        /// </param>
+        /// <param name="defaultValue">
+        /// The default value.
+        /// </param>
+        /// <returns>
+        /// The object as a <see cref="int"/>.
+        /// </returns>
+        /// <exception cref="System.InvalidCastException">
+        /// If it is not possible the exception is thrown.
+        /// </exception>
         public static int ToInt(this string stringValue, int? defaultValue = null)
         {
             int result;
@@ -487,6 +1018,75 @@ namespace SBXAThemeSupport
             }
 
             throw new InvalidCastException();
+        }
+
+        /// <summary>
+        /// The to sb param.
+        /// </summary>
+        /// <param name="stringToConvert">
+        /// The string to convert.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public static string ToSbParam(this string stringToConvert)
+        {
+            if (string.IsNullOrEmpty(stringToConvert))
+            {
+                return stringToConvert;
+            }
+
+            stringToConvert = stringToConvert.Replace("/", "@YYSLASH@");
+            while (stringToConvert.Contains(' '))
+            {
+                stringToConvert = stringToConvert.Replace(" ", "@YYSPACE@");
+            }
+
+            return stringToConvert;
+        }
+
+        /// <summary>
+        /// The to unsecure string.
+        /// </summary>
+        /// <param name="secureString">
+        /// The secure string.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public static string ToUnsecureString(this SecureString secureString)
+        {
+            string result;
+            var valuePtr = IntPtr.Zero;
+            try
+            {
+                valuePtr = Marshal.SecureStringToGlobalAllocUnicode(secureString);
+                result = Marshal.PtrToStringUni(valuePtr);
+            }
+            finally
+            {
+                Marshal.ZeroFreeGlobalAllocUnicode(valuePtr);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// The to values.
+        /// </summary>
+        /// <param name="sbStringValue">
+        /// The sb string value.
+        /// </param>
+        /// <param name="attPos">
+        /// The att pos.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string[]"/>.
+        /// </returns>
+        public static string[] ToValues(this string sbStringValue, int attPos = 1)
+        {
+            var sbData = new SbData(sbStringValue);
+            return sbData.ToValuesArray(attPos);
         }
 
         #endregion

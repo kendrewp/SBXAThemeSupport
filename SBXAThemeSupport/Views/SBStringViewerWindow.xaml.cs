@@ -14,7 +14,7 @@ namespace SBXAThemeSupport.Views
     using SBXAThemeSupport.Models;
 
     /// <summary>
-    /// Interaction logic for SBStringViewerWindow.xaml
+    ///     Interaction logic for SBStringViewerWindow.xaml
     /// </summary>
     public partial class SBStringViewerWindow
     {
