@@ -37,13 +37,6 @@ namespace SBXAThemeSupport
     {
         #region Static Fields
 
-        public static readonly DependencyProperty ResizeGripVisiblityProperty =
-            DependencyProperty.RegisterAttached(
-                "ResizeGripVisiblity",
-                typeof(Visibility),
-                typeof(UiAssistant),
-                new PropertyMetadata(Visibility.Visible, OnResizeGripVisiblityChanged));
-
         /// <summary>
         ///     Determines the visiblity of the close (X) on the main window.
         /// </summary>
@@ -150,6 +143,12 @@ namespace SBXAThemeSupport
             typeof(bool), 
             typeof(UiAssistant), 
             new PropertyMetadata(true));
+
+        public static readonly DependencyProperty ResizeGripVisiblityProperty = DependencyProperty.RegisterAttached(
+            "ResizeGripVisiblity", 
+            typeof(Visibility), 
+            typeof(UiAssistant), 
+            new PropertyMetadata(Visibility.Visible, OnResizeGripVisiblityChanged));
 
         public static readonly DependencyProperty SetDrawableProperty = DependencyProperty.RegisterAttached(
             "SetDrawable", 

@@ -1,4 +1,10 @@
-﻿namespace SBXAThemeSupport.Views
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RevisionDefinition.xaml.cs" company="Ruf Informatik AG">
+//   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace SBXAThemeSupport.Views
 {
     using System.Windows;
     using System.Windows.Controls;
@@ -11,20 +17,29 @@
     /// </summary>
     public partial class RevisionDefinition : UserControl
     {
+        #region Static Fields
+
+        public static readonly DependencyProperty StartItemProperty = DependencyProperty.Register(
+            "StartItem", 
+            typeof(TreeItem), 
+            typeof(RevisionDefinition), 
+            new PropertyMetadata(OnStartItemChanged));
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RevisionDefinition"/> class.
+        /// </summary>
         public RevisionDefinition()
         {
             this.InitializeComponent();
         }
 
-        #region StartItem Property
+        #endregion
 
-        public static readonly DependencyProperty StartItemProperty =
-            DependencyProperty.Register(
-                "StartItem",
-                typeof(TreeItem),
-                typeof(RevisionDefinition),
-                new PropertyMetadata(OnStartItemChanged)
-                );
+        #region Public Properties
 
         /// <summary>
         ///     Gets or sets the StartItemProperty. This is a DependencyProperty.
@@ -33,13 +48,18 @@
         {
             get
             {
-                return ((TreeItem)this.GetValue(StartItemProperty));
+                return (TreeItem)this.GetValue(StartItemProperty);
             }
+
             set
             {
                 this.SetValue(StartItemProperty, value);
             }
         }
+
+        #endregion
+
+        #region Methods
 
         private static void OnStartItemChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
         {
@@ -56,6 +76,6 @@
             }
         }
 
-        #endregion StartItem Property
+        #endregion
     }
 }

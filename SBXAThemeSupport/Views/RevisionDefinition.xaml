@@ -11,8 +11,7 @@
         <viewModels:RevisionDefinitionViewModel/>
     </UserControl.DataContext>
     <Grid>
-        <DataGrid ItemsSource="{Binding RevisionDefinitionItemCollection}" >
-        </DataGrid>
+        <DataGrid ItemsSource="{Binding RevisionDefinitionItemCollection}" />
 
     </Grid>
 </UserControl>

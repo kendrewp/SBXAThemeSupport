@@ -131,7 +131,7 @@ namespace SBXAThemeSupport.DebugAssistant
             sbWindow.Top = 0d;
             sbWindow.Left = 0d;
 
-            TroubleShooterViewModel.SendFreeze("User struck 'Ctrl-Shft-G");
+            TroubleShooterViewModel.SendFreeze("User struck 'Ctrl-Shft-G", true);
         }
 
         /// <summary>
@@ -348,7 +348,6 @@ namespace SBXAThemeSupport.DebugAssistant
             thread.Start();
 
             Application.Current.Exit += CurrentOnExit;
-
         }
 
         #endregion

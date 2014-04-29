@@ -1,43 +1,51 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media.Animation;
-using SBXAThemeSupport.DebugAssistant.ViewModels;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ProcessAnalysis.xaml.cs" company="Ruf Informatik AG">
+//   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace SBXAThemeSupport.Views
 {
+    using System;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Input;
+    using System.Windows.Media.Animation;
+
     using SBXAThemeSupport.DebugAssistant;
+    using SBXAThemeSupport.DebugAssistant.ViewModels;
     using SBXAThemeSupport.Models;
 
     /// <summary>
-    /// Interaction logic for ProcessAnalysis.xaml
+    ///     Interaction logic for ProcessAnalysis.xaml
     /// </summary>
     public partial class ProcessAnalysis : UserControl
     {
-        public static ICommand CreateRevisionDefinitionCommand { get; private set; }
+        #region Constructors and Destructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProcessAnalysis"/> class.
+        /// </summary>
         public ProcessAnalysis()
         {
             this.InitializeComponent();
-            CreateRevisionDefinitionCommand = new RelayCommand(this.ExecutedCreateRevisionDefinitionCommand, this.CanExecuteCreateRevisionDefinitionCommand);
-
+            CreateRevisionDefinitionCommand = new RelayCommand(
+                this.ExecutedCreateRevisionDefinitionCommand, 
+                this.CanExecuteCreateRevisionDefinitionCommand);
         }
 
-        private void HandleLoadingTextOnLoaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Storyboard blinkAnimation = this.TryFindResource("FlashingText") as Storyboard;
-                if (blinkAnimation != null)
-                {
-                    blinkAnimation.Begin();
-                }
-            }
-            catch (Exception exception)
-            {
-            }
-        }
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// Gets the create revision definition command.
+        /// </summary>
+        public static ICommand CreateRevisionDefinitionCommand { get; private set; }
+
+        #endregion
+
+        #region Methods
 
         private bool CanExecuteCreateRevisionDefinitionCommand(object parameter)
         {
@@ -51,5 +59,22 @@ namespace SBXAThemeSupport.Views
             createRevisionWindow.Owner = DebugWindowManager.DebugConsoleWindow;
             createRevisionWindow.Show();
         }
+
+        private void HandleLoadingTextOnLoaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var blinkAnimation = this.TryFindResource("FlashingText") as Storyboard;
+                if (blinkAnimation != null)
+                {
+                    blinkAnimation.Begin();
+                }
+            }
+            catch (Exception exception)
+            {
+            }
+        }
+
+        #endregion
     }
 }

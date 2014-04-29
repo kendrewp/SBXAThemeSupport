@@ -20,7 +20,7 @@
         <Style x:Key="FlashingTextStyle" TargetType="TextBlock">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsLoading}" Value="0" >
-                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
 
             </Style.Triggers>

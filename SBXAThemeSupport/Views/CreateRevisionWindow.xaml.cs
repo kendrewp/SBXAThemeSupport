@@ -1,47 +1,62 @@
-﻿namespace SBXAThemeSupport.Views
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CreateRevisionWindow.xaml.cs" company="Ruf Informatik AG">
+//   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace SBXAThemeSupport.Views
 {
     using System.Windows;
 
-    using SBXAThemeSupport.DebugAssistant.ViewModels;
     using SBXAThemeSupport.Models;
 
     /// <summary>
-    /// Interaction logic for CreateRevisionWindow.xaml
+    ///     Interaction logic for CreateRevisionWindow.xaml
     /// </summary>
     public partial class CreateRevisionWindow : Window
     {
-        public CreateRevisionWindow()
-        {
-            InitializeComponent();
-        }
+        #region Static Fields
 
-        #region StartItem Property
+        public static readonly DependencyProperty StartItemProperty = DependencyProperty.Register(
+            "StartItem", 
+            typeof(TreeItem), 
+            typeof(CreateRevisionWindow));
 
-        public static readonly DependencyProperty StartItemProperty =
-            DependencyProperty.Register(
-                "StartItem",
-                typeof(TreeItem),
-                typeof(CreateRevisionWindow));
+        #endregion
+
+        #region Constructors and Destructors
 
         /// <summary>
-        /// Gets or sets the StartItemProperty. This is a DependencyProperty.
+        /// Initializes a new instance of the <see cref="CreateRevisionWindow"/> class.
+        /// </summary>
+        public CreateRevisionWindow()
+        {
+            this.InitializeComponent();
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets or sets the StartItemProperty. This is a DependencyProperty.
         /// </summary>
         public TreeItem StartItem
         {
             get
             {
-                return ((TreeItem)GetValue(StartItemProperty));
+                return (TreeItem)this.GetValue(StartItemProperty);
             }
+
             set
             {
-                SetValue(StartItemProperty, value);
+                this.SetValue(StartItemProperty, value);
             }
         }
 
-        #endregion StartItem Property
+        #endregion
 
-
-/*
+        /*
         public void StartItem(TreeItem startItem)
         {
             var revisionDefinitionViewModel = DataContext as RevisionDefinitionViewModel;

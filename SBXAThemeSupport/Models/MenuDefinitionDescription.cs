@@ -1,4 +1,10 @@
-﻿namespace SBXAThemeSupport.Models
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MenuDefinitionDescription.cs" company="Ruf Informatik AG">
+//   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace SBXAThemeSupport.Models
 {
     using System;
 
@@ -6,21 +12,73 @@
 
     using SBXAThemeSupport.DebugAssistant.ViewModels;
 
+    /// <summary>
+    /// The menu definition description.
+    /// </summary>
     public class MenuDefinitionDescription : DefinitionDescription
     {
+        #region Constants
+
+        private const int MenuOptionType = 8;
+
         private const int MenuType = 2;
 
         private const int Options = 6;
 
         private const int ProcessName = 7;
 
-        private const int MenuOptionType = 8;
+        #endregion
 
+        #region Constructors and Destructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MenuDefinitionDescription"/> class.
+        /// </summary>
+        /// <param name="fileName">
+        /// The file name.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        /// <param name="expression">
+        /// The expression.
+        /// </param>
+        /// <param name="definition">
+        /// The definition.
+        /// </param>
         public MenuDefinitionDescription(string fileName, string name, string expression, SBString definition)
             : base(fileName, name, expression)
         {
             this.ParseDefinition(definition);
         }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// The add children to collection.
+        /// </summary>
+        /// <param name="collection">
+        /// The collection.
+        /// </param>
+        public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
+        {
+            RevisionDefinitionViewModel.AddItemToDefinition(
+                collection, 
+                new RevisionDefinitionItem()
+                    {
+                        Action = "IO", 
+                        FileName = this.FileName, 
+                        Item = this.Name, 
+                        Parameters = RevisionDefinitionViewModel.Data
+                    });
+            base.AddChildrenToCollection(collection);
+        }
+
+        #endregion
+
+        #region Methods
 
         private void ParseDefinition(SBString definition)
         {
@@ -50,10 +108,10 @@
             switch (definition.Extract(MenuType).Value)
             {
                 case "1":
-                    ProcessMenuOptions(definition);
+                    this.ProcessMenuOptions(definition);
                     break;
                 case "2":
-                    ProcessMenuOptions(definition);
+                    this.ProcessMenuOptions(definition);
                     break;
                 case "3":
                     break;
@@ -76,22 +134,22 @@
                     var process = definition.Extract(ProcessName, optNo).Value;
                     if (type.Equals("P") && !string.IsNullOrEmpty(process))
                     {
-                        DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Menu, SourceDefinition.Process, process, this, desc);
+                        DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
+                            SourceDefinition.Menu, 
+                            SourceDefinition.Process, 
+                            process, 
+                            this, 
+                            desc);
                     }
                 }
             }
             catch (Exception exception)
             {
-                IsError = true;                
-                CustomLogger.LogException(exception, "There was a problem process the menu '"+Name+"'");
+                this.IsError = true;
+                CustomLogger.LogException(exception, "There was a problem process the menu '" + this.Name + "'");
             }
         }
 
-        public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
-        {
-            RevisionDefinitionViewModel.AddItemToDefinition(collection, new RevisionDefinitionItem() { Action = "IO", FileName = this.FileName, Item = this.Name, Parameters = RevisionDefinitionViewModel.Data});
-            base.AddChildrenToCollection(collection);
-        }
-
+        #endregion
     }
 }

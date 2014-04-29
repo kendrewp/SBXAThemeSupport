@@ -18,7 +18,7 @@ namespace SBXAThemeSupport
     using SBXA.UI.WPFControls;
 
     /// <summary>
-    ///     The sb definition handler.
+    ///     The sb process handler.
     /// </summary>
     public static class SbProcessHandler
     {
@@ -33,10 +33,10 @@ namespace SBXAThemeSupport
         #region Public Methods and Operators
 
         /// <summary>
-        /// The call definition.
+        /// The call process.
         /// </summary>
         /// <param name="processName">
-        /// The definition name.
+        /// The process name.
         /// </param>
         /// <param name="isInContext">
         /// The is in context.
@@ -47,20 +47,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The call definition.
+        /// The call process.
         /// </summary>
         /// <param name="processName">
-        ///     The definition name.
+        /// The process name.
         /// </param>
         /// <param name="isInContext">
-        ///     The is in context.
+        /// The is in context.
         /// </param>
-        /// <param name="objects"></param>
         /// <param name="parameter">
-        ///     The parameter.
+        /// The parameter.
         /// </param>
         /// <param name="name">
-        ///     The name.
+        /// The name.
         /// </param>
         public static void CallProcess(string processName, bool isInContext, string parameter, string name = null)
         {
@@ -69,10 +68,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The call definition.
+        /// The call process.
         /// </summary>
         /// <param name="processName">
-        /// The definition name.
+        /// The process name.
         /// </param>
         /// <param name="isInContext">
         /// The is in context.
@@ -95,10 +94,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The call definition rtn flag.
+        /// The call process rtn flag.
         /// </summary>
         /// <param name="processName">
-        /// The definition name.
+        /// The process name.
         /// </param>
         /// <param name="callbackMethod">
         /// The callback method.
@@ -391,7 +390,7 @@ namespace SBXAThemeSupport
                 procIncludingParam = string.Format("{0},{1}", processName, param);
             }
 
-            // each call of definition will confirm a DISP message unexpected, so it canCauseUnexpectedResponsesToServer 
+            // each call of process will confirm a DISP message unexpected, so it canCauseUnexpectedResponsesToServer 
             SbProcessRunner.Instance.ExecuteMethod(
                 () => CallProcessInternal(procIncludingParam, ApplicationHelper.CurrentFormSbHandle, SBPlus.Current, isInContext), 
                 canCauseUnexpectedResponsesToServer: true, 
@@ -436,7 +435,7 @@ namespace SBXAThemeSupport
 
             CustomLogger.LogDebug(() => string.Format("CallProcessInternal isInContext: {0} Parameter: {1}", isInContext, myLogParameter));
 
-            CustomLogger.LogDebug(() => string.Format("Der definition : {0} wird aufgerufen.", myLogParameter));
+            CustomLogger.LogDebug(() => string.Format("Der Process : {0} wird aufgerufen.", myLogParameter));
 
             if (isInContext)
             {
@@ -447,7 +446,7 @@ namespace SBXAThemeSupport
                 SBCommands.ExecuteSBPlusProcessCommand.Execute(parameter, target);
             }
 
-            CustomLogger.LogDebug(() => string.Format("Der definition : {0} wurde aufgerufen.", myLogParameter));
+            CustomLogger.LogDebug(() => string.Format("Der Process : {0} wurde aufgerufen.", myLogParameter));
         }
 
         private static void ExecuteSubroutine(

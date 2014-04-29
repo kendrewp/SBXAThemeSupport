@@ -1,105 +1,208 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TreeItem.cs" company="Ruf Informatik AG">
+//   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace SBXAThemeSupport.Models
 {
+    using System;
+    using System.Collections;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+
     using SBXAThemeSupport.DebugAssistant.ViewModels;
 
+    /// <summary>
+    /// The TreeItem interface.
+    /// </summary>
     public interface ITreeItem
     {
-        /// <summary>
-        /// Gets or sets the description which is the text that is displayed on some items that describes the item.
-        /// </summary>
-        /// <value>
-        /// The description.
-        /// </value>
-        string Description { get; set; }
-
-        string Name { get; }
-        IEnumerable Children { get; }
+        #region Public Events
 
         /// <summary>
         ///     The property changed.
         /// </summary>
         event PropertyChangedEventHandler PropertyChanged;
-    }
 
-    public abstract class TreeItemBase : ObservableEntity
-    {
-        public abstract void AddChildrenToCollection(RevisionDefinitionItemCollection collection);
-        
-    }
+        #endregion
 
-    public class TreeItem : TreeItemBase, ITreeItem, IDisposable
-    {
-        private IEnumerable children;
+        #region Public Properties
 
         /// <summary>
-        /// Gets or sets the description which is the text that is displayed on some items that describes the item.
+        /// Gets the children.
+        /// </summary>
+        IEnumerable Children { get; }
+
+        /// <summary>
+        ///     Gets or sets the description which is the text that is displayed on some items that describes the item.
         /// </summary>
         /// <value>
-        /// The description.
+        ///     The description.
         /// </value>
-        public string Description { get; set; }
+        string Description { get; set; }
 
-        public string Name { get; private set; }
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        string Name { get; }
 
-        public IEnumerable Children
-        {
-            get { return this.children; }
-            internal set
-            {
-                this.children = value;
-                RaisePropertyChanged("Children");
-            }
-        }
+        #endregion
+    }
 
+    /// <summary>
+    /// The tree item base.
+    /// </summary>
+    public abstract class TreeItemBase : ObservableEntity
+    {
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// The add children to collection.
+        /// </summary>
+        /// <param name="collection">
+        /// The collection.
+        /// </param>
+        public abstract void AddChildrenToCollection(RevisionDefinitionItemCollection collection);
+
+        #endregion
+    }
+
+    /// <summary>
+    /// The tree item.
+    /// </summary>
+    public class TreeItem : TreeItemBase, ITreeItem, IDisposable
+    {
+        #region Fields
+
+        private IEnumerable children;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TreeItem"/> class.
+        /// </summary>
         public TreeItem()
         {
-            Children = new ObservableCollection<ITreeItem>();
-        }
-
-        public TreeItem(string name)
-        {
-            Name = name;
-            Children = new ObservableCollection<ITreeItem>();
+            this.Children = new ObservableCollection<ITreeItem>();
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Initializes a new instance of the <see cref="TreeItem"/> class.
         /// </summary>
-        public virtual void Dispose()
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        public TreeItem(string name)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            this.Name = name;
+            this.Children = new ObservableCollection<ITreeItem>();
         }
 
-        // NOTE: Leave out the finalizer altogether if this class doesn't 
-        // own unmanaged resources itself, but leave the other methods
-        // exactly as they are. 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="TreeItem"/> class. 
+        /// </summary>
         ~TreeItem()
         {
             // Finalizer calls Dispose(false)
-            Dispose(false);
+            this.Dispose(false);
         }
 
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// Gets the children.
+        /// </summary>
+        public IEnumerable Children
+        {
+            get
+            {
+                return this.children;
+            }
+
+            internal set
+            {
+                this.children = value;
+                this.RaisePropertyChanged("Children");
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the description which is the text that is displayed on some items that describes the item.
+        /// </summary>
+        /// <value>
+        ///     The description.
+        /// </value>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        public string Name { get; private set; }
+
+        #endregion
+
         // The bulk of the clean-up code is implemented in Dispose(bool)
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// The add children to collection.
+        /// </summary>
+        /// <param name="collection">
+        /// The collection.
+        /// </param>
+        public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
+        {
+            foreach (var item in this.children)
+            {
+                RevisionDefinitionViewModel.AddItemToDefinition(
+                    collection, 
+                    new RevisionDefinitionItem()
+                        {
+                            Action = "1", 
+                            FileName = "fileName", 
+                            Item = item.GetType().Name, 
+                            Parameters = "parameters"
+                        });
+            }
+        }
+
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public virtual void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// The dispose.
+        /// </summary>
+        /// <param name="disposing">
+        /// The disposing.
+        /// </param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
                 // free managed resources
-                foreach (var item in Children)
+                foreach (var item in this.Children)
                 {
                     if (item is IDisposable)
                     {
                         ((IDisposable)item).Dispose();
                     }
                 }
+
                 var coll = this.Children as ObservableCollection<ITreeItem>;
                 if (coll != null)
                 {
@@ -108,13 +211,6 @@ namespace SBXAThemeSupport.Models
             }
         }
 
-
-        public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
-        {
-            foreach (var item in children)
-            {
-                RevisionDefinitionViewModel.AddItemToDefinition(collection, new RevisionDefinitionItem() { Action = "1", FileName = "fileName", Item = item.GetType().Name, Parameters = "parameters" });
-            }
-        }
+        #endregion
     }
 }

@@ -182,7 +182,7 @@ namespace SBXAThemeSupport
 
                     break;
                 case Key.G:
-                    if (this.CtrlShiftLKeyUpCommand != null)
+                    if (this.CtrlShiftGKeyUpCommand != null)
                     {
                         this.CtrlShiftGKeyUpCommand.Execute(e);
                         return;

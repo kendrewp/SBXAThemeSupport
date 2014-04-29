@@ -22,7 +22,7 @@ namespace SBXAThemeSupport.ViewModels
     using SBXA.UI.Client;
     using SBXA.UI.WPFControls;
 
-    using Utilities;
+    using SBXAThemeSupport.Utilities;
 
     /// <summary>
     ///     The report problems to.
@@ -158,7 +158,7 @@ namespace SBXAThemeSupport.ViewModels
                 // first get the collection, if it does not exist create a new one.
                 var activeApplicationList = SBPlus.Current.GlobalStateFile.GetItem(ActiveApplicationListId).Object as ActiveApplicationList
                                             ?? new ActiveApplicationList();
-                // get the definition id and name
+                // get the process id and name
                 var currentProcess = Process.GetCurrentProcess();
                 var currentProcessId = currentProcess.Id;
                 var currentProcessName = currentProcess.ProcessName;
@@ -170,7 +170,7 @@ namespace SBXAThemeSupport.ViewModels
                 // create a new log entry with the process id
                 if (activeApplicationList.ContainsProcessId(currentProcessId))
                 {
-                    // this is an error condition - there should not be a definition with the same id already.
+                    // this is an error condition - there should not be a process with the same id already.
                     activeApplicationList.RemoveProcessId(currentProcessId);
                 }
 
@@ -179,7 +179,7 @@ namespace SBXAThemeSupport.ViewModels
                     new ApplicationStartStopLog { ProcessId = currentProcessId, Start = DateTime.Now, CleanExit = false });
                 SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), true);
 
-                // check for left over entries, but getting the list of active definition ids, then going through the list of entries in the log collection
+                // check for left over entries, but getting the list of active process ids, then going through the list of entries in the log collection
                 // if an entry in the collection is not active, and not marked as a clean exit, we have a problem. If it is a clean exit removed it.
                 var processCollection = Process.GetProcessesByName(currentProcessName);
                 var toRemove = new List<ApplicationStartStopLog>();
@@ -197,7 +197,7 @@ namespace SBXAThemeSupport.ViewModels
                     }
 
                     // and finally a bad entry, so do the required notifications.
-                    LogBadClose(); // only log an exception if this is the only definition running.
+                    LogBadClose(); // only log an exception if this is the only process running.
 
                     // log the error so remove the entry from the logs.
                     toRemove.Add(appLog); // cannot remove it while I am processing it.
@@ -235,11 +235,11 @@ namespace SBXAThemeSupport.ViewModels
             // first get the collection, if it does not exist create a new one.
             var activeApplicationList = SBPlus.Current.GlobalStateFile.GetItem(ActiveApplicationListId).Object as ActiveApplicationList
                                         ?? new ActiveApplicationList();
-            // get the definition id and name
+            // get the process id and name
             var currentProcess = Process.GetCurrentProcess();
             var currentProcessId = currentProcess.Id;
 
-            // create a new log entry with the definition id
+            // create a new log entry with the process id
             if (!activeApplicationList.ContainsProcessId(currentProcessId))
             {
                 return;
@@ -253,15 +253,75 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
+        /// Doeses the run once exist.
+        /// </summary>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        public static bool DoesRunOnceExist(string name)
+        {
+            try
+            {
+                string logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
+
+                var fileName = Path.Combine(logFolder, "RunOnce_" + name);
+
+                return File.Exists(fileName);
+            }
+
+                // ReSharper disable once EmptyGeneralCatchClause
+            catch (Exception)
+            {
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Haves the run once.
+        /// </summary>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        public static void HaveRunOnce(string name)
+        {
+            try
+            {
+                string logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
+
+                if (!Directory.Exists(logFolder))
+                {
+                    Directory.CreateDirectory(logFolder);
+                }
+
+                var fileName = Path.Combine(logFolder, "RunOnce_" + name);
+
+                File.WriteAllText(fileName, name);
+            }
+
+                // ReSharper disable once EmptyGeneralCatchClause
+            catch (Exception exception)
+            {
+            }
+        }
+
+        /// <summary>
         /// The send abnormal close.
         /// </summary>
         /// <param name="message">
         /// The message.
         /// </param>
+        /// <param name="deleteFiles">
+        /// True is the files sent to the troubleshooter should be deleted after they have been packaged
+        ///     up.
+        /// </param>
         /// <param name="orgId">
         /// The org Id.
         /// </param>
-        public static void SendAbnormalClose(string message, string orgId = null)
+        public static void SendAbnormalClose(string message, bool deleteFiles, string orgId = null)
         {
             try
             {
@@ -292,7 +352,7 @@ namespace SBXAThemeSupport.ViewModels
                 logText.AppendLine(string.Format("Session Id {0}", sessionId));
 
                 File.WriteAllText(fileName, logText.ToString());
-                SendAbnormalClose(message, fileName, null, orgId);
+                SendAbnormalClose(message, fileName, null, deleteFiles, orgId);
             }
 
                 // ReSharper disable once EmptyGeneralCatchClause
@@ -313,10 +373,18 @@ namespace SBXAThemeSupport.ViewModels
         /// <param name="additionalFiles">
         /// The additional files.
         /// </param>
+        /// <param name="delete">
+        /// The delete.
+        /// </param>
         /// <param name="orgId">
         /// The org identifier.
         /// </param>
-        public static void SendAbnormalClose(string message, string abortDescriptionFileName, string[] additionalFiles, string orgId = null)
+        public static void SendAbnormalClose(
+            string message, 
+            string abortDescriptionFileName, 
+            string[] additionalFiles, 
+            bool delete = true, 
+            string orgId = null)
         {
             var windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
             var sessionId = SBPlus.Current.SessionId;
@@ -351,7 +419,7 @@ namespace SBXAThemeSupport.ViewModels
 
             File.WriteAllText(fileName, logText.ToString());
 
-            RegisterProblem("Abnormal Close", fileName, additionalFiles, userId, logFolder, orgId);
+            RegisterProblem("Abnormal Close", fileName, additionalFiles, userId, logFolder, delete, orgId);
         }
 
         /// <summary>
@@ -360,10 +428,13 @@ namespace SBXAThemeSupport.ViewModels
         /// <param name="exception">
         /// The exception.
         /// </param>
+        /// <param name="deleteFiles">
+        /// True if the files packaged up should be deleted.
+        /// </param>
         /// <param name="orgId">
         /// The org Id.
         /// </param>
-        public static void SendException(Exception exception, string orgId = null)
+        public static void SendException(Exception exception, bool deleteFiles = true, string orgId = null)
         {
             var windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
 
@@ -397,7 +468,7 @@ namespace SBXAThemeSupport.ViewModels
 
             File.WriteAllText(fileName, logText.ToString());
 
-            RegisterProblem("Exception", fileName, new string[0], userId, logFolder, orgId);
+            RegisterProblem("Exception", fileName, new string[0], userId, logFolder, deleteFiles, orgId);
         }
 
         /// <summary>
@@ -406,10 +477,13 @@ namespace SBXAThemeSupport.ViewModels
         /// <param name="message">
         /// The message.
         /// </param>
+        /// <param name="deleteFiles">
+        /// True if the files packaged up should be deleted.
+        /// </param>
         /// <param name="orgId">
         /// The org Id.
         /// </param>
-        public static void SendFreeze(string message, string orgId = null)
+        public static void SendFreeze(string message, bool deleteFiles, string orgId = null)
         {
             try
             {
@@ -433,7 +507,7 @@ namespace SBXAThemeSupport.ViewModels
                 }
 
                 var logText = new StringBuilder(existingData);
-                logText.Append("Ctrl-Shit-G was hit by the user.");
+                logText.Append("Ctrl-Shift-G was hit by the user.");
                 logText.AppendLine(message);
 
                 logText.AppendLine(string.Format("User Id : {0} ", userId));
@@ -476,7 +550,7 @@ namespace SBXAThemeSupport.ViewModels
 
                 File.WriteAllText(fileName, logText.ToString());
 
-                RegisterProblem("Freeze", fileName, new string[0], userId, logFolder, orgId);
+                RegisterProblem("Freeze", fileName, new string[0], userId, logFolder, deleteFiles, orgId);
             }
 
                 // ReSharper disable once EmptyGeneralCatchClause
@@ -610,7 +684,7 @@ namespace SBXAThemeSupport.ViewModels
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (EnableTroubleshooting)
             {
-                SendAbnormalClose("Application was not closed correctly.");
+                SendAbnormalClose("Application was not closed correctly.", true);
             }
         }
 
@@ -619,7 +693,8 @@ namespace SBXAThemeSupport.ViewModels
             string fileName, 
             string[] additionalFiles, 
             string userId, 
-            string logFolder)
+            string logFolder, 
+            bool deleteFiles)
         {
             // check if the file exists, if not ignore the call so we do not crash.
             // string id = "date" + "TIME" + "machine name";
@@ -652,7 +727,7 @@ namespace SBXAThemeSupport.ViewModels
                 }
 
                 files[files.Length - 1] = fileName;
-                MoveFilesToUpload(id, logFolder, files, true, true);
+                MoveFilesToUpload(id, logFolder, files, true, deleteFiles);
             }
 
             SBFile.Read(
@@ -682,6 +757,16 @@ namespace SBXAThemeSupport.ViewModels
                 {
                     var parent = Directory.GetParent(file);
                     var fileName = file.Substring(parent.FullName.Length + 1, file.Length - parent.FullName.Length - 1);
+                    if (file.Length > 230)
+                    {
+                        var lastPos = fileName.LastIndexOf("!;!", StringComparison.InvariantCulture);
+                        if (lastPos > 0)
+                        {
+                            lastPos += 3;
+                            fileName = fileName.Substring(lastPos, fileName.Length - lastPos);
+                        }
+                    }
+
                     File.Copy(file, Path.Combine(targetFolder, fileName));
                     // check if I need to delete the original.
                     if (deleteOriginal)
@@ -703,6 +788,12 @@ namespace SBXAThemeSupport.ViewModels
                 {
                     foreach (var file in additionalFiles)
                     {
+                        // if file not exists, take the next
+                        if (!File.Exists(file))
+                        {
+                            continue;
+                        }
+
                         var parent = Directory.GetParent(file);
                         var fileName = file.Substring(parent.FullName.Length + 1, file.Length - parent.FullName.Length - 1);
                         if (File.Exists(file))
@@ -748,6 +839,7 @@ namespace SBXAThemeSupport.ViewModels
             string[] additionalFiles, 
             string userId, 
             string logFolder, 
+            bool deleteFiles, 
             string orgId = null)
         {
             // First move all the files to the upload location.
@@ -762,7 +854,7 @@ namespace SBXAThemeSupport.ViewModels
                 case ReportProblemsTo.Email:
                     break;
                 case ReportProblemsTo.Server:
-                    LogProblemInServer(problemType, fileName, additionalFiles, userId, logFolder);
+                    LogProblemInServer(problemType, fileName, additionalFiles, userId, logFolder, deleteFiles);
                     break;
                 case ReportProblemsTo.LocalFolder:
                     ExecuteExceptionReporter(fileName.Replace(" ", "%20%"), uniqueId.Replace(" ", "%20%"), logFolder.Replace(" ", "%20%"));
@@ -825,55 +917,7 @@ namespace SBXAThemeSupport.ViewModels
         {
         }
 
-        /// <summary>
-        /// Doeses the run once exist.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns></returns>
-        public static bool DoesRunOnceExist(string name)
-        {
-            try
-            {
-                string logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
-
-                var fileName = Path.Combine(logFolder, "RunOnce_" + name);
-
-                return (File.Exists(fileName));
-            }
-            // ReSharper disable once EmptyGeneralCatchClause
-            catch (Exception)
-            {
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Haves the run once.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        public static void HaveRunOnce(string name)
-        {
-            try
-            {
-                string logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
-
-                if (!Directory.Exists(logFolder))
-                {
-                    Directory.CreateDirectory(logFolder);
-                }
-                var fileName = Path.Combine(logFolder, "RunOnce_" + name);
-
-                File.WriteAllText(fileName, name);
-            }
-            // ReSharper disable once EmptyGeneralCatchClause
-            catch (Exception exception)
-            {
-            }
-
-        }
-
         #endregion
-
     }
 
     /// <summary>
@@ -916,10 +960,10 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        ///     Gets or sets the definition identifier.
+        ///     Gets or sets the process identifier.
         /// </summary>
         /// <value>
-        ///     The definition identifier.
+        ///     The process identifier.
         /// </value>
         public int ProcessId
         {
@@ -1033,7 +1077,7 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        /// Removes the definition identifier.
+        /// Removes the process identifier.
         /// </summary>
         /// <param name="pid">
         /// The pid.

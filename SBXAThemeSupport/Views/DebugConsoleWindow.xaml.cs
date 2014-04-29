@@ -31,6 +31,16 @@ namespace SBXAThemeSupport.Views
             this.InitializeComponent();
         }
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// The on activated.
+        /// </summary>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         protected override void OnActivated(EventArgs e)
         {
             base.OnActivated(e);

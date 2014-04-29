@@ -80,7 +80,7 @@ namespace SBXAThemeSupport
         /// </summary>
         protected virtual event PropertyChangedEventHandler PropertyChanged;
 
-        #endregion Protected Events
+        #endregion
 
         #region Explicit Interface Events
 
