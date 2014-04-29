@@ -43,5 +43,10 @@ namespace SBXAThemeSupport.Models
         }
 
         #endregion
+
+        protected override void AddSelf(RevisionDefinitionItemCollection collection)
+        {
+            // I do not want to add the name of the dictionary. base.AddSelf(collection);
+        }
     }
 }
