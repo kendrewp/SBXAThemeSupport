@@ -11,7 +11,17 @@
         <viewModels:RevisionDefinitionViewModel/>
     </UserControl.DataContext>
     <Grid>
-        <DataGrid ItemsSource="{Binding RevisionDefinitionItemCollection}" />
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2" HorizontalAlignment="Stretch">
+            <Label Content="Revision Definition Name" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0"/>
+            <TextBox Height="23" TextWrapping="Wrap" Text="{Binding DefinitionName, UpdateSourceTrigger=PropertyChanged}" Width="120" VerticalAlignment="Center"/>
+            <CheckBox Content="Select All" IsChecked="{Binding IsAllSelected}" VerticalAlignment="Center" Margin="5" HorizontalAlignment="Right"/>
+        </StackPanel>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding RevisionDefinitionItemCollection}" />
+        <Button Grid.Row="2" HorizontalAlignment="Right" Margin="2" Content="Save" Command="viewModels:RevisionDefinitionViewModel.SaveDefinitionCommand" />
     </Grid>
 </UserControl>
