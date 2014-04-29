@@ -1,62 +1,80 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RevisionDefinitionItemCollection.cs" company="Ruf Informatik AG">
-//   Copyright © Ruf Informatik AG. All rights reserved.
-// </copyright>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace SBXAThemeSupport.Models
+﻿namespace SBXAThemeSupport.Models
 {
     using System.Collections.ObjectModel;
 
+    using SBXA.Shared;
+
     /// <summary>
-    /// The revision definition item.
+    /// This class represents a single revision definition item.
     /// </summary>
-    public class RevisionDefinitionItem
+    public class RevisionDefinitionItem : SBEntityBase
     {
-        #region Public Properties
+        private bool include;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="RevisionDefinitionItem"/> is include.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if include; otherwise, <c>false</c>.
+        /// </value>
+        public bool Include
+        {
+            get
+            {
+                return this.include;
+            }
+            set
+            {
+                if (this.include != value)
+                {
+                    bool oldValue = this.include;
+                    this.include = value;
+                    OnPropertyChanged("Include", oldValue, this.include);
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the action.
         /// </summary>
+        /// <value>
+        /// The action.
+        /// </value>
         public string Action { get; set; }
-
         /// <summary>
-        /// Gets or sets the file name.
+        /// Gets or sets the name of the file.
         /// </summary>
+        /// <value>
+        /// The name of the file.
+        /// </value>
         public string FileName { get; set; }
-
         /// <summary>
         /// Gets or sets the item.
         /// </summary>
+        /// <value>
+        /// The item.
+        /// </value>
         public string Item { get; set; }
-
         /// <summary>
         /// Gets or sets the parameters.
         /// </summary>
+        /// <value>
+        /// The parameters.
+        /// </value>
         public string Parameters { get; set; }
-
-        #endregion
     }
 
     /// <summary>
-    /// The revision definition item collection.
+    /// This is a collection of <see cref="RevisionDefinitionItem"/>
     /// </summary>
     public class RevisionDefinitionItemCollection : ObservableCollection<RevisionDefinitionItem>
     {
-        #region Public Methods and Operators
-
         /// <summary>
-        /// The contains item.
+        /// Determines whether the specified file name contains item.
         /// </summary>
-        /// <param name="fileName">
-        /// The file name.
-        /// </param>
-        /// <param name="itemName">
-        /// The item name.
-        /// </param>
-        /// <returns>
-        /// The <see cref="bool"/>.
-        /// </returns>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="itemName">Name of the item.</param>
+        /// <returns></returns>
         public bool ContainsItem(string fileName, string itemName)
         {
             foreach (var item in this)
@@ -66,10 +84,8 @@ namespace SBXAThemeSupport.Models
                     return true;
                 }
             }
-
             return false;
         }
-
-        #endregion
     }
+
 }
