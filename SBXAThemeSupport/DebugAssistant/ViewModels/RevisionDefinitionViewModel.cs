@@ -1,6 +1,7 @@
 ﻿namespace SBXAThemeSupport.DebugAssistant.ViewModels
 {
     using System.Windows;
+    using System.Windows.Forms.VisualStyles;
     using System.Windows.Threading;
 
     using SBXA.Runtime;
@@ -65,7 +66,7 @@
                 // do not add items that do not have a file name and item name if the action is IO.
                 return;
             }
-            if (item.FileName.Equals("DM") || item.FileName.Equals("DMUT") || item.FileName.Equals("DMSH") || item.FileName.Equals("DMGC") || item.FileName.Equals("DMGD") || item.FileName.Equals("DMGC"))
+            if (ProcessAnalysisViewModel.IsExcludeFile(item.FileName))
             {
                 // do not include SB/XA program files.
                 return;

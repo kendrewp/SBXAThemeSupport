@@ -1,6 +1,9 @@
 ﻿
 namespace SBXAThemeSupport.DebugAssistant.ViewModels
 {
+    using System.Collections.Generic;
+    using System.Collections.Specialized;
+    using System.Diagnostics;
     using System.Windows.Threading;
     using SBXA.Runtime;
     using SBXA.Shared;
@@ -316,11 +319,14 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         {
                             if (this.processCollection.ContainsKey(string.Empty, programName, typeof(BasicProgramDescription)))
                             {
-                                SetIsLoading(1);
+                                Debug.WriteLine("[ProcessAnalysisViewModel.LoadBasicProgram(320)] Loaded "+programName+" from cache");
                                 AddBasicProgramToCollection(this.processCollection[programName] as BasicProgramDescription, new ProcessLoadState { Expression = expression, HookPoint = hookPoint, ParentDefinitionDescription = parent });
-                                SetIsLoading(-1);
                                 return;
                             }
+                            // not in cache so add it.
+                            Debug.WriteLine("[ProcessAnalysisViewModel.LoadBasicProgram(328)] Added " + programName + " to cache.");
+                            var basicProgramDescription = new BasicProgramDescription(string.Empty, programName);
+                            this.processCollection.Add(basicProgramDescription);
                         }
 
                         SetIsLoading(1);
@@ -339,16 +345,33 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 {
                     return;
                 }
-
-                var basicProgramDescription = new BasicProgramDescription(string.Empty, parameters[1].Value);
-
-                AddBasicProgramToCollection(basicProgramDescription, new ProcessLoadState { Expression = processState.Expression, HookPoint = processState.HookPoint, ParentDefinitionDescription = processState.ParentDefinitionDescription });
+                BasicProgramDescription basicProgramDescription = null;
+                lock (this.processCollection)
+                {
+                    // it should be in the cache so retrieve it.
+                    if (this.processCollection.ContainsKey(string.Empty, parameters[1].Value, typeof(BasicProgramDescription)))
+                    {
+                        basicProgramDescription = this.processCollection[parameters[1].Value] as BasicProgramDescription;
+                        Debug.WriteLine("[ProcessAnalysisViewModel.ReadBasicProgramVocPointerCompleted(355)] Read " + parameters[1].Value+" from cache.");
+                    }
+                    if (basicProgramDescription == null)
+                    {
+                        basicProgramDescription = new BasicProgramDescription(string.Empty, parameters[1].Value);
+                        this.processCollection.Add(basicProgramDescription);
+                        Debug.WriteLine("[ProcessAnalysisViewModel.ReadBasicProgramVocPointerCompleted(363)] Added "+basicProgramDescription.Name+" to cache.");
+                    }
+                }
+                 
                 if (parameters[5].Count != 1 || !parameters[5].Value.Equals("0"))
                 {
                     // Error
                     LastProcessReadError = string.Format("Failed to read {0} from {1}.", parameters[1].Value, parameters[0].Value);
+                    basicProgramDescription.IsError = true;
                     return;
                 }
+
+
+                AddBasicProgramToCollection(basicProgramDescription, new ProcessLoadState { Expression = processState.Expression, HookPoint = processState.HookPoint, ParentDefinitionDescription = processState.ParentDefinitionDescription });
 
                 /*
                  * UniVerse VOC pointer
@@ -366,7 +389,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                  * C
                  * E:\U2\SBXA\APPLICATIONSERVER\UNIDATA\SB.DEFN\DM\_SB.LOGIN
                  */
-                if (!basicProgramDescription.Parsed)
+                if (!basicProgramDescription.Parsed && !basicProgramDescription.IsError)
                 {
                     if (parameters[3].Extract(1).Value.Equals("V"))
                     {
@@ -394,14 +417,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     }
                     if (!string.IsNullOrEmpty(basicProgramDescription.FileName))
                     {
-                        // if I have a file name try open it and see if I can read the code.
-                        JobManager.RunInUIThread(DispatcherPriority.Input,
-                            delegate
-                            {
-                                SetIsLoading(1);
-                                SBFile.Read(basicProgramDescription.FileName, basicProgramDescription.Name, this.ReadBasicProgramCompleted, new object[] { basicProgramDescription });
+                        // no need to go any further if I am excluding this file.
+                        if (!IsExcludeFile(basicProgramDescription.FileName))
+                        {
+                            // if I have a file name try open it and see if I can read the code.
+                            JobManager.RunInUIThread(DispatcherPriority.Input,
+                                delegate
+                                    {
+                                        SetIsLoading(1);
+                                        SBFile.Read(basicProgramDescription.FileName, basicProgramDescription.Name, this.ReadBasicProgramCompleted, new object[] { basicProgramDescription });
 
-                            });
+                                    });
+                        }
                     }
                 }
 
@@ -423,10 +450,14 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 return;
             }
             var basicProgramDescription = ((object[])userState)[0] as BasicProgramDescription;
+            if (basicProgramDescription == null || IsExcludeFile(basicProgramDescription.FileName))
+            {
+                return;
+            }
             this.FindCallsInBasicProgram(parameters[3], basicProgramDescription);
         }
 
-        private void FindCallsInBasicProgram(SBString basicProgram, BasicProgramDescription basicProgramDescription)
+        private void FindCallsInBasicProgram(IEnumerable<SBString> basicProgram, BasicProgramDescription basicProgramDescription)
         {
             foreach (var line in basicProgram)
             {
@@ -540,10 +571,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         // top of tree so just assign it.
                         var processDescription = CreateProcessDescription(processFileName, pName, defn, processLoadState);
                         processDescription.IsError = isError;
-                        if (processDescription == null)
-                        {
-                            return;
-                        }
+
                         // Add the definition to the total collection if it is not already there. It should never be there already as
                         // we should have bypassed the load if it is.
                         lock (this.processCollection)
@@ -627,9 +655,36 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         
         private void AddItemToCollection(ObservableCollection<ProcessCall> collection, ProcessCall processCall)
         {
+            try
+            {
+
             lock (collection)
             {
+                // first check to see if the collection contains the item
+                foreach (var item in collection)
+                {
+                    if (string.IsNullOrEmpty(processCall.Name))
+                    {
+                        if (item.ProcessDescription != null && processCall.ProcessDescription != null && item.ProcessDescription.FileName.Equals(processCall.ProcessDescription.FileName) && item.ProcessDescription.Name.Equals(processCall.ProcessDescription.Name))
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        if (item.Name.Equals(processCall.Name))
+                        {
+                            // do not add the duplicate to the collection.
+                            return;
+                        }
+                    }
+                }
                 collection.Add(processCall);
+            }
+            }
+            catch (Exception exception)
+            {
+                CustomLogger.LogException(exception, "A problem while adding an item to the collection.");
             }
         }
 
@@ -682,6 +737,13 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         CustomLogger.LogException(ex, "There was a problem adding " + basicProgramDescription.Name+" to the collection.");
                     }
                 });
+        }
+
+        private static readonly StringCollection ExcludeFileList = new StringCollection { "DM", "DMUT", "DMSH", "DMGC", "DMGD", "TUBP", "ASCPROGS" };
+
+        public static bool IsExcludeFile(string fileName)
+        {
+            return ExcludeFileList.Contains(fileName);
         }
 
         private bool CanExecuteAnalyseProcessCommand(object parameter)
