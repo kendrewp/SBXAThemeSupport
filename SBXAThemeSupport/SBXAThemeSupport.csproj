@@ -180,6 +180,7 @@
     <Compile Include="Models\RevisionDefinitionItemCollection.cs" />
     <Compile Include="Models\ScreenDefintion.cs" />
     <Compile Include="Models\ScreenProcessDescription.cs" />
+    <Compile Include="Models\SelectionProcessDescription.cs" />
     <Compile Include="Models\TreeItem.cs" />
     <Compile Include="ObservableStack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -332,6 +333,7 @@
     <Resource Include="Images\FileUpdate.png" />
     <Resource Include="Images\regular-expression-icon.png" />
     <Resource Include="Images\menu.png" />
+    <Resource Include="Images\application_view_list.png" />
     <Content Include="ThirdParty\Ionic.Zip.dll" />
     <Content Include="ThirdParty\Ionic.Zlib.dll" />
   </ItemGroup>

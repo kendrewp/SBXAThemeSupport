@@ -597,6 +597,9 @@
                 case ("M"):
                     processDescription = new MenuDefinitionDescription(processFileName, pName, string.Empty, defn);
                     break;
+                case ("S"):
+                    processDescription = new SelectionProcessDescription(processFileName, pName, defn);
+                    break;
                 default:
                     processDescription = new DefinitionDescription(processFileName, pName, processLoadState.Expression);
                     break;

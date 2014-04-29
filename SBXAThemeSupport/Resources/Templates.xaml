@@ -76,6 +76,17 @@
         </Grid>
     </HierarchicalDataTemplate>
 
+    <HierarchicalDataTemplate x:Key="SelectionProcessTemplate" ItemsSource="{Binding ProcessDescription.ProcessCollection}">
+        <Grid wpfControls:SBUISupport.TemplateName="SelectionProcessTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="definitionImage" />
+                <ColumnDefinition SharedSizeGroup="definitionName"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0"  Source="/SBXAThemeSupport;component/Images/application_view_list.png"/>
+            <TextBlock Grid.Column="1" Text="{Binding ProcessDescription.Name}" FontWeight="Bold" Margin="4,0,0,0"/>
+        </Grid>
+    </HierarchicalDataTemplate>
+    
     <HierarchicalDataTemplate x:Key="FileUpdateDescriptionTemplate" ItemsSource="{Binding ProcessDescription.ProcessCollection}">
         <Grid wpfControls:SBUISupport.TemplateName="FileUpdateDescriptionTemplate">
             <Grid.ColumnDefinitions>
@@ -209,6 +220,7 @@
                 FileUpdateDescriptionTemplate="{StaticResource FileUpdateDescriptionTemplate}"
                 SBExpressionTemplate="{StaticResource SBExpressionTemplate}"
                 MenuDefinitionTemplate="{StaticResource MenuDefinitionTemplate}"
+                SelectionProcessTemplate="{StaticResource SelectionProcessTemplate}"
                         />
 
         </HierarchicalDataTemplate.ItemTemplateSelector>

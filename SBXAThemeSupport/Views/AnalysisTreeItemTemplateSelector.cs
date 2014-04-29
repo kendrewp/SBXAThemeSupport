@@ -91,6 +91,14 @@ namespace SBXAThemeSupport.Views
         /// </value>
         public DataTemplate TreeItemTemplate { get; set; }
 
+        /// <summary>
+        /// Gets or sets the selection process template.
+        /// </summary>
+        /// <value>
+        /// The selection process template.
+        /// </value>
+        public DataTemplate SelectionProcessTemplate { get; set; }
+
         #endregion
 
         #region Public Methods and Operators
@@ -123,7 +131,7 @@ namespace SBXAThemeSupport.Views
                 return this.DefaultTemplate;
             }
 
-            Debug.WriteLine("[AnalysisTreeItemTemplateSelector.SelectTemplate(78)] " + dataUnit.GetType().Name);
+            // Debug.WriteLine("[AnalysisTreeItemTemplateSelector.SelectTemplate(78)] " + dataUnit.GetType().Name);
 
             if (dataUnit is SBExpression)
             {
@@ -143,7 +151,7 @@ namespace SBXAThemeSupport.Views
                     return this.DefaultTemplate;
                 }
 
-                Debug.WriteLine("[AnalysisTreeItemTemplateSelector.SelectTemplate(89)] " + processDescription.GetType().Name);
+                // Debug.WriteLine("[AnalysisTreeItemTemplateSelector.SelectTemplate(89)] " + processDescription.GetType().Name);
                 //lets see what template we need to select according to the specified property value
                 if (processDescription is ScreenDefintion)
                 {
@@ -168,6 +176,11 @@ namespace SBXAThemeSupport.Views
                 if (processDescription is MenuDefinitionDescription)
                 {
                     return this.MenuDefinitionTemplate;
+                }
+
+                if (processDescription is SelectionProcessDescription)
+                {
+                    return this.SelectionProcessTemplate;
                 }
 
                 return this.DefaultTemplate;
