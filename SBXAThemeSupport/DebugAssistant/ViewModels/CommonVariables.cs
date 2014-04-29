@@ -3,6 +3,7 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport.DebugAssistant.ViewModels
 {
     /// <summary>
@@ -15,37 +16,37 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// <summary>
         ///     The record.
         /// </summary>
-        RECORD, 
+        RECORD,
 
         /// <summary>
         ///     The param.
         /// </summary>
-        PARAM, 
+        PARAM,
 
         /// <summary>
         ///     The key.
         /// </summary>
-        KEY, 
+        KEY,
 
         /// <summary>
         ///     The value.
         /// </summary>
-        VALUE, 
+        VALUE,
 
         /// <summary>
         ///     The parms.
         /// </summary>
-        PARMS, 
+        PARMS,
 
         /// <summary>
         ///     The origrec.
         /// </summary>
-        ORIGREC, 
+        ORIGREC,
 
         /// <summary>
         ///     The procname.
         /// </summary>
-        PROCNAME, 
+        PROCNAME,
 
         /// <summary>
         ///     The work.

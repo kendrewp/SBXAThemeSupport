@@ -9,6 +9,7 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport.Views
 {
     using System.Diagnostics;
@@ -95,16 +96,16 @@ namespace SBXAThemeSupport.Views
         #region Public Methods and Operators
 
         /// <summary>
-        /// The select template.
+        ///     The select template.
         /// </summary>
         /// <param name="item">
-        /// The item.
+        ///     The item.
         /// </param>
         /// <param name="container">
-        /// The container.
+        ///     The container.
         /// </param>
         /// <returns>
-        /// The <see cref="DataTemplate"/>.
+        ///     The <see cref="DataTemplate" />.
         /// </returns>
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {

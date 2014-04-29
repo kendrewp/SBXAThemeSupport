@@ -18,8 +18,8 @@ namespace SBXAThemeSupport.Views
         #region Static Fields
 
         public static readonly DependencyProperty StartItemProperty = DependencyProperty.Register(
-            "StartItem", 
-            typeof(TreeItem), 
+            "StartItem",
+            typeof(TreeItem),
             typeof(CreateRevisionWindow));
 
         #endregion
@@ -27,7 +27,7 @@ namespace SBXAThemeSupport.Views
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateRevisionWindow"/> class.
+        ///     Initializes a new instance of the <see cref="CreateRevisionWindow" /> class.
         /// </summary>
         public CreateRevisionWindow()
         {

@@ -1,41 +1,17 @@
-﻿
-namespace SBXAThemeSupport.Models
+﻿namespace SBXAThemeSupport.Models
 {
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;
+
     using SBXAThemeSupport.DebugAssistant.ViewModels;
 
     /// <summary>
-    /// This class is the basis for SB/XA definitions, definition, field, etc.
+    ///     This class is the basis for SB/XA definitions, definition, field, etc.
     /// </summary>
     public class DefinitionDescription : TreeItem
     {
         private bool isCurrent;
-        public string SourceExpression { get; private set; }
-        public string FileName { get; set; }
-        public bool IsError { get; set; }
-
-        public DefinitionDescription HistoryProcessDescription { get; set; }
-
-        public ObservableCollection<ProcessCall> ProcessCollection { get; private set; }
-
-        public ProcessStack ChildProcesses { get; private set; }
-
-        public ObservableCollection<SBExpression> DictionaryExpressions { get; set; }
-        public ObservableCollection<SBExpression> ScreenExpressions { get; set; }
-        public ObservableCollection<SBExpression> Expressions { get; set; } 
-
-
-        public bool IsCurrent
-        {
-            get { return this.isCurrent; }
-            set
-            {
-                this.isCurrent = value;
-                RaisePropertyChanged("IsCurrent");
-            }
-        }
 
         public DefinitionDescription(string fileName, string name)
             : base(name)
@@ -54,75 +30,59 @@ namespace SBXAThemeSupport.Models
         {
             if (!expression.Equals(name))
             {
-                SourceExpression = expression;
+                this.SourceExpression = expression;
             }
         }
 
-        public void Clear()
+        public ProcessStack ChildProcesses { get; private set; }
+
+        public ObservableCollection<SBExpression> DictionaryExpressions { get; set; }
+
+        public ObservableCollection<SBExpression> Expressions { get; set; }
+
+        public string FileName { get; set; }
+
+        public DefinitionDescription HistoryProcessDescription { get; set; }
+
+        public bool IsCurrent
         {
-            foreach (var item in ChildProcesses)
+            get
             {
-                item.Clear();
+                return this.isCurrent;
             }
-            ChildProcesses.Clear();
-        }
-
-        public void ClearHistoryReferences()
-        {
-            HistoryProcessDescription = null;
-            foreach (var item in ChildProcesses)
+            set
             {
-                item.ClearHistoryReferences();
+                this.isCurrent = value;
+                this.RaisePropertyChanged("IsCurrent");
             }
         }
 
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                // free managed resources
-                foreach (var item in ChildProcesses)
-                {
-                    if (item != null)
-                    {
-                        ((IDisposable)item).Dispose();
-                    }
-                }
-                foreach (var item in ProcessCollection)
-                {
-                    if (item != null)
-                    {
-                        ((IDisposable)item).Dispose();
-                    }
-                }
-            }
-            base.Dispose(disposing);
+        public bool IsError { get; set; }
 
-        }
+        public ObservableCollection<ProcessCall> ProcessCollection { get; private set; }
 
+        public ObservableCollection<SBExpression> ScreenExpressions { get; set; }
+
+        public string SourceExpression { get; private set; }
 
         public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
         {
-            foreach (var item in ProcessCollection)
+            foreach (var item in this.ProcessCollection)
             {
                 item.ProcessDescription.AddChildrenToCollection(collection);
             }
 
-            foreach (var sbExpression in DictionaryExpressions)
+            foreach (var sbExpression in this.DictionaryExpressions)
             {
                 sbExpression.AddChildrenToCollection(collection);
             }
 
-            foreach (var sbExpression in ScreenExpressions)
+            foreach (var sbExpression in this.ScreenExpressions)
             {
                 sbExpression.AddChildrenToCollection(collection);
             }
 
-            foreach (var sbExpression in Expressions)
+            foreach (var sbExpression in this.Expressions)
             {
                 sbExpression.AddChildrenToCollection(collection);
             }
@@ -132,25 +92,87 @@ namespace SBXAThemeSupport.Models
             this.AddSelf(collection);
         }
 
+        public void Clear()
+        {
+            foreach (var item in this.ChildProcesses)
+            {
+                item.Clear();
+            }
+            this.ChildProcesses.Clear();
+        }
+
+        public void ClearHistoryReferences()
+        {
+            this.HistoryProcessDescription = null;
+            foreach (var item in this.ChildProcesses)
+            {
+                item.ClearHistoryReferences();
+            }
+        }
+
         protected virtual void AddSelf(RevisionDefinitionItemCollection collection)
         {
-            if (!IsError)
+            if (!this.IsError)
             {
                 // do this last so it will only happen if it has not already happened.
                 var parameters = RevisionDefinitionViewModel.Data;
-                var fname = FileName;
-                if (FileName.StartsWith("DICT "))
+                var fname = this.FileName;
+                if (this.FileName.StartsWith("DICT "))
                 {
                     parameters = RevisionDefinitionViewModel.Dict;
-                    fname = FileName.Substring(5);
+                    fname = this.FileName.Substring(5);
                 }
-                RevisionDefinitionViewModel.AddItemToDefinition(collection, new RevisionDefinitionItem { Action = "IO", FileName = fname, Item = Name, Parameters = parameters });
+                RevisionDefinitionViewModel.AddItemToDefinition(collection, new RevisionDefinitionItem { Action = "IO", FileName = fname, Item = this.Name, Parameters = parameters });
             }
+        }
+
+        /// <summary>
+        ///     Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
+        ///     unmanaged resources.
+        /// </param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // free managed resources
+                foreach (var item in this.ChildProcesses)
+                {
+                    if (item != null)
+                    {
+                        ((IDisposable)item).Dispose();
+                    }
+                }
+                foreach (var item in this.ProcessCollection)
+                {
+                    if (item != null)
+                    {
+                        ((IDisposable)item).Dispose();
+                    }
+                }
+            }
+            base.Dispose(disposing);
         }
     }
 
     public class ProcessCollection : Collection<DefinitionDescription>, IDisposable
     {
+        ~ProcessCollection()
+        {
+            // Finalizer calls Dispose(false)
+            this.Dispose(false);
+        }
+
+        public DefinitionDescription this[string key]
+        {
+            get
+            {
+                return this.FirstOrDefault(processDescription => processDescription.Name.Equals(key));
+            }
+        }
+
         public bool ContainsKey(string fileName, string processName)
         {
             return this.Any(processDescription => (processDescription.FileName.Equals(fileName) && processDescription.Name.Equals(processName)));
@@ -166,31 +188,18 @@ namespace SBXAThemeSupport.Models
             return this.Any(processDescription => (processDescription.Name.Equals(processName) && processDescription.FileName.Equals(fileName) && processDescription.GetType() == type));
         }
 
-        public DefinitionDescription this[string key]
-        {
-            get
-            {
-                return this.FirstOrDefault(processDescription => processDescription.Name.Equals(key));
-            }
-        }
-
-                /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// <summary>
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         // NOTE: Leave out the finalizer altogether if this class doesn't 
         // own unmanaged resources itself, but leave the other methods
         // exactly as they are. 
-        ~ProcessCollection()
-        {
-            // Finalizer calls Dispose(false)
-            Dispose(false);
-        }
 
         // The bulk of the clean-up code is implemented in Dispose(bool)
         protected virtual void Dispose(bool disposing)
@@ -208,6 +217,5 @@ namespace SBXAThemeSupport.Models
                 this.Clear();
             }
         }
-
     }
 }

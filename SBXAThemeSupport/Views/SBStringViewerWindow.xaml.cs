@@ -6,6 +6,7 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport.Views
 {
     using System.ComponentModel;
@@ -33,10 +34,10 @@ namespace SBXAThemeSupport.Views
         #region Methods
 
         /// <summary>
-        /// The on closing.
+        ///     The on closing.
         /// </summary>
         /// <param name="e">
-        /// The e.
+        ///     The e.
         /// </param>
         protected override void OnClosing(CancelEventArgs e)
         {

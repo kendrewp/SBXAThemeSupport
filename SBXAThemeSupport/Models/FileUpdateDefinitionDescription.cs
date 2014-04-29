@@ -5,7 +5,7 @@
     using SBXAThemeSupport.DebugAssistant.ViewModels;
 
     /// <summary>
-    /// This class contains all the info required to display a File Update definition.
+    ///     This class contains all the info required to display a File Update definition.
     /// </summary>
     public class FileUpdateDefinitionDescription : DefinitionDescription
     {
@@ -16,12 +16,11 @@
 
         public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
         {
-            if (!IsError)
+            if (!this.IsError)
             {
                 RevisionDefinitionViewModel.AddItemToDefinition(collection, new RevisionDefinitionItem() { Action = "IO", FileName = this.FileName, Item = this.Name, Parameters = RevisionDefinitionViewModel.Data });
             }
             base.AddChildrenToCollection(collection);
         }
-
     }
 }

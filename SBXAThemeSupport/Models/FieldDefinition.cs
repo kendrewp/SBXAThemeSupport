@@ -1,85 +1,68 @@
 ﻿namespace SBXAThemeSupport.Models
 {
     using System;
-    using SBXAThemeSupport.DebugAssistant.ViewModels;
+
     using SBXA.Shared;
+
+    using SBXAThemeSupport.DebugAssistant.ViewModels;
 
     public class FieldDefinition : DefinitionDescription
     {
-        private string processBefore;
-        private string processAfter;
-        private string intuitiveHelp;
         private string conversionCode;
-        private string validation;
-        private string inputConversion;
-        private string styleName;
+
         private string derived;
-        private string fieldDefault;
-        private string dictionaryIntuitiveHelp;
-        private string dictionaryConversionCode;
-        private string dictionaryValidation;
-        private string dictionaryInputConversion;
-        private string dictionaryDefault;
-        private string dictionaryDerived;
-        private string dictionaryRightClickMenu;
-        private string dictionaryDoubleClickProcess;
+
         private string dictionaryComboPopulationProcess;
+
+        private string dictionaryConversionCode;
+
+        private string dictionaryDefault;
+
+        private string dictionaryDerived;
+
+        private string dictionaryDoubleClickProcess;
+
         private string dictionaryHtmlProcess;
 
-        public string ProcessBefore
-        {
-            get { return this.processBefore; }
-            set
-            {
-                if (this.processBefore != null && this.processBefore.Equals(value))
-                {
-                    return;
-                }
-                this.processBefore = value;
-                if (!string.IsNullOrEmpty(this.processBefore))
-                {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Process, this.processBefore, this, "Before");
-                }
-            }
-        }
+        private string dictionaryInputConversion;
 
-        public string ProcessAfter
-        {
-            get { return this.processAfter; }
-            set
-            {
-                if (this.processAfter != null && this.processAfter.Equals(value))
-                {
-                    return;
-                }
-                this.processAfter = value;
-                if (!string.IsNullOrEmpty(this.processAfter))
-                {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Process, this.processAfter, this, "After");
-                }
-            }
-        }
+        private string dictionaryIntuitiveHelp;
 
-        public string IntuitiveHelp
+        private string dictionaryRightClickMenu;
+
+        private string dictionaryValidation;
+
+        private string fieldDefault;
+
+        private string inputConversion;
+
+        private string intuitiveHelp;
+
+        private string processAfter;
+
+        private string processBefore;
+
+        private string styleName;
+
+        private string validation;
+
+        public FieldDefinition(string fileName, string name)
+            : base(fileName, name)
         {
-            get { return this.intuitiveHelp; }
-            set
+            if (this.FileName.ToUpper().StartsWith("DICT "))
             {
-                if (this.intuitiveHelp != null && this.intuitiveHelp.Equals(value))
-                {
-                    return;
-                }
-                this.intuitiveHelp = value;
-                if (!string.IsNullOrEmpty(this.intuitiveHelp))
-                {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Process, this.intuitiveHelp, this, "Intuitive Help");
-                }
+                this.FileName = this.FileName.Substring(5);
             }
+
+            SBFile.ReadDictionaryItem(this.FileName, "." + name, new object[] { this.FileName, name }, this.ReadFieldDefinitionCompleted);
         }
 
         public string ConversionCode
         {
-            get { return this.conversionCode; }
+            get
+            {
+                return this.conversionCode;
+            }
             set
             {
                 if (this.conversionCode != null && this.conversionCode.Equals(value))
@@ -94,60 +77,12 @@
             }
         }
 
-        public string Validation
-        {
-            get { return this.validation; }
-            set
-            {
-                if (this.validation != null && this.validation.Equals(value))
-                {
-                    return;
-                }
-                this.validation = value;
-                if (!string.IsNullOrEmpty(this.validation))
-                {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Expression, this.validation, this, "Validation");
-                }
-            }
-        }
-
-        public string InputConversion
-        {
-            get { return this.inputConversion; }
-            set
-            {
-                if (this.inputConversion != null && this.inputConversion.Equals(value))
-                {
-                    return;
-                }
-                this.inputConversion = value;
-                if (!string.IsNullOrEmpty(this.inputConversion))
-                {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Expression, this.inputConversion, this, "Input Conversion");
-                }
-            }
-        }
-
-        public string FieldDefault
-        {
-            get { return fieldDefault; }
-            set
-            {
-                if (fieldDefault != null && fieldDefault.Equals(value))
-                {
-                    return;
-                }
-                fieldDefault = value;
-                if (!string.IsNullOrEmpty(fieldDefault))
-                {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Expression, fieldDefault, this, "Default");
-                }
-            }
-        }
-
         public string Derived
         {
-            get { return this.derived; }
+            get
+            {
+                return this.derived;
+            }
             set
             {
                 if (this.derived != null && this.derived.Equals(value))
@@ -162,43 +97,32 @@
             }
         }
 
-        public string StyleName
+        public string DictionaryComboPopulationProcess
         {
-            get { return this.styleName; }
-            set
+            get
             {
-                if (this.styleName != null && this.styleName.Equals(value))
-                {
-                    return;
-                }
-                this.styleName = value;
-                if (!string.IsNullOrEmpty(this.styleName))
-                {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Expression, this.inputConversion, this, "Style Name");
-                }
+                return this.dictionaryComboPopulationProcess;
             }
-        }
-
-        public string DictionaryIntuitiveHelp
-        {
-            get { return this.dictionaryIntuitiveHelp; }
             set
             {
-                if (this.dictionaryIntuitiveHelp != null && this.dictionaryIntuitiveHelp.Equals(value))
+                if (this.dictionaryComboPopulationProcess != null && this.dictionaryComboPopulationProcess.Equals(value))
                 {
                     return;
                 }
-                this.dictionaryIntuitiveHelp = value;
-                if (!string.IsNullOrEmpty(this.dictionaryIntuitiveHelp))
+                this.dictionaryComboPopulationProcess = value;
+                if (!string.IsNullOrEmpty(this.dictionaryComboPopulationProcess))
                 {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Field, SourceDefinition.Process, this.dictionaryIntuitiveHelp, this, "Intuitive Help");
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Field, SourceDefinition.Expression, this.dictionaryComboPopulationProcess, this, "Combo Population Expression");
                 }
             }
         }
 
         public string DictionaryConversionCode
         {
-            get { return this.dictionaryConversionCode; }
+            get
+            {
+                return this.dictionaryConversionCode;
+            }
             set
             {
                 if (this.dictionaryConversionCode != null && this.dictionaryConversionCode.Equals(value))
@@ -213,43 +137,12 @@
             }
         }
 
-        public string DictionaryValidation
-        {
-            get { return this.dictionaryValidation; }
-            set
-            {
-                if (this.dictionaryValidation != null && this.dictionaryValidation.Equals(value))
-                {
-                    return;
-                }
-                this.dictionaryValidation = value;
-                if (!string.IsNullOrEmpty(this.dictionaryValidation))
-                {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Field, SourceDefinition.Expression, this.dictionaryValidation, this, "Validation");
-                }
-            }
-        }
-
-        public string DictionaryInputConversion
-        {
-            get { return this.dictionaryInputConversion; }
-            set
-            {
-                if (this.dictionaryInputConversion != null && this.dictionaryInputConversion.Equals(value))
-                {
-                    return;
-                }
-                this.dictionaryInputConversion = value;
-                if (!string.IsNullOrEmpty(this.dictionaryInputConversion))
-                {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Field, SourceDefinition.Expression, this.dictionaryInputConversion, this, "Input Conversion");
-                }
-            }
-        }
-
         public string DictionaryDefault
         {
-            get { return this.dictionaryDefault; }
+            get
+            {
+                return this.dictionaryDefault;
+            }
             set
             {
                 if (this.dictionaryDefault != null && this.dictionaryDefault.Equals(value))
@@ -266,7 +159,10 @@
 
         public string DictionaryDerived
         {
-            get { return this.dictionaryDerived; }
+            get
+            {
+                return this.dictionaryDerived;
+            }
             set
             {
                 if (this.dictionaryDerived != null && this.dictionaryDerived.Equals(value))
@@ -281,26 +177,12 @@
             }
         }
 
-        public string DictionaryRightClickMenu
-        {
-            get { return this.dictionaryRightClickMenu; }
-            set
-            {
-                if (this.dictionaryRightClickMenu != null && this.dictionaryRightClickMenu.Equals(value))
-                {
-                    return;
-                }
-                this.dictionaryRightClickMenu = value;
-                if (!string.IsNullOrEmpty(this.dictionaryRightClickMenu))
-                {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Field, SourceDefinition.Menu, this.dictionaryDerived, this, "Right Click Menu");
-                }
-            }
-        }
-
         public string DictionaryDoubleClickProcess
         {
-            get { return this.dictionaryDoubleClickProcess; }
+            get
+            {
+                return this.dictionaryDoubleClickProcess;
+            }
             set
             {
                 if (this.dictionaryDoubleClickProcess != null && this.dictionaryDoubleClickProcess.Equals(value))
@@ -317,7 +199,10 @@
 
         public string DictionaryHtmlProcess
         {
-            get { return this.dictionaryHtmlProcess; }
+            get
+            {
+                return this.dictionaryHtmlProcess;
+            }
             set
             {
                 if (this.dictionaryHtmlProcess != null && this.dictionaryHtmlProcess.Equals(value))
@@ -331,33 +216,234 @@
                 }
             }
         }
-        
-        public string DictionaryComboPopulationProcess
+
+        public string DictionaryInputConversion
         {
-            get { return this.dictionaryComboPopulationProcess; }
+            get
+            {
+                return this.dictionaryInputConversion;
+            }
             set
             {
-                if (this.dictionaryComboPopulationProcess != null && this.dictionaryComboPopulationProcess.Equals(value))
+                if (this.dictionaryInputConversion != null && this.dictionaryInputConversion.Equals(value))
                 {
                     return;
                 }
-                this.dictionaryComboPopulationProcess = value;
-                if (!string.IsNullOrEmpty(this.dictionaryComboPopulationProcess))
+                this.dictionaryInputConversion = value;
+                if (!string.IsNullOrEmpty(this.dictionaryInputConversion))
                 {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Field, SourceDefinition.Expression, this.dictionaryComboPopulationProcess, this, "Combo Population Expression");
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Field, SourceDefinition.Expression, this.dictionaryInputConversion, this, "Input Conversion");
                 }
             }
         }
 
-        public FieldDefinition(string fileName, string name)
-            : base(fileName, name)
+        public string DictionaryIntuitiveHelp
         {
-            if (FileName.ToUpper().StartsWith("DICT "))
+            get
             {
-                FileName = FileName.Substring(5);
+                return this.dictionaryIntuitiveHelp;
             }
+            set
+            {
+                if (this.dictionaryIntuitiveHelp != null && this.dictionaryIntuitiveHelp.Equals(value))
+                {
+                    return;
+                }
+                this.dictionaryIntuitiveHelp = value;
+                if (!string.IsNullOrEmpty(this.dictionaryIntuitiveHelp))
+                {
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Field, SourceDefinition.Process, this.dictionaryIntuitiveHelp, this, "Intuitive Help");
+                }
+            }
+        }
 
-            SBFile.ReadDictionaryItem(FileName, "."+name, new object[] {FileName, name}, ReadFieldDefinitionCompleted);
+        public string DictionaryRightClickMenu
+        {
+            get
+            {
+                return this.dictionaryRightClickMenu;
+            }
+            set
+            {
+                if (this.dictionaryRightClickMenu != null && this.dictionaryRightClickMenu.Equals(value))
+                {
+                    return;
+                }
+                this.dictionaryRightClickMenu = value;
+                if (!string.IsNullOrEmpty(this.dictionaryRightClickMenu))
+                {
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Field, SourceDefinition.Menu, this.dictionaryDerived, this, "Right Click Menu");
+                }
+            }
+        }
+
+        public string DictionaryValidation
+        {
+            get
+            {
+                return this.dictionaryValidation;
+            }
+            set
+            {
+                if (this.dictionaryValidation != null && this.dictionaryValidation.Equals(value))
+                {
+                    return;
+                }
+                this.dictionaryValidation = value;
+                if (!string.IsNullOrEmpty(this.dictionaryValidation))
+                {
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Field, SourceDefinition.Expression, this.dictionaryValidation, this, "Validation");
+                }
+            }
+        }
+
+        public string FieldDefault
+        {
+            get
+            {
+                return this.fieldDefault;
+            }
+            set
+            {
+                if (this.fieldDefault != null && this.fieldDefault.Equals(value))
+                {
+                    return;
+                }
+                this.fieldDefault = value;
+                if (!string.IsNullOrEmpty(this.fieldDefault))
+                {
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Expression, this.fieldDefault, this, "Default");
+                }
+            }
+        }
+
+        public string InputConversion
+        {
+            get
+            {
+                return this.inputConversion;
+            }
+            set
+            {
+                if (this.inputConversion != null && this.inputConversion.Equals(value))
+                {
+                    return;
+                }
+                this.inputConversion = value;
+                if (!string.IsNullOrEmpty(this.inputConversion))
+                {
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Expression, this.inputConversion, this, "Input Conversion");
+                }
+            }
+        }
+
+        public string IntuitiveHelp
+        {
+            get
+            {
+                return this.intuitiveHelp;
+            }
+            set
+            {
+                if (this.intuitiveHelp != null && this.intuitiveHelp.Equals(value))
+                {
+                    return;
+                }
+                this.intuitiveHelp = value;
+                if (!string.IsNullOrEmpty(this.intuitiveHelp))
+                {
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Process, this.intuitiveHelp, this, "Intuitive Help");
+                }
+            }
+        }
+
+        public string ProcessAfter
+        {
+            get
+            {
+                return this.processAfter;
+            }
+            set
+            {
+                if (this.processAfter != null && this.processAfter.Equals(value))
+                {
+                    return;
+                }
+                this.processAfter = value;
+                if (!string.IsNullOrEmpty(this.processAfter))
+                {
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Process, this.processAfter, this, "After");
+                }
+            }
+        }
+
+        public string ProcessBefore
+        {
+            get
+            {
+                return this.processBefore;
+            }
+            set
+            {
+                if (this.processBefore != null && this.processBefore.Equals(value))
+                {
+                    return;
+                }
+                this.processBefore = value;
+                if (!string.IsNullOrEmpty(this.processBefore))
+                {
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Process, this.processBefore, this, "Before");
+                }
+            }
+        }
+
+        public string StyleName
+        {
+            get
+            {
+                return this.styleName;
+            }
+            set
+            {
+                if (this.styleName != null && this.styleName.Equals(value))
+                {
+                    return;
+                }
+                this.styleName = value;
+                if (!string.IsNullOrEmpty(this.styleName))
+                {
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Expression, this.inputConversion, this, "Style Name");
+                }
+            }
+        }
+
+        public string Validation
+        {
+            get
+            {
+                return this.validation;
+            }
+            set
+            {
+                if (this.validation != null && this.validation.Equals(value))
+                {
+                    return;
+                }
+                this.validation = value;
+                if (!string.IsNullOrEmpty(this.validation))
+                {
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Expression, this.validation, this, "Validation");
+                }
+            }
+        }
+
+        public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
+        {
+            if (!this.IsError)
+            {
+                RevisionDefinitionViewModel.AddItemToDefinition(collection, new RevisionDefinitionItem() { Action = "IO", FileName = this.FileName, Item = this.Name, Parameters = RevisionDefinitionViewModel.Dict });
+            }
+            base.AddChildrenToCollection(collection);
         }
 
         private void ReadFieldDefinitionCompleted(string subroutineName, SBString[] parameters, object userState)
@@ -394,22 +480,22 @@
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(DefaultExpression).Value))
                 {
-                    DictionaryDefault = definition.Extract(DefaultExpression).Value;
+                    this.DictionaryDefault = definition.Extract(DefaultExpression).Value;
                 }
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(ValidationExpression).Value))
                 {
-                    DictionaryValidation = definition.Extract(ValidationExpression).Value;
+                    this.DictionaryValidation = definition.Extract(ValidationExpression).Value;
                 }
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(ConversionExpression).Value))
                 {
-                    DictionaryConversionCode = definition.Extract(ConversionExpression).Value;
+                    this.DictionaryConversionCode = definition.Extract(ConversionExpression).Value;
                 }
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(DerivedExpression).Value))
                 {
-                    DictionaryDerived = definition.Extract(DerivedExpression).Value;
+                    this.DictionaryDerived = definition.Extract(DerivedExpression).Value;
                 }
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(IntuitiveHelpExpression).Value))
@@ -419,47 +505,34 @@
                     if (intHelp.IndexOf("[") >= 0)
                     {
                         intHelp = intHelp.Split("[".ToCharArray())[1];
-                        DictionaryIntuitiveHelp = intHelp;
+                        this.DictionaryIntuitiveHelp = intHelp;
                     }
                 }
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(RightClickMenu, 1).Value))
                 {
-                    DictionaryRightClickMenu = definition.Extract(RightClickMenu, 1).Value;
+                    this.DictionaryRightClickMenu = definition.Extract(RightClickMenu, 1).Value;
                 }
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(DoubleClickProcess, 2).Value))
                 {
-                    DictionaryDoubleClickProcess = definition.Extract(DoubleClickProcess, 2).Value;
+                    this.DictionaryDoubleClickProcess = definition.Extract(DoubleClickProcess, 2).Value;
                 }
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(HtmlProcess).Value))
                 {
-                    DictionaryHtmlProcess = definition.Extract(HtmlProcess).Value;
+                    this.DictionaryHtmlProcess = definition.Extract(HtmlProcess).Value;
                 }
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(ComboPopulationProcess).Value))
                 {
-                    DictionaryComboPopulationProcess = definition.Extract(ComboPopulationProcess).Value;
+                    this.DictionaryComboPopulationProcess = definition.Extract(ComboPopulationProcess).Value;
                 }
-
             }
             catch (Exception exception)
             {
-                CustomLogger.LogException(exception, "A problem occurred parsing the field definition for "+fieldName);
+                CustomLogger.LogException(exception, "A problem occurred parsing the field definition for " + fieldName);
             }
-        }
-
-        public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
-        {
-            if (!IsError)
-            {
-                RevisionDefinitionViewModel.AddItemToDefinition(collection, new RevisionDefinitionItem() { Action = "IO", FileName = this.FileName, Item = this.Name, Parameters = RevisionDefinitionViewModel.Dict });
-            }
-            base.AddChildrenToCollection(collection);
-
-
-
         }
     }
 }

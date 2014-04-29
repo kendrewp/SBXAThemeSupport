@@ -1,11 +1,11 @@
-﻿using SBXA.Shared;
-
-namespace SBXAThemeSupport.Models
+﻿namespace SBXAThemeSupport.Models
 {
+    using SBXA.Shared;
+
     using SBXAThemeSupport.DebugAssistant.ViewModels;
 
     /// <summary>
-    /// This class represents a paragraph.
+    ///     This class represents a paragraph.
     /// </summary>
     public class ParagraphDescription : DefinitionDescription
     {
@@ -16,12 +16,11 @@ namespace SBXAThemeSupport.Models
 
         public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
         {
-            if (!IsError)
+            if (!this.IsError)
             {
                 RevisionDefinitionViewModel.AddItemToDefinition(collection, new RevisionDefinitionItem() { Action = "IO", FileName = this.FileName, Item = this.Name, Parameters = RevisionDefinitionViewModel.Data });
             }
             base.AddChildrenToCollection(collection);
         }
-
     }
 }

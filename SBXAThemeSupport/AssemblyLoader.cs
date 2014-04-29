@@ -9,6 +9,7 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport
 {
     using System;
@@ -34,10 +35,10 @@ namespace SBXAThemeSupport
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AssemblyLoader"/> class.
+        ///     Initializes a new instance of the <see cref="AssemblyLoader" /> class.
         /// </summary>
         /// <param name="resourceNameSpace">
-        /// The namespace of the assemblies where the resources reside.
+        ///     The namespace of the assemblies where the resources reside.
         /// </param>
         public AssemblyLoader(string resourceNameSpace)
         {
@@ -58,16 +59,16 @@ namespace SBXAThemeSupport
         #region Public Methods and Operators
 
         /// <summary>
-        /// If this method is called, it will cause the assemblies to bewritten to the current directory.
+        ///     If this method is called, it will cause the assemblies to bewritten to the current directory.
         /// </summary>
         /// <param name="resourceAssembly">
-        /// The source of the assemblies.
+        ///     The source of the assemblies.
         /// </param>
         /// <param name="assemblyNames">
-        /// A list of assemblies to write out.
+        ///     A list of assemblies to write out.
         /// </param>
         /// <param name="assNamespace">
-        /// The namespace of the resource containing the assemblies.
+        ///     The namespace of the resource containing the assemblies.
         /// </param>
         public static void WriteAssembliesToCurrentDirectory(Assembly resourceAssembly, string[] assemblyNames, string assNamespace)
         {
@@ -104,13 +105,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// This method will return the assembly if it is located.
+        ///     This method will return the assembly if it is located.
         /// </summary>
         /// <param name="fullName">
-        /// The full name of the assembly to load.
+        ///     The full name of the assembly to load.
         /// </param>
         /// <returns>
-        /// The assembly or null
+        ///     The assembly or null
         /// </returns>
         public Assembly LoadAssembly(string fullName)
         {
@@ -131,13 +132,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// This method will return the assembly if it is located.
+        ///     This method will return the assembly if it is located.
         /// </summary>
         /// <param name="fullName">
-        /// Full name of the assembly
+        ///     Full name of the assembly
         /// </param>
         /// <returns>
-        /// The assembly or null.
+        ///     The assembly or null.
         /// </returns>
         public virtual Assembly Resolve(string fullName)
         {

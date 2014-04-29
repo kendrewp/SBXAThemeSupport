@@ -9,19 +9,20 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport.Models
 {
     using System;
 
     /// <summary>
-    /// The process stack.
+    ///     The process stack.
     /// </summary>
     public class ProcessStack : ObservableStack<DefinitionDescription>, IDisposable
     {
         #region Constructors and Destructors
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="ProcessStack"/> class. 
+        ///     Finalizes an instance of the <see cref="ProcessStack" /> class.
         /// </summary>
         ~ProcessStack()
         {
@@ -34,7 +35,7 @@ namespace SBXAThemeSupport.Models
         #region Public Methods and Operators
 
         /// <summary>
-        /// The clear.
+        ///     The clear.
         /// </summary>
         public override void Clear()
         {
@@ -57,18 +58,13 @@ namespace SBXAThemeSupport.Models
 
         #endregion
 
-        // NOTE: Leave out the finalizer altogether if this class doesn't 
-        // own unmanaged resources itself, but leave the other methods
-        // exactly as they are. 
-
-        // The bulk of the clean-up code is implemented in Dispose(bool)
         #region Methods
 
         /// <summary>
-        /// The dispose.
+        ///     The dispose.
         /// </summary>
         /// <param name="disposing">
-        /// The disposing.
+        ///     The disposing.
         /// </param>
         protected virtual void Dispose(bool disposing)
         {
@@ -86,5 +82,11 @@ namespace SBXAThemeSupport.Models
         }
 
         #endregion
+
+        // NOTE: Leave out the finalizer altogether if this class doesn't 
+        // own unmanaged resources itself, but leave the other methods
+        // exactly as they are. 
+
+        // The bulk of the clean-up code is implemented in Dispose(bool)
     }
 }

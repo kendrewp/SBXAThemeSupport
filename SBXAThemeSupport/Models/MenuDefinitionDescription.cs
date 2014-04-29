@@ -8,18 +8,27 @@
 
     public class MenuDefinitionDescription : DefinitionDescription
     {
+        private const int MenuOptionType = 8;
+
         private const int MenuType = 2;
 
         private const int Options = 6;
 
         private const int ProcessName = 7;
 
-        private const int MenuOptionType = 8;
-
         public MenuDefinitionDescription(string fileName, string name, string expression, SBString definition)
             : base(fileName, name, expression)
         {
             this.ParseDefinition(definition);
+        }
+
+        public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
+        {
+            if (!this.IsError)
+            {
+                RevisionDefinitionViewModel.AddItemToDefinition(collection, new RevisionDefinitionItem() { Action = "IO", FileName = this.FileName, Item = this.Name, Parameters = RevisionDefinitionViewModel.Data });
+            }
+            base.AddChildrenToCollection(collection);
         }
 
         private void ParseDefinition(SBString definition)
@@ -50,10 +59,10 @@
             switch (definition.Extract(MenuType).Value)
             {
                 case "1":
-                    ProcessMenuOptions(definition);
+                    this.ProcessMenuOptions(definition);
                     break;
                 case "2":
-                    ProcessMenuOptions(definition);
+                    this.ProcessMenuOptions(definition);
                     break;
                 case "3":
                     break;
@@ -82,19 +91,9 @@
             }
             catch (Exception exception)
             {
-                IsError = true;                
-                CustomLogger.LogException(exception, "There was a problem process the menu '"+Name+"'");
+                this.IsError = true;
+                CustomLogger.LogException(exception, "There was a problem process the menu '" + this.Name + "'");
             }
         }
-
-        public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
-        {
-            if (!IsError)
-            {
-                RevisionDefinitionViewModel.AddItemToDefinition(collection, new RevisionDefinitionItem() { Action = "IO", FileName = this.FileName, Item = this.Name, Parameters = RevisionDefinitionViewModel.Data });
-            }
-            base.AddChildrenToCollection(collection);
-        }
-
     }
 }

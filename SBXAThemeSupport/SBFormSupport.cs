@@ -6,6 +6,7 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport
 {
     using System;
@@ -33,13 +34,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The key up handler.
+        ///     The key up handler.
         /// </summary>
         /// <param name="sender">
-        /// The sender.
+        ///     The sender.
         /// </param>
         /// <param name="args">
-        /// The args.
+        ///     The args.
         /// </param>
         public static void KeyUpHandler(object sender, KeyEventArgs args)
         {
@@ -53,10 +54,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The send response.
+        ///     The send response.
         /// </summary>
         /// <param name="response">
-        /// The response.
+        ///     The response.
         /// </param>
         public static void SendResponse(SBString response)
         {
@@ -101,9 +102,9 @@ namespace SBXAThemeSupport
             SendResponse(
                 field2 != null
                     ? new GuiInputEvent(
-                          field2.SBValue, 
-                          SBCommands.SBCtrlxCommand.SBEvent, 
-                          SBCommands.SBCtrlxCommand.SBKeyValue, 
+                          field2.SBValue,
+                          SBCommands.SBCtrlxCommand.SBEvent,
+                          SBCommands.SBCtrlxCommand.SBKeyValue,
                           field2.CursorPosition + 1).ResponseString
                     : new GuiInputEvent(string.Empty, SBCommands.SBCtrlxCommand.SBEvent, SBCommands.SBCtrlxCommand.SBKeyValue, 1)
                           .ResponseString);

@@ -6,6 +6,7 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport
 {
     using System;
@@ -26,69 +27,69 @@ namespace SBXAThemeSupport
         #region Public Methods and Operators
 
         /// <summary>
-        /// The read.
+        ///     The read.
         /// </summary>
         /// <param name="fileName">
-        /// The file name.
+        ///     The file name.
         /// </param>
         /// <param name="itemName">
-        /// The item name.
+        ///     The item name.
         /// </param>
         /// <param name="readCompleted">
-        /// The read completed.
+        ///     The read completed.
         /// </param>
         /// <param name="userState">
-        /// The user state.
+        ///     The user state.
         /// </param>
         public static void Read(string fileName, string itemName, SubroutineCallCompleted readCompleted, object userState = null)
         {
             if (Thread.CurrentThread.ManagedThreadId != Application.Current.Dispatcher.Thread.ManagedThreadId)
             {
                 JobManager.RunInUIThread(
-                    DispatcherPriority.Normal, 
+                    DispatcherPriority.Normal,
                     () =>
                     SbProcessHandler.CallSubroutine(
-                        readCompleted, 
-                        "UT.XUI.READ", 
+                        readCompleted,
+                        "UT.XUI.READ",
                         new[]
                             {
-                                new SBString(fileName), new SBString(itemName), new SBString(), new SBString(), new SBString("0"), 
+                                new SBString(fileName), new SBString(itemName), new SBString(), new SBString(), new SBString("0"),
                                 new SBString()
-                            }, 
+                            },
                         userState ?? new object()));
             }
             else
             {
                 SbProcessHandler.CallSubroutine(
-                    readCompleted, 
-                    "UT.XUI.READ", 
+                    readCompleted,
+                    "UT.XUI.READ",
                     new[]
                         {
                             new SBString(fileName), new SBString(itemName), new SBString(), new SBString(), new SBString("0"), new SBString()
-                        }, 
+                        },
                     userState ?? new object());
             }
         }
 
         /// <summary>
-        /// The read dictionary item.
+        ///     The read dictionary item.
         /// </summary>
         /// <param name="fileName">
-        /// The file name.
+        ///     The file name.
         /// </param>
         /// <param name="itemName">
-        /// The item name.
+        ///     The item name.
         /// </param>
         /// <param name="readState">
-        /// The read state.
+        ///     The read state.
         /// </param>
         /// <param name="subroutineCallCompleted">
-        /// The subroutine call completed.
+        ///     The subroutine call completed.
         /// </param>
         public static void ReadDictionaryItem(
-            string fileName, 
-            string itemName, 
-            object readState, 
+            string fileName,
+            string itemName,
+            object readState,
             SubroutineCallCompleted subroutineCallCompleted)
         {
             if (string.IsNullOrEmpty(fileName) || string.IsNullOrEmpty(itemName))
@@ -108,19 +109,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Writes the specified file name.
+        ///     Writes the specified file name.
         /// </summary>
         /// <param name="fileName">
-        /// Name of the file.
+        ///     Name of the file.
         /// </param>
         /// <param name="id">
-        /// The identifier.
+        ///     The identifier.
         /// </param>
         /// <param name="record">
-        /// The record.
+        ///     The record.
         /// </param>
         /// <param name="subroutineCallCompleted">
-        /// The subroutine call completed.
+        ///     The subroutine call completed.
         /// </param>
         public static void Write(string fileName, string id, SBString record, SubroutineCallCompleted subroutineCallCompleted)
         {
@@ -128,32 +129,32 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Writes the specified file name.
+        ///     Writes the specified file name.
         /// </summary>
         /// <param name="fileName">
-        /// Name of the file.
+        ///     Name of the file.
         /// </param>
         /// <param name="id">
-        /// The identifier.
+        ///     The identifier.
         /// </param>
         /// <param name="attribute">
-        /// The attribute.
+        ///     The attribute.
         /// </param>
         /// <param name="mode">
-        /// The mode.
+        ///     The mode.
         /// </param>
         /// <param name="record">
-        /// The record.
+        ///     The record.
         /// </param>
         /// <param name="subroutineCallCompleted">
-        /// The subroutine call completed.
+        ///     The subroutine call completed.
         /// </param>
         public static void Write(
-            string fileName, 
-            string id, 
-            string attribute, 
-            string mode, 
-            SBString record, 
+            string fileName,
+            string id,
+            string attribute,
+            string mode,
+            SBString record,
             SubroutineCallCompleted subroutineCallCompleted)
         {
             /*
@@ -182,13 +183,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Zips the folder.
+        ///     Zips the folder.
         /// </summary>
         /// <param name="directoryToZip">
-        /// The directory to zip.
+        ///     The directory to zip.
         /// </param>
         /// <param name="zipFileToCreate">
-        /// The zip file to create.
+        ///     The zip file to create.
         /// </param>
         public static void ZipFolder(string directoryToZip, string zipFileToCreate)
         {

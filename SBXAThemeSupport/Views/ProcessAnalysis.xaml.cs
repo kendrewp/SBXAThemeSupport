@@ -24,13 +24,13 @@ namespace SBXAThemeSupport.Views
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProcessAnalysis"/> class.
+        ///     Initializes a new instance of the <see cref="ProcessAnalysis" /> class.
         /// </summary>
         public ProcessAnalysis()
         {
             this.InitializeComponent();
             CreateRevisionDefinitionCommand = new RelayCommand(
-                this.ExecutedCreateRevisionDefinitionCommand, 
+                this.ExecutedCreateRevisionDefinitionCommand,
                 this.CanExecuteCreateRevisionDefinitionCommand);
         }
 
@@ -39,7 +39,7 @@ namespace SBXAThemeSupport.Views
         #region Public Properties
 
         /// <summary>
-        /// Gets the create revision definition command.
+        ///     Gets the create revision definition command.
         /// </summary>
         public static ICommand CreateRevisionDefinitionCommand { get; private set; }
 

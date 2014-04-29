@@ -9,6 +9,7 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport.DebugAssistant
 {
     using System;
@@ -57,13 +58,13 @@ namespace SBXAThemeSupport.DebugAssistant
         #region Public Methods and Operators
 
         /// <summary>
-        /// Adds a window to the collection of open windows.
+        ///     Adds a window to the collection of open windows.
         /// </summary>
         /// <param name="key">
-        /// The key which is used to store the window against.
+        ///     The key which is used to store the window against.
         /// </param>
         /// <param name="window">
-        /// The window to add to the collection of windows.
+        ///     The window to add to the collection of windows.
         /// </param>
         public static void AddWindow(string key, Window window)
         {
@@ -105,8 +106,8 @@ namespace SBXAThemeSupport.DebugAssistant
             }
 
             var removeMethodInfo = ReflectionAssistant.GetMemberInfo(
-                typeof(SBUISupport), 
-                "RemoveGhost", 
+                typeof(SBUISupport),
+                "RemoveGhost",
                 new[] { typeof(UIElement), typeof(SBGhost) });
             if (removeMethodInfo == null)
             {
@@ -169,13 +170,13 @@ namespace SBXAThemeSupport.DebugAssistant
         }
 
         /// <summary>
-        /// Returns the window with the specified key.
+        ///     Returns the window with the specified key.
         /// </summary>
         /// <param name="key">
-        /// The key which is used to get the window.
+        ///     The key which is used to get the window.
         /// </param>
         /// <returns>
-        /// The <see cref="Window"/>.
+        ///     The <see cref="Window" />.
         /// </returns>
         public static Window GetWindow(string key)
         {
@@ -212,10 +213,10 @@ namespace SBXAThemeSupport.DebugAssistant
         }
 
         /// <summary>
-        /// Removes a window with the supplied key from the colleciton of open windows.
+        ///     Removes a window with the supplied key from the colleciton of open windows.
         /// </summary>
         /// <param name="key">
-        /// The key which is used to remove the window.
+        ///     The key which is used to remove the window.
         /// </param>
         public static void RemoveWindow(string key)
         {
@@ -247,19 +248,19 @@ namespace SBXAThemeSupport.DebugAssistant
         }
 
         /// <summary>
-        /// Shows or hides the debug window.
+        ///     Shows or hides the debug window.
         /// </summary>
         /// <param name="show">
-        /// True to show the window, false to hide it.
+        ///     True to show the window, false to hide it.
         /// </param>
         public static void ShowDebugWindow(bool show)
         {
             typeof(SBDebug).InvokeMember(
-                "ShowDebugWindow", 
+                "ShowDebugWindow",
                 BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy
-                | BindingFlags.NonPublic, 
-                Type.DefaultBinder, 
-                null, 
+                | BindingFlags.NonPublic,
+                Type.DefaultBinder,
+                null,
                 new object[] { show });
 
             DebugViewModel.Instance.ApplicationInsightState.IsDebugWindowOpen = show;
@@ -282,7 +283,7 @@ namespace SBXAThemeSupport.DebugAssistant
             {
                 sbStringViewWindow = new SBStringViewerWindow
                                          {
-                                             DataContext = NestedAttributeCollection.BuildFromSBString(which, data), 
+                                             DataContext = NestedAttributeCollection.BuildFromSBString(which, data),
                                              Owner = DebugConsoleWindow
                                          };
                 sbStringViewWindow.Show();

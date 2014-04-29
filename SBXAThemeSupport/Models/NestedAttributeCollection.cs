@@ -6,6 +6,7 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport.Models
 {
     using System.Collections.ObjectModel;
@@ -77,16 +78,16 @@ namespace SBXAThemeSupport.Models
         #region Public Methods and Operators
 
         /// <summary>
-        /// The build from sb string.
+        ///     The build from sb string.
         /// </summary>
         /// <param name="variable">
-        /// The variable.
+        ///     The variable.
         /// </param>
         /// <param name="sbString">
-        /// The sb string.
+        ///     The sb string.
         /// </param>
         /// <returns>
-        /// The <see cref="NestedAttributeCollection"/>.
+        ///     The <see cref="NestedAttributeCollection" />.
         /// </returns>
         public static NestedAttributeCollection BuildFromSBString(string variable, SBString sbString)
         {
@@ -100,13 +101,13 @@ namespace SBXAThemeSupport.Models
         }
 
         /// <summary>
-        /// The contains index.
+        ///     The contains index.
         /// </summary>
         /// <param name="index">
-        /// The index.
+        ///     The index.
         /// </param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        ///     The <see cref="bool" />.
         /// </returns>
         public bool ContainsIndex(string index)
         {
@@ -114,13 +115,13 @@ namespace SBXAThemeSupport.Models
         }
 
         /// <summary>
-        /// The get item with index.
+        ///     The get item with index.
         /// </summary>
         /// <param name="index">
-        /// The index.
+        ///     The index.
         /// </param>
         /// <returns>
-        /// The <see cref="NestedAttribute"/>.
+        ///     The <see cref="NestedAttribute" />.
         /// </returns>
         public NestedAttribute GetItemWithIndex(string index)
         {
@@ -138,10 +139,10 @@ namespace SBXAThemeSupport.Models
             if (sbString.Dcount() == 1)
             {
                 this.Insert(
-                    index, 
+                    index,
                     new NestedAttribute(
-                        DebugViewModel.BuildTitle(this.Variable, "1"), 
-                        sbString, 
+                        DebugViewModel.BuildTitle(this.Variable, "1"),
+                        sbString,
                         DebugViewModel.BuildTitle(this.Variable, "1")));
             }
             else
@@ -149,10 +150,10 @@ namespace SBXAThemeSupport.Models
                 foreach (var attr in sbString)
                 {
                     this.Insert(
-                        index, 
+                        index,
                         new NestedAttribute(
-                            DebugViewModel.BuildTitle(this.Variable, (index + 1).ToString(CultureInfo.InvariantCulture)), 
-                            attr, 
+                            DebugViewModel.BuildTitle(this.Variable, (index + 1).ToString(CultureInfo.InvariantCulture)),
+                            attr,
                             DebugViewModel.BuildTitle(this.Variable, (index + 1).ToString(CultureInfo.InvariantCulture))));
                     index++;
                 }
@@ -184,16 +185,16 @@ namespace SBXAThemeSupport.Models
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NestedAttribute"/> class.
+        ///     Initializes a new instance of the <see cref="NestedAttribute" /> class.
         /// </summary>
         /// <param name="attributeNumber">
-        /// The attribute number.
+        ///     The attribute number.
         /// </param>
         /// <param name="data">
-        /// The data.
+        ///     The data.
         /// </param>
         /// <param name="variable">
-        /// The variable.
+        ///     The variable.
         /// </param>
         public NestedAttribute(string attributeNumber, SBString data, string variable)
         {

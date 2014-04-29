@@ -9,6 +9,7 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport.Views
 {
     using System.Windows.Controls;
@@ -24,8 +25,8 @@ namespace SBXAThemeSupport.Views
         #region Static Fields
 
         public static readonly RoutedUICommand ClearStackCommand = new RoutedUICommand(
-            "ClearStackCommand", 
-            "ClearStackCommand", 
+            "ClearStackCommand",
+            "ClearStackCommand",
             typeof(ProcessStack));
 
         private static readonly CommandBinding ClearStackCommandBinding = new CommandBinding(ClearStackCommand);

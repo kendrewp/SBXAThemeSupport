@@ -1,7 +1,6 @@
 ﻿namespace SBXAThemeSupport.DebugAssistant.ViewModels
 {
     using System.Windows;
-    using System.Windows.Forms.VisualStyles;
     using System.Windows.Threading;
 
     using SBXA.Runtime;
@@ -10,48 +9,102 @@
 
     using SBXAThemeSupport.Models;
     using SBXAThemeSupport.ViewModels;
+
     using ICommand = System.Windows.Input.ICommand;
 
     /// <summary>
-    /// This class represents an item in a revision definition.
+    ///     This class represents an item in a revision definition.
     /// </summary>
     public class RevisionDefinitionViewModel : ViewModel
     {
         /// <summary>
-        /// The dictionary
-        /// </summary>
-        public const string Dict = "1";
-
-        /// <summary>
-        /// The data
+        ///     The data
         /// </summary>
         public const string Data = "3";
 
         /// <summary>
-        /// The dictionary and data
+        ///     The dictionary
+        /// </summary>
+        public const string Dict = "1";
+
+        /// <summary>
+        ///     The dictionary and data
         /// </summary>
         public const string DictAndData = "2";
 
         private readonly RevisionDefinitionItemCollection revisionDefinitionItemCollection = new RevisionDefinitionItemCollection();
 
-        private bool isAllSelected;
         private string definitionName;
+
+        private bool isAllSelected;
+
+        public RevisionDefinitionViewModel()
+        {
+            SaveDefinitionCommand = new RelayCommand(this.SaveDefinitionCommandExecuted, this.CanExecuteSaveDefinitionCommand);
+        }
+
+        public static ICommand SaveDefinitionCommand { get; private set; }
+
+        /// <summary>
+        ///     Gets or sets the name of the definition.
+        /// </summary>
+        /// <value>
+        ///     The name of the definition.
+        /// </value>
+        public string DefinitionName
+        {
+            get
+            {
+                return this.definitionName;
+            }
+            set
+            {
+                if (this.definitionName != value)
+                {
+                    this.definitionName = value;
+                    this.RaisePropertyChanged("DefinitionName");
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is all selected.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is all selected; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsAllSelected
+        {
+            get
+            {
+                return this.isAllSelected;
+            }
+            set
+            {
+                if (this.isAllSelected != value)
+                {
+                    this.isAllSelected = value;
+                    this.SelectAll(this.isAllSelected);
+                    this.RaisePropertyChanged("IsAllSelected");
+                }
+            }
+        }
 
         public RevisionDefinitionItemCollection RevisionDefinitionItemCollection
         {
             get
             {
-                return revisionDefinitionItemCollection;
+                return this.revisionDefinitionItemCollection;
             }
         }
 
         /// <summary>
-        /// Creates the revision definition.
+        ///     Creates the revision definition.
         /// </summary>
         /// <param name="startItem">The start item.</param>
         public void CreateRevisionDefinition(TreeItem startItem)
         {
-            startItem.AddChildrenToCollection(RevisionDefinitionItemCollection);
+            startItem.AddChildrenToCollection(this.RevisionDefinitionItemCollection);
         }
 
         internal static void AddItemToDefinition(RevisionDefinitionItemCollection collection, RevisionDefinitionItem item)
@@ -77,68 +130,25 @@
             }
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is all selected.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if this instance is all selected; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsAllSelected
+        private static void DefinitionWriteCompleted(string subroutineName, SBString[] parameters, object userState)
         {
-            get
-            {
-                return this.isAllSelected;
-            }
-            set
-            {
-                if (this.isAllSelected != value)
-                {
-                    this.isAllSelected = value;
-                    SelectAll(this.isAllSelected);
-                    this.RaisePropertyChanged("IsAllSelected");
-                }
-            }
+            MessageBox.Show("Definition Saved.");
         }
 
-        /// <summary>
-        /// Gets or sets the name of the definition.
-        /// </summary>
-        /// <value>
-        /// The name of the definition.
-        /// </value>
-        public string DefinitionName
+        private bool CanExecuteSaveDefinitionCommand(object parameter)
         {
-            get
-            {
-                return this.definitionName;
-            }
-            set
-            {
-                if (this.definitionName != value)
-                {
-                    this.definitionName = value;
-                    this.RaisePropertyChanged("DefinitionName");
-                }
-            }
-        }
-
-        private void SelectAll(bool select)
-        {
-            foreach (var item in RevisionDefinitionItemCollection)
-            {
-                item.Include = select;
-            }
+            return !string.IsNullOrEmpty(this.DefinitionName) && !string.IsNullOrWhiteSpace(this.DefinitionName);
         }
 
         private void CreateDefinition()
         {
-            SBString defn = new SBString();
+            var defn = new SBString();
             var actions = new SBString();
             var fileNames = new SBString();
             var items = new SBString();
             var parameters = new SBString();
 
-            foreach (var item in revisionDefinitionItemCollection)
+            foreach (var item in this.revisionDefinitionItemCollection)
             {
                 if (!item.Include)
                 {
@@ -159,32 +169,22 @@
             JobManager.RunInUIThread(DispatcherPriority.Normal,
                 delegate
                     {
-                        var defnName = "REV.DEFN*" + DefinitionName + "*1";
+                        var defnName = "REV.DEFN*" + this.DefinitionName + "*1";
                         SBFile.Write(SBPlusClient.Current.SystemId + "DEFN", defnName, defn, DefinitionWriteCompleted);
                     });
         }
 
-        private static void DefinitionWriteCompleted(string subroutineName, SBString[] parameters, object userState)
-        {
-            MessageBox.Show("Definition Saved.");
-        }
-
-        public RevisionDefinitionViewModel()
-        {
-            SaveDefinitionCommand = new RelayCommand(SaveDefinitionCommandExecuted, CanExecuteSaveDefinitionCommand);
-        }
-
-        public static ICommand SaveDefinitionCommand { get; private set; }
-
-        private bool CanExecuteSaveDefinitionCommand(object parameter)
-        {
-            return !string.IsNullOrEmpty(DefinitionName) && !string.IsNullOrWhiteSpace(DefinitionName);
-        }
-
         private void SaveDefinitionCommandExecuted(object parameter)
         {
-            CreateDefinition();
+            this.CreateDefinition();
         }
 
+        private void SelectAll(bool select)
+        {
+            foreach (var item in this.RevisionDefinitionItemCollection)
+            {
+                item.Include = select;
+            }
+        }
     }
 }

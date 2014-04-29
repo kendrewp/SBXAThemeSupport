@@ -11,7 +11,7 @@ namespace SBXAThemeSupport.Models
     using SBXAThemeSupport.DebugAssistant.ViewModels;
 
     /// <summary>
-    /// The application insight state.
+    ///     The application insight state.
     /// </summary>
     [Serializable]
     public class ApplicationInsightState
@@ -25,17 +25,17 @@ namespace SBXAThemeSupport.Models
         #region Public Properties
 
         /// <summary>
-        /// Gets or sets a value indicating whether always open.
+        ///     Gets or sets a value indicating whether always open.
         /// </summary>
         public bool AlwaysOpen { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether is debug on.
+        ///     Gets or sets a value indicating whether is debug on.
         /// </summary>
         public bool IsDebugOn { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether is debug window open.
+        ///     Gets or sets a value indicating whether is debug window open.
         /// </summary>
         public bool IsDebugWindowOpen
         {

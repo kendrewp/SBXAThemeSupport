@@ -3,6 +3,7 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport
 {
     using System;
@@ -112,36 +113,36 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The execute method.
+        ///     The execute method.
         /// </summary>
         /// <param name="myAction">
-        /// The my action.
+        ///     The my action.
         /// </param>
         /// <param name="canCauseUnexpectedResponsesToServer">
-        /// The can cause unexpected responses to server.
+        ///     The can cause unexpected responses to server.
         /// </param>
         /// <param name="name">
-        /// The name.
+        ///     The name.
         /// </param>
         /// <param name="isRetryWhenServerNotAccept">
-        /// The is retry when server not accept.
+        ///     The is retry when server not accept.
         /// </param>
         /// <param name="isRunOnUiThread">
-        /// The is run on ui thread.
+        ///     The is run on ui thread.
         /// </param>
         public void ExecuteMethod(
-            Action myAction, 
-            bool canCauseUnexpectedResponsesToServer = false, 
-            string name = null, 
-            bool isRetryWhenServerNotAccept = true, 
+            Action myAction,
+            bool canCauseUnexpectedResponsesToServer = false,
+            string name = null,
+            bool isRetryWhenServerNotAccept = true,
             bool isRunOnUiThread = false)
         {
             CustomLogger.LogDebug(() => string.Format("Adding new Action to the Queue. Name: {0}", name));
             var actionDefinition = new ActionDefinition(
-                canCauseUnexpectedResponsesToServer, 
-                myAction, 
-                name, 
-                isRetryWhenServerNotAccept, 
+                canCauseUnexpectedResponsesToServer,
+                myAction,
+                name,
+                isRetryWhenServerNotAccept,
                 isRunOnUiThread);
             this.processes.Enqueue(actionDefinition);
 
@@ -149,31 +150,31 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The execute method when not already in queue.
+        ///     The execute method when not already in queue.
         /// </summary>
         /// <param name="myAction">
-        /// The my action.
+        ///     The my action.
         /// </param>
         /// <param name="name">
-        /// The name.
+        ///     The name.
         /// </param>
         /// <param name="canCauseUnexpectedResponsesToServer">
-        /// The can cause unexpected responses to server.
+        ///     The can cause unexpected responses to server.
         /// </param>
         /// <param name="isRetryWhenServerNotAccept">
-        /// The is retry when server not accept.
+        ///     The is retry when server not accept.
         /// </param>
         /// <param name="isRunOnUiThread">
-        /// The is run on ui thread.
+        ///     The is run on ui thread.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
-        /// name
+        ///     name
         /// </exception>
         public void ExecuteMethodWhenNotAlreadyInQueue(
-            Action myAction, 
-            string name, 
-            bool canCauseUnexpectedResponsesToServer = true, 
-            bool isRetryWhenServerNotAccept = true, 
+            Action myAction,
+            string name,
+            bool canCauseUnexpectedResponsesToServer = true,
+            bool isRetryWhenServerNotAccept = true,
             bool isRunOnUiThread = false)
         {
             if (string.IsNullOrEmpty(name))
@@ -226,8 +227,8 @@ namespace SBXAThemeSupport
                 CustomLogger.LogDebug(
                     () =>
                     string.Format(
-                        "Ui Thread Id: {0} Actual Thread Id: {1}", 
-                        Application.Current.Dispatcher.Thread.ManagedThreadId, 
+                        "Ui Thread Id: {0} Actual Thread Id: {1}",
+                        Application.Current.Dispatcher.Thread.ManagedThreadId,
                         Thread.CurrentThread.ManagedThreadId));
             }
 
@@ -257,7 +258,7 @@ namespace SBXAThemeSupport
                         CustomLogger.LogError(
                             () =>
                             string.Format(
-                                "Exception is caught. Server is waiting: {0}", 
+                                "Exception is caught. Server is waiting: {0}",
                                 SBPlusRuntime.Current.CommandProcessor.IsServerWaiting));
                         Thread.Sleep(300);
                         Extensions.DoEvents();
@@ -272,9 +273,9 @@ namespace SBXAThemeSupport
                     CustomLogger.LogDebug(
                         () =>
                         string.Format(
-                            "Server allows to send. So run now the job with name {0} Method {1}. FailedCount {2}", 
-                            targetAction.Name, 
-                            targetAction.Action.Method.Name, 
+                            "Server allows to send. So run now the job with name {0} Method {1}. FailedCount {2}",
+                            targetAction.Name,
+                            targetAction.Action.Method.Name,
                             targetAction.FailedCount));
 
                     //dequeue the actiondefinition
@@ -321,10 +322,10 @@ namespace SBXAThemeSupport
                     CustomLogger.LogDebug(
                         () =>
                         string.Format(
-                            "Executing action with method name {0} definition name {1} thread {2} isRunOnUiThread {3}", 
-                            targetAction.Action.Method.Name, 
-                            targetAction.Name, 
-                            Thread.CurrentThread.ManagedThreadId, 
+                            "Executing action with method name {0} definition name {1} thread {2} isRunOnUiThread {3}",
+                            targetAction.Action.Method.Name,
+                            targetAction.Name,
+                            Thread.CurrentThread.ManagedThreadId,
                             targetAction.IsRunOnUiThread));
                     if (targetAction.IsRunOnUiThread && Application.Current != null)
                     {
@@ -363,7 +364,7 @@ namespace SBXAThemeSupport
                     }
 
                     CustomLogger.LogException(
-                        serverNotReadyException, 
+                        serverNotReadyException,
                         "this will eventually crash the client, because retry flag was not set.");
                     throw;
                 }
@@ -398,31 +399,31 @@ namespace SBXAThemeSupport
             #region Constructors and Destructors
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="SbProcessRunner.ActionDefinition"/> class.
+            ///     Initializes a new instance of the <see cref="SbProcessRunner.ActionDefinition" /> class.
             /// </summary>
             /// <param name="canCauseUnexpectedResponses">
-            /// The can cause unexpected responses.
+            ///     The can cause unexpected responses.
             /// </param>
             /// <param name="actionToRun">
-            /// The action to run.
+            ///     The action to run.
             /// </param>
             /// <param name="name">
-            /// The name.
+            ///     The name.
             /// </param>
             /// <param name="isRetryWhenServerNotAccept">
-            /// The is retry when server not accept.
+            ///     The is retry when server not accept.
             /// </param>
             /// <param name="isRunOnUiThread">
-            /// The is run on ui thread.
+            ///     The is run on ui thread.
             /// </param>
             /// <exception cref="System.ArgumentNullException">
-            /// actionToRun
+            ///     actionToRun
             /// </exception>
             public ActionDefinition(
-                bool canCauseUnexpectedResponses, 
-                Action actionToRun, 
-                string name, 
-                bool isRetryWhenServerNotAccept, 
+                bool canCauseUnexpectedResponses,
+                Action actionToRun,
+                string name,
+                bool isRetryWhenServerNotAccept,
                 bool isRunOnUiThread)
             {
                 if (actionToRun == null)
@@ -491,10 +492,10 @@ namespace SBXAThemeSupport
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CanSendCommandChangedEventArgs"/> class.
+        ///     Initializes a new instance of the <see cref="CanSendCommandChangedEventArgs" /> class.
         /// </summary>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         public CanSendCommandChangedEventArgs(bool newValue)
         {

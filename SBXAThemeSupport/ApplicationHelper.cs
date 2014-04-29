@@ -3,6 +3,7 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport
 {
     using System;
@@ -165,16 +166,16 @@ namespace SBXAThemeSupport
         #region Public Methods and Operators
 
         /// <summary>
-        /// The can send server commands.
+        ///     The can send server commands.
         /// </summary>
         /// <param name="commandCouldCauseUiAction">
-        /// The command could cause ui action.
+        ///     The command could cause ui action.
         /// </param>
         /// <param name="doSendEventsBeforeCheck">
-        /// The do send events before check.
+        ///     The do send events before check.
         /// </param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        ///     The <see cref="bool" />.
         /// </returns>
         public static bool CanSendServerCommands(bool commandCouldCauseUiAction = true, bool doSendEventsBeforeCheck = false)
         {
@@ -192,7 +193,7 @@ namespace SBXAThemeSupport
                 if (!Application.Current.Dispatcher.CheckAccess())
                 {
                     JobManager.RunSyncInUIThread(
-                        DispatcherPriority.Input, 
+                        DispatcherPriority.Input,
                         () => { canSend = CheckCanSendServerCommands(doSendEventsBeforeCheck); });
                 }
                 else
@@ -221,13 +222,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The has server pending jobs to process only with name.
+        ///     The has server pending jobs to process only with name.
         /// </summary>
         /// <param name="name">
-        /// The name.
+        ///     The name.
         /// </param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        ///     The <see cref="bool" />.
         /// </returns>
         public static bool HasServerPendingJobsToProcessOnlyWithName(string name)
         {
@@ -237,10 +238,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The invoke can send command changed.
+        ///     The invoke can send command changed.
         /// </summary>
         /// <param name="e">
-        /// The e.
+        ///     The e.
         /// </param>
         public static void InvokeCanSendCommandChanged(CanSendCommandChangedEventArgs e)
         {

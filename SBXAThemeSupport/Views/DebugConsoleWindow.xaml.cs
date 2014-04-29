@@ -9,6 +9,7 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport.Views
 {
     using System;
@@ -36,10 +37,10 @@ namespace SBXAThemeSupport.Views
         #region Methods
 
         /// <summary>
-        /// The on activated.
+        ///     The on activated.
         /// </summary>
         /// <param name="e">
-        /// The e.
+        ///     The e.
         /// </param>
         protected override void OnActivated(EventArgs e)
         {

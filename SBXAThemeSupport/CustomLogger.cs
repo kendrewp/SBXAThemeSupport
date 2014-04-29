@@ -3,6 +3,7 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport
 {
     using System;
@@ -54,13 +55,13 @@ namespace SBXAThemeSupport
         #region Public Methods and Operators
 
         /// <summary>
-        /// Logs the debug.
+        ///     Logs the debug.
         /// </summary>
         /// <param name="message">
-        /// The message.
+        ///     The message.
         /// </param>
         /// <param name="loggerName">
-        /// Name of the logger.
+        ///     Name of the logger.
         /// </param>
         public static void LogDebug(Func<string> message, string loggerName = null)
         {
@@ -73,21 +74,21 @@ namespace SBXAThemeSupport
             // use reflection to call the LogDebug method on the Logger.
             Logger.GetType()
                 .InvokeMember(
-                    "LogDebug", 
-                    BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.Public, 
-                    null, 
-                    null, 
+                    "LogDebug",
+                    BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.Public,
+                    null,
+                    null,
                     new object[] { message, loggerName });
         }
 
         /// <summary>
-        /// Logs the error.
+        ///     Logs the error.
         /// </summary>
         /// <param name="message">
-        /// The message.
+        ///     The message.
         /// </param>
         /// <param name="loggerName">
-        /// Name of the logger.
+        ///     Name of the logger.
         /// </param>
         public static void LogError(Func<string> message, string loggerName = null)
         {
@@ -100,21 +101,21 @@ namespace SBXAThemeSupport
             // use reflection to call the LogError method on the Logger.
             Logger.GetType()
                 .InvokeMember(
-                    "LogError", 
-                    BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.Public, 
-                    null, 
-                    null, 
+                    "LogError",
+                    BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.Public,
+                    null,
+                    null,
                     new object[] { message, loggerName });
         }
 
         /// <summary>
-        /// Logs the exception.
+        ///     Logs the exception.
         /// </summary>
         /// <param name="exception">
-        /// The exception.
+        ///     The exception.
         /// </param>
         /// <param name="message">
-        /// The message.
+        ///     The message.
         /// </param>
         public static void LogException(Exception exception, string message = null)
         {
@@ -127,21 +128,21 @@ namespace SBXAThemeSupport
             // use reflection to call the LogException method on the Logger.
             Logger.GetType()
                 .InvokeMember(
-                    "LogException", 
-                    BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.Public, 
-                    null, 
-                    null, 
+                    "LogException",
+                    BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.Public,
+                    null,
+                    null,
                     new object[] { exception, message });
         }
 
         /// <summary>
-        /// Logs the warning.
+        ///     Logs the warning.
         /// </summary>
         /// <param name="message">
-        /// The message.
+        ///     The message.
         /// </param>
         /// <param name="loggerName">
-        /// Name of the logger.
+        ///     Name of the logger.
         /// </param>
         public static void LogWarning(Func<string> message, string loggerName = null)
         {
@@ -154,10 +155,10 @@ namespace SBXAThemeSupport
             // use reflection to call the LogException method on the Logger.
             Logger.GetType()
                 .InvokeMember(
-                    "LogWarning", 
-                    BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.Public, 
-                    null, 
-                    null, 
+                    "LogWarning",
+                    BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.Public,
+                    null,
+                    null,
                     new object[] { message(), loggerName });
         }
 

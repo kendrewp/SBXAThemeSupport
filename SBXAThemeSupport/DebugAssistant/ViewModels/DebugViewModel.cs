@@ -9,6 +9,7 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport.DebugAssistant.ViewModels
 {
     using System;
@@ -47,111 +48,111 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         private readonly StringCollection section1 = new StringCollection
                                                          {
-                                                             "RECORD", 
-                                                             "ORIG.REC", 
-                                                             "KEY", 
-                                                             "WORK", 
-                                                             "OTHER.REC", 
-                                                             "CNT", 
-                                                             "ACTION", 
-                                                             "GUI", 
-                                                             "LINE", 
-                                                             "MAINFILE", 
-                                                             "LOCK.KEY", 
-                                                             "HEAD", 
-                                                             "STATUS.LINE", 
-                                                             "USERDATA(1)", 
-                                                             "USERDATA(2)", 
-                                                             "USERDATA(3)", 
-                                                             "USERDATA(4)", 
-                                                             "USERDATA(5)", 
-                                                             "USERDATA(6)", 
-                                                             "USERDATA(7)", 
-                                                             "USERDATA(8)", 
-                                                             "USERDATA(9)", 
-                                                             "USERDATA(10)", 
-                                                             "SCREENNO", 
-                                                             "LF.INFO", 
+                                                             "RECORD",
+                                                             "ORIG.REC",
+                                                             "KEY",
+                                                             "WORK",
+                                                             "OTHER.REC",
+                                                             "CNT",
+                                                             "ACTION",
+                                                             "GUI",
+                                                             "LINE",
+                                                             "MAINFILE",
+                                                             "LOCK.KEY",
+                                                             "HEAD",
+                                                             "STATUS.LINE",
+                                                             "USERDATA(1)",
+                                                             "USERDATA(2)",
+                                                             "USERDATA(3)",
+                                                             "USERDATA(4)",
+                                                             "USERDATA(5)",
+                                                             "USERDATA(6)",
+                                                             "USERDATA(7)",
+                                                             "USERDATA(8)",
+                                                             "USERDATA(9)",
+                                                             "USERDATA(10)",
+                                                             "SCREENNO",
+                                                             "LF.INFO",
                                                              "XUI"
                                                          };
 
         private readonly StringCollection section2 = new StringCollection
                                                          {
-                                                             "VALUE", 
-                                                             "RTN.FLAG", 
-                                                             "PARAM", 
-                                                             "REFRESH", 
-                                                             "PROC.NAME", 
-                                                             "MENU.OPT", 
-                                                             "LEVEL.NO", 
-                                                             "FILES.OPENED", 
-                                                             "OTHER(1)", 
-                                                             "OTHER(2)", 
-                                                             "OTHER(3)", 
-                                                             "OTHER(4)", 
-                                                             "OTHER(5)", 
-                                                             "OTHER(6)", 
-                                                             "OTHER(7)", 
-                                                             "OTHER(8)", 
-                                                             "OTHER(9)", 
-                                                             "OTHER(10)", 
-                                                             "OTHER(11)", 
-                                                             "OTHER(12)", 
-                                                             "OTHER(13)", 
-                                                             "OTHER(14)", 
-                                                             "OTHER(15)", 
-                                                             "OTHER(16)", 
-                                                             "OTHER(17)", 
-                                                             "OTHER(18)", 
-                                                             "OTHER(19)", 
-                                                             "OTHER(20)", 
-                                                             "SBPARM(1)", 
-                                                             "SBPARM(2)", 
-                                                             "SBPARM(3)", 
-                                                             "SBPARM(4)", 
-                                                             "SBPARM(5)", 
-                                                             "SBPARM(6)", 
-                                                             "SBPARM(7)", 
-                                                             "SBPARM(8)", 
-                                                             "SBPARM(9)", 
-                                                             "SBPARM(10)", 
-                                                             "SBPARM(11)", 
-                                                             "SBPARM(12)", 
-                                                             "SBPARM(13)", 
-                                                             "SBPARM(14)", 
-                                                             "SBPARM(15)", 
-                                                             "SBPARM(16)", 
-                                                             "SBPARM(17)", 
-                                                             "SBPARM(18)", 
-                                                             "SBPARM(19)", 
+                                                             "VALUE",
+                                                             "RTN.FLAG",
+                                                             "PARAM",
+                                                             "REFRESH",
+                                                             "PROC.NAME",
+                                                             "MENU.OPT",
+                                                             "LEVEL.NO",
+                                                             "FILES.OPENED",
+                                                             "OTHER(1)",
+                                                             "OTHER(2)",
+                                                             "OTHER(3)",
+                                                             "OTHER(4)",
+                                                             "OTHER(5)",
+                                                             "OTHER(6)",
+                                                             "OTHER(7)",
+                                                             "OTHER(8)",
+                                                             "OTHER(9)",
+                                                             "OTHER(10)",
+                                                             "OTHER(11)",
+                                                             "OTHER(12)",
+                                                             "OTHER(13)",
+                                                             "OTHER(14)",
+                                                             "OTHER(15)",
+                                                             "OTHER(16)",
+                                                             "OTHER(17)",
+                                                             "OTHER(18)",
+                                                             "OTHER(19)",
+                                                             "OTHER(20)",
+                                                             "SBPARM(1)",
+                                                             "SBPARM(2)",
+                                                             "SBPARM(3)",
+                                                             "SBPARM(4)",
+                                                             "SBPARM(5)",
+                                                             "SBPARM(6)",
+                                                             "SBPARM(7)",
+                                                             "SBPARM(8)",
+                                                             "SBPARM(9)",
+                                                             "SBPARM(10)",
+                                                             "SBPARM(11)",
+                                                             "SBPARM(12)",
+                                                             "SBPARM(13)",
+                                                             "SBPARM(14)",
+                                                             "SBPARM(15)",
+                                                             "SBPARM(16)",
+                                                             "SBPARM(17)",
+                                                             "SBPARM(18)",
+                                                             "SBPARM(19)",
                                                              "SBPARM(20)"
                                                          };
 
         private readonly StringCollection section3 = new StringCollection
                                                          {
-                                                             "SB.CONT", 
-                                                             "CONTROL", 
-                                                             "PORT", 
-                                                             "SYSID", 
-                                                             "ACNT.NAME", 
-                                                             "USER.ID", 
-                                                             "GUIDATA", 
-                                                             "SBCLIENT", 
-                                                             "XUIDATA", 
-                                                             "TERM.DEFN", 
-                                                             "PRINT.DEFN", 
-                                                             "PASS.DEFN", 
-                                                             "USER.KEYS", 
-                                                             "PCTERM", 
-                                                             "BT.NODE(1)", 
-                                                             "BT.NODE(2)", 
-                                                             "BT.NODE(3)", 
-                                                             "BT.NODE(4)", 
-                                                             "BT.NODE(5)", 
-                                                             "BT.NODE(6)", 
-                                                             "BT.NODE(7)", 
-                                                             "BT.LEV.NO", 
-                                                             "BT.ID", 
+                                                             "SB.CONT",
+                                                             "CONTROL",
+                                                             "PORT",
+                                                             "SYSID",
+                                                             "ACNT.NAME",
+                                                             "USER.ID",
+                                                             "GUIDATA",
+                                                             "SBCLIENT",
+                                                             "XUIDATA",
+                                                             "TERM.DEFN",
+                                                             "PRINT.DEFN",
+                                                             "PASS.DEFN",
+                                                             "USER.KEYS",
+                                                             "PCTERM",
+                                                             "BT.NODE(1)",
+                                                             "BT.NODE(2)",
+                                                             "BT.NODE(3)",
+                                                             "BT.NODE(4)",
+                                                             "BT.NODE(5)",
+                                                             "BT.NODE(6)",
+                                                             "BT.NODE(7)",
+                                                             "BT.LEV.NO",
+                                                             "BT.ID",
                                                              "BT.POS"
                                                          };
 
@@ -216,7 +217,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the application insight state.
+        ///     Gets or sets the application insight state.
         /// </summary>
         public ApplicationInsightState ApplicationInsightState { get; set; }
 
@@ -408,7 +409,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the process analysis view model.
+        ///     Gets or sets the process analysis view model.
         /// </summary>
         public ProcessAnalysisViewModel ProcessAnalysisViewModel
         {
@@ -536,17 +537,17 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         #region Public Methods and Operators
 
         /// <summary>
-        /// The enable error log.
+        ///     The enable error log.
         /// </summary>
         /// <param name="enable">
-        /// The enable.
+        ///     The enable.
         /// </param>
         public static void EnableErrorLog(bool enable)
         {
             if (Thread.CurrentThread.ManagedThreadId != Application.Current.Dispatcher.Thread.ManagedThreadId)
             {
                 JobManager.RunInUIThread(
-                    DispatcherPriority.Normal, 
+                    DispatcherPriority.Normal,
                     delegate
                         {
                             SBPlus.Current.ApplicationDefinition.LogCustomError = enable;
@@ -577,17 +578,17 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         /// <summary>
-        /// The enable information log.
+        ///     The enable information log.
         /// </summary>
         /// <param name="enable">
-        /// The enable.
+        ///     The enable.
         /// </param>
         public static void EnableInformationLog(bool enable)
         {
             if (Thread.CurrentThread.ManagedThreadId != Application.Current.Dispatcher.Thread.ManagedThreadId)
             {
                 JobManager.RunInUIThread(
-                    DispatcherPriority.Normal, 
+                    DispatcherPriority.Normal,
                     delegate
                         {
                             SBPlus.Current.ApplicationDefinition.LogCustomInfo = enable;
@@ -618,17 +619,17 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         /// <summary>
-        /// The enable logging.
+        ///     The enable logging.
         /// </summary>
         /// <param name="enable">
-        /// The enable.
+        ///     The enable.
         /// </param>
         public static void EnableLogging(bool enable)
         {
             if (Thread.CurrentThread.ManagedThreadId != Application.Current.Dispatcher.Thread.ManagedThreadId)
             {
                 JobManager.RunInUIThread(
-                    DispatcherPriority.Normal, 
+                    DispatcherPriority.Normal,
                     delegate
                         {
                             if (enable)
@@ -655,17 +656,17 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         /// <summary>
-        /// The enable warning log.
+        ///     The enable warning log.
         /// </summary>
         /// <param name="enable">
-        /// The enable.
+        ///     The enable.
         /// </param>
         public static void EnableWarningLog(bool enable)
         {
             if (Thread.CurrentThread.ManagedThreadId != Application.Current.Dispatcher.Thread.ManagedThreadId)
             {
                 JobManager.RunInUIThread(
-                    DispatcherPriority.Normal, 
+                    DispatcherPriority.Normal,
                     delegate
                         {
                             SBPlus.Current.ApplicationDefinition.LogCustomInfo = enable;
@@ -696,10 +697,10 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         /// <summary>
-        /// The get common variable.
+        ///     The get common variable.
         /// </summary>
         /// <param name="whichVariable">
-        /// The which variable.
+        ///     The which variable.
         /// </param>
         public static void GetCommonVariable(string whichVariable)
         {
@@ -707,10 +708,10 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         /// <summary>
-        /// The log information.
+        ///     The log information.
         /// </summary>
         /// <param name="message">
-        /// The message.
+        ///     The message.
         /// </param>
         public static void LogInformation(string message)
         {
@@ -719,16 +720,16 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         /// <summary>
-        /// The update definition stack.
+        ///     The update definition stack.
         /// </summary>
         /// <param name="add">
-        /// The add.
+        ///     The add.
         /// </param>
         /// <param name="processName">
-        /// The definition name.
+        ///     The definition name.
         /// </param>
         /// <param name="procName">
-        /// The proc name.
+        ///     The proc name.
         /// </param>
         public static void UpdateProcessStack(bool add, string processName, SBString procName)
         {
@@ -737,8 +738,8 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 if (DebugWindowManager.DebugConsoleWindow != null)
                 {
                     JobManager.RunInDispatcherThread(
-                        DebugWindowManager.DebugConsoleWindow.Dispatcher, 
-                        DispatcherPriority.Send, 
+                        DebugWindowManager.DebugConsoleWindow.Dispatcher,
+                        DispatcherPriority.Send,
                         () => DoUpdateProcessStack(add, processName));
                 }
                 else
@@ -772,17 +773,17 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         /// <summary>
-        /// The refresh collection.
+        ///     The refresh collection.
         /// </summary>
         /// <param name="collection">
-        /// The collection.
+        ///     The collection.
         /// </param>
         public void RefreshCollection(NestedAttributeCollection collection)
         {
         }
 
         /// <summary>
-        /// The save state.
+        ///     The save state.
         /// </summary>
         public void SaveState()
         {
@@ -816,7 +817,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         internal void CheckIsConnected()
         {
             JobManager.RunInUIThread(
-                DispatcherPriority.Input, 
+                DispatcherPriority.Input,
                 delegate
                     {
                         if (SBPlusClient.Current == null || SBPlusClient.Current.ConnectionStatus != ConnectionStatuses.Connected)
@@ -841,7 +842,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         try
                         {
                             PushProcess(
-                                Instance.ProcessStack, 
+                                Instance.ProcessStack,
                                 new DefinitionDescription(string.Empty, processName) { HistoryProcessDescription = historyProcess });
                         }
                         catch (Exception exception)
@@ -934,8 +935,8 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 if (DebugWindowManager.DebugConsoleWindow != null)
                 {
                     JobManager.RunInDispatcherThread(
-                        DebugWindowManager.DebugConsoleWindow.Dispatcher, 
-                        DispatcherPriority.Send, 
+                        DebugWindowManager.DebugConsoleWindow.Dispatcher,
+                        DispatcherPriority.Send,
                         () => UpdateProperties(parameters));
                 }
                 else
@@ -1130,7 +1131,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
 
             JobManager.RunInUIThread(
-                DispatcherPriority.Input, 
+                DispatcherPriority.Input,
                 () => XuiDebug.EnableDebug(this.SetIsDebugEnabledCompleted, this.IsDebugEnabled));
         }
 
@@ -1164,8 +1165,8 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
 
             JobManager.RunInDispatcherThread(
-                DebugWindowManager.DebugConsoleWindow.Dispatcher, 
-                DispatcherPriority.Normal, 
+                DebugWindowManager.DebugConsoleWindow.Dispatcher,
+                DispatcherPriority.Normal,
                 delegate { this.IsConnected = connected; });
         }
 

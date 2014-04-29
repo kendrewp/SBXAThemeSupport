@@ -3,6 +3,7 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport
 {
     using System;
@@ -36,16 +37,16 @@ namespace SBXAThemeSupport
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SbData"/> class.
+        ///     Initializes a new instance of the <see cref="SbData" /> class.
         /// </summary>
         /// <param name="attributeMark">
-        /// The attribute mark.
+        ///     The attribute mark.
         /// </param>
         /// <param name="valueMark">
-        /// The value mark.
+        ///     The value mark.
         /// </param>
         /// <param name="subValueMark">
-        /// The sub value mark.
+        ///     The sub value mark.
         /// </param>
         public SbData(char attributeMark, char valueMark, char subValueMark)
         {
@@ -55,10 +56,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SbData"/> class.
+        ///     Initializes a new instance of the <see cref="SbData" /> class.
         /// </summary>
         /// <param name="sbAllData">
-        /// The sb all data.
+        ///     The sb all data.
         /// </param>
         public SbData(string sbAllData)
             : this(sbAllData, Delimiters.AttributeMark, Delimiters.ValueMark, Delimiters.SubValueMark)
@@ -66,10 +67,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SbData"/> class.
+        ///     Initializes a new instance of the <see cref="SbData" /> class.
         /// </summary>
         /// <param name="sbString">
-        /// The sb string.
+        ///     The sb string.
         /// </param>
         public SbData(SBString sbString)
             : this(sbString.GetRawString())
@@ -77,19 +78,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SbData"/> class.
+        ///     Initializes a new instance of the <see cref="SbData" /> class.
         /// </summary>
         /// <param name="sbAllData">
-        /// The sb all data.
+        ///     The sb all data.
         /// </param>
         /// <param name="attributeMark">
-        /// The attribute mark.
+        ///     The attribute mark.
         /// </param>
         /// <param name="valueMark">
-        /// The value mark.
+        ///     The value mark.
         /// </param>
         /// <param name="subvalueMark">
-        /// The subvalue mark.
+        ///     The subvalue mark.
         /// </param>
         public SbData(string sbAllData, char attributeMark, char valueMark, char subvalueMark)
             : this(attributeMark, valueMark, subvalueMark)
@@ -155,13 +156,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The count sub value mark.
+        ///     The count sub value mark.
         /// </summary>
         /// <param name="data">
-        /// The data.
+        ///     The data.
         /// </param>
         /// <returns>
-        /// The <see cref="int"/>.
+        ///     The <see cref="int" />.
         /// </returns>
         public int CountSubValueMark(string data)
         {
@@ -174,13 +175,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The extract.
+        ///     The extract.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <returns>
-        /// The <see cref="string"/>.
+        ///     The <see cref="string" />.
         /// </returns>
         public string Extract(int attr)
         {
@@ -188,19 +189,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The extract.
+        ///     The extract.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="val">
-        /// The val.
+        ///     The val.
         /// </param>
         /// <returns>
-        /// The <see cref="string"/>.
+        ///     The <see cref="string" />.
         /// </returns>
         /// <exception cref="System.IndexOutOfRangeException">
-        /// this is 1 based collection because of sb+
+        ///     this is 1 based collection because of sb+
         ///     or
         ///     val is lesser than 1, is not allowed
         /// </exception>
@@ -238,22 +239,22 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The extract.
+        ///     The extract.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="val">
-        /// The val.
+        ///     The val.
         /// </param>
         /// <param name="subVal">
-        /// The sub val.
+        ///     The sub val.
         /// </param>
         /// <returns>
-        /// The <see cref="string"/>.
+        ///     The <see cref="string" />.
         /// </returns>
         /// <exception cref="System.IndexOutOfRangeException">
-        /// this is 1 based collection because of sb+
+        ///     this is 1 based collection because of sb+
         ///     or
         ///     val is lesser than 1 is not allowed
         ///     or
@@ -320,13 +321,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The extract array.
+        ///     The extract array.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <returns>
-        /// The <see cref="string[]"/>.
+        ///     The <see cref="string[]" />.
         /// </returns>
         public string[] ExtractArray(int attr)
         {
@@ -339,16 +340,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The extract array.
+        ///     The extract array.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="val">
-        /// The val.
+        ///     The val.
         /// </param>
         /// <returns>
-        /// The <see cref="string[]"/>.
+        ///     The <see cref="string[]" />.
         /// </returns>
         public string[] ExtractArray(int attr, int val)
         {
@@ -363,13 +364,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The extract to sb data.
+        ///     The extract to sb data.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <returns>
-        /// The <see cref="SbData"/>.
+        ///     The <see cref="SbData" />.
         /// </returns>
         public SbData ExtractToSbData(int attr)
         {
@@ -377,13 +378,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The extract to sb string.
+        ///     The extract to sb string.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <returns>
-        /// The <see cref="string"/>.
+        ///     The <see cref="string" />.
         /// </returns>
         public string ExtractToSbString(int attr)
         {
@@ -446,13 +447,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The sb insert.
+        ///     The sb insert.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         public void SBInsert(int attr, bool newValue)
         {
@@ -460,13 +461,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The sb insert.
+        ///     The sb insert.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         public void SBInsert(int attr, long newValue)
         {
@@ -474,13 +475,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The sb insert.
+        ///     The sb insert.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         public void SBInsert(int attr, double newValue)
         {
@@ -488,13 +489,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The sb insert.
+        ///     The sb insert.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         public void SBInsert(int attr, int newValue)
         {
@@ -502,13 +503,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The sb insert.
+        ///     The sb insert.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         public void SBInsert(int attr, string newValue)
         {
@@ -516,13 +517,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Fügt den Wert zum bestimmten Attribut hinzu, array wir VM getrennt abgelegt
+        ///     Fügt den Wert zum bestimmten Attribut hinzu, array wir VM getrennt abgelegt
         /// </summary>
         /// <param name="attr">
-        /// The attribute.
+        ///     The attribute.
         /// </param>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         public void SBInsert(int attr, string[] newValue)
         {
@@ -539,16 +540,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The sb insert.
+        ///     The sb insert.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="val">
-        /// The val.
+        ///     The val.
         /// </param>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         public void SBInsert(int attr, int val, int newValue)
         {
@@ -556,16 +557,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The sb insert.
+        ///     The sb insert.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="val">
-        /// The val.
+        ///     The val.
         /// </param>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         public void SBInsert(int attr, int val, decimal newValue)
         {
@@ -573,16 +574,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The sb insert.
+        ///     The sb insert.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="val">
-        /// The val.
+        ///     The val.
         /// </param>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         public void SBInsert(int attr, int val, uint newValue)
         {
@@ -590,16 +591,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The sb insert.
+        ///     The sb insert.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="val">
-        /// The val.
+        ///     The val.
         /// </param>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         public void SBInsert(int attr, int val, string newValue)
         {
@@ -607,16 +608,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The sb insert.
+        ///     The sb insert.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="val">
-        /// The val.
+        ///     The val.
         /// </param>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         public void SBInsert(int attr, int val, bool newValue)
         {
@@ -624,16 +625,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The newValue will be added separated by SVM
+        ///     The newValue will be added separated by SVM
         /// </summary>
         /// <param name="attr">
-        /// The attribute.
+        ///     The attribute.
         /// </param>
         /// <param name="val">
-        /// The val.
+        ///     The val.
         /// </param>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         public void SBInsert(int attr, int val, string[] newValue)
         {
@@ -644,22 +645,22 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The sb insert.
+        ///     The sb insert.
         /// </summary>
         /// <param name="attr">
-        /// The attr.
+        ///     The attr.
         /// </param>
         /// <param name="val">
-        /// The val.
+        ///     The val.
         /// </param>
         /// <param name="subVal">
-        /// The sub val.
+        ///     The sub val.
         /// </param>
         /// <param name="newValue">
-        /// The new value.
+        ///     The new value.
         /// </param>
         /// <exception cref="System.IndexOutOfRangeException">
-        /// this is 1 based collection because of sb+
+        ///     this is 1 based collection because of sb+
         ///     or
         ///     val is lesser than  1 is not allowed
         ///     or
@@ -735,13 +736,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Fügt alle werte die mit Attribute Mark geliefert wurde zu einem Array
+        ///     Fügt alle werte die mit Attribute Mark geliefert wurde zu einem Array
         /// </summary>
         /// <param name="valPos">
-        /// The value position.
+        ///     The value position.
         /// </param>
         /// <returns>
-        /// The <see cref="string[]"/>.
+        ///     The <see cref="string[]" />.
         /// </returns>
         public string[] ToAttributesArray(int valPos)
         {
@@ -766,13 +767,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The to values array.
+        ///     The to values array.
         /// </summary>
         /// <param name="attPos">
-        /// The att pos.
+        ///     The att pos.
         /// </param>
         /// <returns>
-        /// The <see cref="string[]"/>.
+        ///     The <see cref="string[]" />.
         /// </returns>
         public string[] ToValuesArray(int attPos)
         {

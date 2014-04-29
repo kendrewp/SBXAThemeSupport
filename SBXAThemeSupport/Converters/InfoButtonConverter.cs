@@ -6,6 +6,7 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport.Converters
 {
     using System;
@@ -22,22 +23,22 @@ namespace SBXAThemeSupport.Converters
         #region Public Methods and Operators
 
         /// <summary>
-        /// The convert.
+        ///     The convert.
         /// </summary>
         /// <param name="value">
-        /// The value.
+        ///     The value.
         /// </param>
         /// <param name="targetType">
-        /// The target type.
+        ///     The target type.
         /// </param>
         /// <param name="parameter">
-        /// The parameter.
+        ///     The parameter.
         /// </param>
         /// <param name="culture">
-        /// The culture.
+        ///     The culture.
         /// </param>
         /// <returns>
-        /// The <see cref="object"/>.
+        ///     The <see cref="object" />.
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -61,22 +62,22 @@ namespace SBXAThemeSupport.Converters
         }
 
         /// <summary>
-        /// The convert back.
+        ///     The convert back.
         /// </summary>
         /// <param name="value">
-        /// The value.
+        ///     The value.
         /// </param>
         /// <param name="targetType">
-        /// The target type.
+        ///     The target type.
         /// </param>
         /// <param name="parameter">
-        /// The parameter.
+        ///     The parameter.
         /// </param>
         /// <param name="culture">
-        /// The culture.
+        ///     The culture.
         /// </param>
         /// <returns>
-        /// The <see cref="object"/>.
+        ///     The <see cref="object" />.
         /// </returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -94,22 +95,22 @@ namespace SBXAThemeSupport.Converters
         #region Public Methods and Operators
 
         /// <summary>
-        /// The convert.
+        ///     The convert.
         /// </summary>
         /// <param name="values">
-        /// The values.
+        ///     The values.
         /// </param>
         /// <param name="targetType">
-        /// The target type.
+        ///     The target type.
         /// </param>
         /// <param name="parameter">
-        /// The parameter.
+        ///     The parameter.
         /// </param>
         /// <param name="culture">
-        /// The culture.
+        ///     The culture.
         /// </param>
         /// <returns>
-        /// The <see cref="object"/>.
+        ///     The <see cref="object" />.
         /// </returns>
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
@@ -131,23 +132,23 @@ namespace SBXAThemeSupport.Converters
         }
 
         /// <summary>
-        /// Converts a binding target value to the source binding values.
+        ///     Converts a binding target value to the source binding values.
         /// </summary>
         /// <param name="value">
-        /// The value that the binding target produces.
+        ///     The value that the binding target produces.
         /// </param>
         /// <param name="targetTypes">
-        /// The array of types to convert to. The array length indicates the number and types of values
+        ///     The array of types to convert to. The array length indicates the number and types of values
         ///     that are suggested for the method to return.
         /// </param>
         /// <param name="parameter">
-        /// The converter parameter to use.
+        ///     The converter parameter to use.
         /// </param>
         /// <param name="culture">
-        /// The culture to use in the converter.
+        ///     The culture to use in the converter.
         /// </param>
         /// <returns>
-        /// An array of values that have been converted from the target value back to the source values.
+        ///     An array of values that have been converted from the target value back to the source values.
         /// </returns>
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {

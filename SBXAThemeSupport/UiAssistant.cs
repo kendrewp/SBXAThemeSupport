@@ -9,6 +9,7 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport
 {
     using System;
@@ -42,17 +43,17 @@ namespace SBXAThemeSupport
         /// </summary>
         public static readonly DependencyProperty CloseWindowButtonVisiblityProperty =
             DependencyProperty.RegisterAttached(
-                "CloseWindowButtonVisiblity", 
-                typeof(Visibility), 
-                typeof(UiAssistant), 
+                "CloseWindowButtonVisiblity",
+                typeof(Visibility),
+                typeof(UiAssistant),
                 new PropertyMetadata(Visibility.Visible));
 
         public static readonly DependencyProperty CustomSBPlusThemeVersionProperty =
             DependencyProperty.RegisterAttached("CustomSBPlusThemeVersion", typeof(string), typeof(UiAssistant));
 
         public static readonly DependencyProperty DefaultBackgroundProperty = DependencyProperty.RegisterAttached(
-            "DefaultBackground", 
-            typeof(Brush), 
+            "DefaultBackground",
+            typeof(Brush),
             typeof(UiAssistant));
 
         public static readonly DependencyProperty DevelopmentAccountNameProperty =
@@ -62,38 +63,38 @@ namespace SBXAThemeSupport
             DependencyProperty.RegisterAttached("DevelopmentBackground", typeof(Brush), typeof(UiAssistant));
 
         public static readonly RoutedUICommand ExecuteProcessInContextCommand = new RoutedUICommand(
-            "ExecuteProcessInContextCommand", 
-            "ExecuteProcessInContextCommand", 
+            "ExecuteProcessInContextCommand",
+            "ExecuteProcessInContextCommand",
             typeof(UiAssistant));
 
         public static readonly DependencyProperty HyperlinkParameterProperty = DependencyProperty.RegisterAttached(
-            "HyperlinkParameter", 
-            typeof(string), 
+            "HyperlinkParameter",
+            typeof(string),
             typeof(UiAssistant));
 
         public static readonly DependencyProperty HyperlinkProcessNameProperty = DependencyProperty.RegisterAttached(
-            "HyperlinkProcessName", 
-            typeof(string), 
+            "HyperlinkProcessName",
+            typeof(string),
             typeof(UiAssistant));
 
         public static readonly DependencyProperty HyperlinkTextProperty = DependencyProperty.RegisterAttached(
-            "HyperlinkText", 
-            typeof(string), 
+            "HyperlinkText",
+            typeof(string),
             typeof(UiAssistant));
 
         public static readonly DependencyProperty IsConnectedProperty = DependencyProperty.Register(
-            "IsConnected", 
-            typeof(bool), 
+            "IsConnected",
+            typeof(bool),
             typeof(UiAssistant));
 
         public static readonly DependencyProperty LiveAccountNameProperty = DependencyProperty.RegisterAttached(
-            "LiveAccountName", 
-            typeof(string), 
+            "LiveAccountName",
+            typeof(string),
             typeof(UiAssistant));
 
         public static readonly DependencyProperty LiveBackgroundProperty = DependencyProperty.RegisterAttached(
-            "LiveBackground", 
-            typeof(Brush), 
+            "LiveBackground",
+            typeof(Brush),
             typeof(UiAssistant));
 
         public static readonly DependencyProperty MainWindowBorderBackgroundProperty =
@@ -115,45 +116,45 @@ namespace SBXAThemeSupport
             DependencyProperty.RegisterAttached("MainWindowMinimizedTitle", typeof(string), typeof(UiAssistant));
 
         public static readonly DependencyProperty MainWindowTitleProperty = DependencyProperty.RegisterAttached(
-            "MainWindowTitle", 
-            typeof(string), 
+            "MainWindowTitle",
+            typeof(string),
             typeof(UiAssistant));
 
         /// <summary>
         ///     Setting this property will hide or show the Options menu on the StatusBar
         /// </summary>
         public static readonly DependencyProperty OptionsVisibilityProperty = DependencyProperty.Register(
-            "OptionsVisibility", 
-            typeof(Visibility), 
-            typeof(UiAssistant), 
+            "OptionsVisibility",
+            typeof(Visibility),
+            typeof(UiAssistant),
             new PropertyMetadata(Visibility.Collapsed));
 
         public static readonly DependencyProperty QaAccountNameProperty = DependencyProperty.RegisterAttached(
-            "QaAccountName", 
-            typeof(string), 
+            "QaAccountName",
+            typeof(string),
             typeof(UiAssistant));
 
         public static readonly DependencyProperty QaBackgroundProperty = DependencyProperty.RegisterAttached(
-            "QaBackground", 
-            typeof(Brush), 
+            "QaBackground",
+            typeof(Brush),
             typeof(UiAssistant));
 
         public static readonly DependencyProperty RecognizesAccessKeyProperty = DependencyProperty.RegisterAttached(
-            "RecognizesAccessKey", 
-            typeof(bool), 
-            typeof(UiAssistant), 
+            "RecognizesAccessKey",
+            typeof(bool),
+            typeof(UiAssistant),
             new PropertyMetadata(true));
 
         public static readonly DependencyProperty ResizeGripVisiblityProperty = DependencyProperty.RegisterAttached(
-            "ResizeGripVisiblity", 
-            typeof(Visibility), 
-            typeof(UiAssistant), 
+            "ResizeGripVisiblity",
+            typeof(Visibility),
+            typeof(UiAssistant),
             new PropertyMetadata(Visibility.Visible, OnResizeGripVisiblityChanged));
 
         public static readonly DependencyProperty SetDrawableProperty = DependencyProperty.RegisterAttached(
-            "SetDrawable", 
-            typeof(bool), 
-            typeof(UiAssistant), 
+            "SetDrawable",
+            typeof(bool),
+            typeof(UiAssistant),
             new PropertyMetadata(true, OnSetDrawableChanged));
 
         // Using a DependencyProperty as the backing store for IsConnected.  This enables animation, styling, binding, etc...
@@ -309,13 +310,13 @@ namespace SBXAThemeSupport
         #region Public Methods and Operators
 
         /// <summary>
-        /// Gets the value of CloseWindowButtonVisiblity
+        ///     Gets the value of CloseWindowButtonVisiblity
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of CloseWindowButtonVisiblity
+        ///     The value of CloseWindowButtonVisiblity
         /// </returns>
         public static Visibility GetCloseWindowButtonVisiblity(DependencyObject target)
         {
@@ -323,13 +324,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of CustomSBPlusThemeVersion
+        ///     Gets the value of CustomSBPlusThemeVersion
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of CustomSBPlusThemeVersion
+        ///     The value of CustomSBPlusThemeVersion
         /// </returns>
         public static string GetCustomSBPlusThemeVersion(DependencyObject target)
         {
@@ -337,13 +338,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of DefaultBackground
+        ///     Gets the value of DefaultBackground
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of DefaultBackground
+        ///     The value of DefaultBackground
         /// </returns>
         public static Brush GetDefaultBackground(DependencyObject target)
         {
@@ -351,13 +352,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of DevelopmentAccountName
+        ///     Gets the value of DevelopmentAccountName
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of DevelopmentAccountName
+        ///     The value of DevelopmentAccountName
         /// </returns>
         public static string GetDevelopmentAccountName(DependencyObject target)
         {
@@ -365,13 +366,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of DevelopmentBackground
+        ///     Gets the value of DevelopmentBackground
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of DevelopmentBackground
+        ///     The value of DevelopmentBackground
         /// </returns>
         public static Brush GetDevelopmentBackground(DependencyObject target)
         {
@@ -379,13 +380,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of HyperlinkParameter
+        ///     Gets the value of HyperlinkParameter
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of HyperlinkParameter
+        ///     The value of HyperlinkParameter
         /// </returns>
         public static string GetHyperlinkParameter(DependencyObject target)
         {
@@ -393,13 +394,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of HyperlinkProcessName
+        ///     Gets the value of HyperlinkProcessName
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of HyperlinkProcessName
+        ///     The value of HyperlinkProcessName
         /// </returns>
         public static string GetHyperlinkProcessName(DependencyObject target)
         {
@@ -407,13 +408,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of HyperlinkText
+        ///     Gets the value of HyperlinkText
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of HyperlinkText
+        ///     The value of HyperlinkText
         /// </returns>
         public static string GetHyperlinkText(DependencyObject target)
         {
@@ -421,13 +422,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of LiveAccountName
+        ///     Gets the value of LiveAccountName
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of LiveAccountName
+        ///     The value of LiveAccountName
         /// </returns>
         public static string GetLiveAccountName(DependencyObject target)
         {
@@ -435,13 +436,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of LiveBackground
+        ///     Gets the value of LiveBackground
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of LiveBackground
+        ///     The value of LiveBackground
         /// </returns>
         public static Brush GetLiveBackground(DependencyObject target)
         {
@@ -449,13 +450,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of MainWindowBorderBackground
+        ///     Gets the value of MainWindowBorderBackground
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of MainWindowBorderBackground
+        ///     The value of MainWindowBorderBackground
         /// </returns>
         public static Brush GetMainWindowBorderBackground(DependencyObject target)
         {
@@ -463,13 +464,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of MainWindowMinimizedTitle
+        ///     Gets the value of MainWindowMinimizedTitle
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of MainWindowMinimizedTitle
+        ///     The value of MainWindowMinimizedTitle
         /// </returns>
         public static string GetMainWindowMinimizedTitle(DependencyObject target)
         {
@@ -477,13 +478,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of MainWindowTitle
+        ///     Gets the value of MainWindowTitle
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of MainWindowTitle
+        ///     The value of MainWindowTitle
         /// </returns>
         public static string GetMainWindowTitle(DependencyObject target)
         {
@@ -491,13 +492,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of QaAccountName
+        ///     Gets the value of QaAccountName
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of QaAccountName
+        ///     The value of QaAccountName
         /// </returns>
         public static string GetQaAccountName(DependencyObject target)
         {
@@ -505,13 +506,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of QaBackground
+        ///     Gets the value of QaBackground
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of QaBackground
+        ///     The value of QaBackground
         /// </returns>
         public static Brush GetQaBackground(DependencyObject target)
         {
@@ -519,13 +520,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of RecognizesAccessKey
+        ///     Gets the value of RecognizesAccessKey
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of RecognizesAccessKey
+        ///     The value of RecognizesAccessKey
         /// </returns>
         public static bool GetRecognizesAccessKey(DependencyObject target)
         {
@@ -533,13 +534,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the resize grip visiblity.
+        ///     Gets the resize grip visiblity.
         /// </summary>
         /// <param name="target">
-        /// The target.
+        ///     The target.
         /// </param>
         /// <returns>
-        /// Returns if the proerpty is visible or not.
+        ///     Returns if the proerpty is visible or not.
         /// </returns>
         public static Visibility GetResizeGripVisiblity(DependencyObject target)
         {
@@ -547,13 +548,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Gets the value of SetDrawable
+        ///     Gets the value of SetDrawable
         /// </summary>
         /// <param name="target">
-        /// The <see cref="DependencyObject"/> that <see cref="DependencyProperty"/> will be applied to.
+        ///     The <see cref="DependencyObject" /> that <see cref="DependencyProperty" /> will be applied to.
         /// </param>
         /// <returns>
-        /// The value of SetDrawable
+        ///     The value of SetDrawable
         /// </returns>
         public static bool GetSetDrawable(DependencyObject target)
         {
@@ -561,10 +562,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The send response.
+        ///     The send response.
         /// </summary>
         /// <param name="response">
-        /// The response.
+        ///     The response.
         /// </param>
         public static void SendResponse(SBString response)
         {
@@ -591,13 +592,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the CloseWindowButtonVisiblity property.
+        ///     Sets the value of the CloseWindowButtonVisiblity property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetCloseWindowButtonVisiblity(DependencyObject target, Visibility value)
         {
@@ -605,13 +606,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the CustomSBPlusThemeVersion property.
+        ///     Sets the value of the CustomSBPlusThemeVersion property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetCustomSBPlusThemeVersion(DependencyObject target, string value)
         {
@@ -619,13 +620,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the DefaultBackground property.
+        ///     Sets the value of the DefaultBackground property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetDefaultBackground(DependencyObject target, Brush value)
         {
@@ -633,13 +634,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the DevelopmentAccountName property.
+        ///     Sets the value of the DevelopmentAccountName property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetDevelopmentAccountName(DependencyObject target, string value)
         {
@@ -647,13 +648,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the DevelopmentBackground property.
+        ///     Sets the value of the DevelopmentBackground property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetDevelopmentBackground(DependencyObject target, Brush value)
         {
@@ -661,13 +662,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the HyperlinkParameter property.
+        ///     Sets the value of the HyperlinkParameter property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetHyperlinkParameter(DependencyObject target, string value)
         {
@@ -675,13 +676,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the HyperlinkProcessName property.
+        ///     Sets the value of the HyperlinkProcessName property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetHyperlinkProcessName(DependencyObject target, string value)
         {
@@ -689,13 +690,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the HyperlinkText property.
+        ///     Sets the value of the HyperlinkText property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetHyperlinkText(DependencyObject target, string value)
         {
@@ -703,13 +704,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the LiveAccountName property.
+        ///     Sets the value of the LiveAccountName property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetLiveAccountName(DependencyObject target, string value)
         {
@@ -717,13 +718,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the LiveBackground property.
+        ///     Sets the value of the LiveBackground property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetLiveBackground(DependencyObject target, Brush value)
         {
@@ -731,13 +732,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the MainWindowBorderBackground property.
+        ///     Sets the value of the MainWindowBorderBackground property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetMainWindowBorderBackground(DependencyObject target, Brush value)
         {
@@ -745,13 +746,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the MainWindowMinimizedTitle property.
+        ///     Sets the value of the MainWindowMinimizedTitle property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetMainWindowMinimizedTitle(DependencyObject target, string value)
         {
@@ -759,13 +760,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the MainWindowTitle property.
+        ///     Sets the value of the MainWindowTitle property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetMainWindowTitle(DependencyObject target, string value)
         {
@@ -773,13 +774,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the QaAccountName property.
+        ///     Sets the value of the QaAccountName property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetQaAccountName(DependencyObject target, string value)
         {
@@ -787,13 +788,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the QaBackground property.
+        ///     Sets the value of the QaBackground property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetQaBackground(DependencyObject target, Brush value)
         {
@@ -801,13 +802,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the RecognizesAccessKey property.
+        ///     Sets the value of the RecognizesAccessKey property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetRecognizesAccessKey(DependencyObject target, bool value)
         {
@@ -815,13 +816,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the resize grip visiblity.
+        ///     Sets the resize grip visiblity.
         /// </summary>
         /// <param name="target">
-        /// The target.
+        ///     The target.
         /// </param>
         /// <param name="value">
-        /// The value.
+        ///     The value.
         /// </param>
         public static void SetResizeGripVisiblity(DependencyObject target, Visibility value)
         {
@@ -829,13 +830,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Sets the value of the SetDrawable property.
+        ///     Sets the value of the SetDrawable property.
         /// </summary>
         /// <param name="target">
-        /// The depdendency object that this property is attached to.
+        ///     The depdendency object that this property is attached to.
         /// </param>
         /// <param name="value">
-        /// The value to set it to.
+        ///     The value to set it to.
         /// </param>
         public static void SetSetDrawable(DependencyObject target, bool value)
         {
@@ -952,13 +953,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Called when [resize grip visiblity changed].
+        ///     Called when [resize grip visiblity changed].
         /// </summary>
         /// <param name="d">
-        /// The <see cref="DependencyObject"/> that the property will act on.
+        ///     The <see cref="DependencyObject" /> that the property will act on.
         /// </param>
         /// <param name="e">
-        /// The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.
+        ///     The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.
         /// </param>
         private static void OnResizeGripVisiblityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -1017,9 +1018,9 @@ namespace SBXAThemeSupport
             {
                 SendResponse(
                     new GuiInputEvent(
-                        field2.SBValue, 
-                        SBCommands.SBCtrlxCommand.SBEvent, 
-                        SBCommands.SBCtrlxCommand.SBKeyValue, 
+                        field2.SBValue,
+                        SBCommands.SBCtrlxCommand.SBEvent,
+                        SBCommands.SBCtrlxCommand.SBKeyValue,
                         field2.CursorPosition + 1).ResponseString);
             }
             else
@@ -1107,10 +1108,10 @@ namespace SBXAThemeSupport
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RelayCommand"/> class.
+        ///     Initializes a new instance of the <see cref="RelayCommand" /> class.
         /// </summary>
         /// <param name="execute">
-        /// The execute.
+        ///     The execute.
         /// </param>
         public RelayCommand(Action<object> execute)
             : this(execute, null)
@@ -1118,16 +1119,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RelayCommand"/> class.
+        ///     Initializes a new instance of the <see cref="RelayCommand" /> class.
         /// </summary>
         /// <param name="execute">
-        /// The execute.
+        ///     The execute.
         /// </param>
         /// <param name="canExecute">
-        /// The can execute.
+        ///     The can execute.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
-        /// execute
+        ///     execute
         /// </exception>
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
@@ -1165,13 +1166,13 @@ namespace SBXAThemeSupport
         #region Public Methods and Operators
 
         /// <summary>
-        /// The can execute.
+        ///     The can execute.
         /// </summary>
         /// <param name="parameter">
-        /// The parameter.
+        ///     The parameter.
         /// </param>
         /// <returns>
-        /// The <see cref="bool"/>.
+        ///     The <see cref="bool" />.
         /// </returns>
         [DebuggerStepThrough]
         public bool CanExecute(object parameter)
@@ -1180,10 +1181,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The execute.
+        ///     The execute.
         /// </summary>
         /// <param name="parameter">
-        /// The parameter.
+        ///     The parameter.
         /// </param>
         public void Execute(object parameter)
         {

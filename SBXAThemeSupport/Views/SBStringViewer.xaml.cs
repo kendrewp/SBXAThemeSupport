@@ -9,6 +9,7 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport.Views
 {
     using System;
@@ -28,8 +29,8 @@ namespace SBXAThemeSupport.Views
         #region Static Fields
 
         public static readonly RoutedUICommand DrillDownCommand = new RoutedUICommand(
-            "DrillDownCommand", 
-            "DrillDownCommand", 
+            "DrillDownCommand",
+            "DrillDownCommand",
             typeof(SBStringViewer));
 
         private static readonly CommandBinding DrillDownCommandBinding = new CommandBinding(DrillDownCommand);

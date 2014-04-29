@@ -14,7 +14,7 @@ namespace SBXAThemeSupport.Models
     using SBXAThemeSupport.DebugAssistant.ViewModels;
 
     /// <summary>
-    /// The TreeItem interface.
+    ///     The TreeItem interface.
     /// </summary>
     public interface ITreeItem
     {
@@ -30,7 +30,7 @@ namespace SBXAThemeSupport.Models
         #region Public Properties
 
         /// <summary>
-        /// Gets the children.
+        ///     Gets the children.
         /// </summary>
         IEnumerable Children { get; }
 
@@ -43,7 +43,7 @@ namespace SBXAThemeSupport.Models
         string Description { get; set; }
 
         /// <summary>
-        /// Gets the name.
+        ///     Gets the name.
         /// </summary>
         string Name { get; }
 
@@ -51,17 +51,17 @@ namespace SBXAThemeSupport.Models
     }
 
     /// <summary>
-    /// The tree item base.
+    ///     The tree item base.
     /// </summary>
     public abstract class TreeItemBase : ObservableEntity
     {
         #region Public Methods and Operators
 
         /// <summary>
-        /// The add children to collection.
+        ///     The add children to collection.
         /// </summary>
         /// <param name="collection">
-        /// The collection.
+        ///     The collection.
         /// </param>
         public abstract void AddChildrenToCollection(RevisionDefinitionItemCollection collection);
 
@@ -69,7 +69,7 @@ namespace SBXAThemeSupport.Models
     }
 
     /// <summary>
-    /// The tree item.
+    ///     The tree item.
     /// </summary>
     public class TreeItem : TreeItemBase, ITreeItem, IDisposable
     {
@@ -82,7 +82,7 @@ namespace SBXAThemeSupport.Models
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TreeItem"/> class.
+        ///     Initializes a new instance of the <see cref="TreeItem" /> class.
         /// </summary>
         public TreeItem()
         {
@@ -90,10 +90,10 @@ namespace SBXAThemeSupport.Models
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TreeItem"/> class.
+        ///     Initializes a new instance of the <see cref="TreeItem" /> class.
         /// </summary>
         /// <param name="name">
-        /// The name.
+        ///     The name.
         /// </param>
         public TreeItem(string name)
         {
@@ -102,7 +102,7 @@ namespace SBXAThemeSupport.Models
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="TreeItem"/> class. 
+        ///     Finalizes an instance of the <see cref="TreeItem" /> class.
         /// </summary>
         ~TreeItem()
         {
@@ -115,7 +115,7 @@ namespace SBXAThemeSupport.Models
         #region Public Properties
 
         /// <summary>
-        /// Gets the children.
+        ///     Gets the children.
         /// </summary>
         public IEnumerable Children
         {
@@ -140,32 +140,31 @@ namespace SBXAThemeSupport.Models
         public string Description { get; set; }
 
         /// <summary>
-        /// Gets the name.
+        ///     Gets the name.
         /// </summary>
         public string Name { get; private set; }
 
         #endregion
 
-        // The bulk of the clean-up code is implemented in Dispose(bool)
         #region Public Methods and Operators
 
         /// <summary>
-        /// The add children to collection.
+        ///     The add children to collection.
         /// </summary>
         /// <param name="collection">
-        /// The collection.
+        ///     The collection.
         /// </param>
         public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
         {
             foreach (var item in this.children)
             {
                 RevisionDefinitionViewModel.AddItemToDefinition(
-                    collection, 
+                    collection,
                     new RevisionDefinitionItem()
                         {
-                            Action = "1", 
-                            FileName = "fileName", 
-                            Item = item.GetType().Name, 
+                            Action = "1",
+                            FileName = "fileName",
+                            Item = item.GetType().Name,
                             Parameters = "parameters"
                         });
             }
@@ -185,10 +184,10 @@ namespace SBXAThemeSupport.Models
         #region Methods
 
         /// <summary>
-        /// The dispose.
+        ///     The dispose.
         /// </summary>
         /// <param name="disposing">
-        /// The disposing.
+        ///     The disposing.
         /// </param>
         protected virtual void Dispose(bool disposing)
         {
@@ -212,5 +211,7 @@ namespace SBXAThemeSupport.Models
         }
 
         #endregion
+
+        // The bulk of the clean-up code is implemented in Dispose(bool)
     }
 }

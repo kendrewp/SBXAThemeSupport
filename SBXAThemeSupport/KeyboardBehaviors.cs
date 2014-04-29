@@ -6,6 +6,7 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport
 {
     using System;
@@ -87,13 +88,13 @@ namespace SBXAThemeSupport
             base.OnAttached();
             this.AssociatedObject.KeyUp += this.HandleAssociatedObjectKeyUp;
             this.Dispatcher.BeginInvoke(
-                DispatcherPriority.Input, 
+                DispatcherPriority.Input,
                 new DispatcherOperationCallback(
                     delegate
                         {
                             this.ListenToWindowClose();
                             return null;
-                        }), 
+                        }),
                 null);
         }
 
@@ -107,13 +108,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// Handles the associated object key up.
+        ///     Handles the associated object key up.
         /// </summary>
         /// <param name="sender">
-        /// The sender.
+        ///     The sender.
         /// </param>
         /// <param name="e">
-        /// The <see cref="KeyEventArgs"/> instance containing the event data.
+        ///     The <see cref="KeyEventArgs" /> instance containing the event data.
         /// </param>
         private void HandleAssociatedObjectKeyUp(object sender, KeyEventArgs e)
         {

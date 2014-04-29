@@ -9,6 +9,7 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace SBXAThemeSupport.Utilities
 {
     using System;
@@ -70,19 +71,19 @@ namespace SBXAThemeSupport.Utilities
         #region Public Methods and Operators
 
         /// <summary>
-        /// Gets the instance.
+        ///     Gets the instance.
         /// </summary>
         /// <param name="interval">
-        /// The interval in milliseconds.
+        ///     The interval in milliseconds.
         /// </param>
         /// <param name="processName">
-        /// Name of the process.
+        ///     Name of the process.
         /// </param>
         /// <param name="timeout">
-        /// The timeout in seconds.
+        ///     The timeout in seconds.
         /// </param>
         /// <returns>
-        /// Returns an instance of <see cref="KeepAliveTimer"/>.
+        ///     Returns an instance of <see cref="KeepAliveTimer" />.
         /// </returns>
         public static KeepAliveTimer GetInstance(double interval, string processName, int timeout)
         {
