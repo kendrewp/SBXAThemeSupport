@@ -61,7 +61,7 @@ namespace SBXAThemeSupport.Utilities
         public double Interval { get; set; }
 
         /// <summary>
-        ///     Gets or sets the process name.
+        ///     Gets or sets the definition name.
         /// </summary>
         public string ProcessName { get; set; }
 
@@ -76,7 +76,7 @@ namespace SBXAThemeSupport.Utilities
         /// The interval in milliseconds.
         /// </param>
         /// <param name="processName">
-        /// Name of the process.
+        /// Name of the definition.
         /// </param>
         /// <param name="timeout">
         /// The timeout in seconds.

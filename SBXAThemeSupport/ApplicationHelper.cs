@@ -84,7 +84,7 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Gets a value indicating whether has server pending jobs to process.
+        ///     Gets a value indicating whether has server pending jobs to definition.
         /// </summary>
         public static bool HasServerPendingJobsToProcess
         {
@@ -221,7 +221,7 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        /// The has server pending jobs to process only with name.
+        /// The has server pending jobs to definition only with name.
         /// </summary>
         /// <param name="name">
         /// The name.
@@ -257,7 +257,7 @@ namespace SBXAThemeSupport
 
         private static bool CheckCanSendServerCommands(bool doSendEventsBeforeCheck)
         {
-            // let the client process the responses before we check the state of the server
+            // let the client definition the responses before we check the state of the server
             if (doSendEventsBeforeCheck)
             {
                 Extensions.DoEvents();

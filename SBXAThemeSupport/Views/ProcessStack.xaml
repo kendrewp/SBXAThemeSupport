@@ -9,29 +9,13 @@
              d:DesignHeight="300" 
              d:DesignWidth="300"
              >
-    <UserControl.Resources>
-
-        <Style x:Key="TreeViewItemTextStyle" TargetType="TextBlock">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsCurrent}" Value="true">
-                    <Setter Property="Foreground" Value="Green"/>
-                </DataTrigger>
-            </Style.Triggers>    
-        </Style>
-        
-        <HierarchicalDataTemplate x:Key="ProcessTreeTemplate" ItemsSource="{Binding Children}"  >
-            <TextBlock Text="{Binding Name}"
-                       Style="{StaticResource TreeViewItemTextStyle}"/>
-        </HierarchicalDataTemplate>
-        
-    </UserControl.Resources>
     <Grid>
         <TabControl Name="tabControl1">
             
             <TabItem Header="Current" Name="CurrentStackItem">
                 <TreeView Name="ProcessStackTree" 
                           ItemsSource="{Binding ProcessStack}" 
-                          ItemTemplate="{StaticResource ProcessTreeTemplate}"
+                          ItemTemplate="{DynamicResource ProcessStackTemplate}"
                           />
             </TabItem>
             
@@ -44,7 +28,7 @@
                     <TreeView Name="ProcessHistoryTree" 
                               Grid.Row="1" 
                               ItemsSource="{Binding ProcessHistoryStack}" 
-                              ItemTemplate="{StaticResource ProcessTreeTemplate}"
+                              ItemTemplate="{DynamicResource ProcessStackTemplate}"
                               />
                     <Button Content="Clear" Grid.Row="0" Height="23" HorizontalAlignment="Right" Margin="0" Name="ClearProcessHistory" 
                             VerticalAlignment="Top" Width="75"

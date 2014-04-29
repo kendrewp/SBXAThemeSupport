@@ -11,7 +11,10 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport.Views
 {
+    using System;
     using System.Windows;
+
+    using SBXAThemeSupport.DebugAssistant.ViewModels;
 
     /// <summary>
     ///     Interaction logic for DebugConsoleWindow.xaml
@@ -26,6 +29,12 @@ namespace SBXAThemeSupport.Views
         public DebugConsoleWindow()
         {
             this.InitializeComponent();
+        }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            DebugViewModel.Instance.CheckIsConnected();
         }
 
         #endregion

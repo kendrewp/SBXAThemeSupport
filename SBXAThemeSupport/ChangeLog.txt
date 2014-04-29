@@ -1,4 +1,5 @@
-﻿April 9, 2014	Kendrew Peacey	Improved DoEvents to do better error checking.
+﻿April 28, 2014  Kendrew Peacey	Added process analysis
+April 9, 2014	Kendrew Peacey	Improved DoEvents to do better error checking.
 March 28, 2014  Kendrew Peacey	Added support for uploading logs to the server as opposed to moving them somewhere else.
 March 24, 2014  Kendrew Peacey  Included check to see that the client is waiting for input before sending message to the server.
 March 18, 2014	Kendrew Peacey	Cleaned up Keyboard Behaviors to use specific commands.

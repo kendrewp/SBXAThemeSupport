@@ -8,6 +8,14 @@
         Title="Application Insight" 
         Height="{Binding DebugConsoleWindowHeight}" 
         Width="{Binding DebugConsoleWindowWidth}" Icon="/SBXAThemeSupport;component/Images/debugger.png">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SBXAThemeSupport;component/Resources/Styles.xaml" />
+                <ResourceDictionary Source="/SBXAThemeSupport;component/Resources/Templates.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -21,6 +29,9 @@
             </TabItem>
             <TabItem Header="Common" Name="CommonViewItem">
                 <views:CommonViewer />
+            </TabItem>
+            <TabItem Header="Process Analysis" Name="ProcessAnalysisItem">
+                <views:ProcessAnalysis />
             </TabItem>
         </TabControl>
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,5,0">

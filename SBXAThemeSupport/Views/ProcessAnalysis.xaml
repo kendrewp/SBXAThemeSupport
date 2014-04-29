@@ -2,14 +2,78 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:views="clr-namespace:SBXAThemeSupport.Views"
+             xmlns:viewModels="clr-namespace:SBXAThemeSupport.DebugAssistant.ViewModels"
+             DataContext="{Binding ProcessAnalysisViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="500" d:DesignWidth="500">
+    <UserControl.Resources>
+        
+            <Storyboard x:Key="FlashingText" Storyboard.TargetName="LoadingText" 
+                        AutoReverse="True"
+                        RepeatBehavior="Forever"
+                        Storyboard.TargetProperty="(Foreground).(SolidColorBrush.Color)">
+                <ColorAnimation From="Tomato" To="Transparent" By="Beige" Duration="0:0:1" />
+            </Storyboard>
+
+        <Style x:Key="FlashingTextStyle" TargetType="TextBlock">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsLoading}" Value="0" >
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                </DataTrigger>
+
+            </Style.Triggers>
+        </Style>
+        
+    </UserControl.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                <Label Content="Process Name" VerticalAlignment="Center" />
+                <TextBox Text="{Binding ProcessName, UpdateSourceTrigger=PropertyChanged}" Width="150" Height="20" VerticalAlignment="Center"/>
+                <Button Content="Analyze" Command="viewModels:ProcessAnalysisViewModel.AnalyseProcessCommand" Height="20" Margin="5,0,0,0" VerticalAlignment="Center" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Grid.Column="1"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Right"
+                        Margin="0,0,5,0"
+                        >
+            <TextBlock x:Name="LoadingText"
+                       Text="Loading" 
+                       Background="Transparent" Foreground="Tomato"
+                       Width="Auto" Height="20" Margin="0,0,0,0" 
+                       Loaded="HandleLoadingTextOnLoaded"
+                       Style="{DynamicResource FlashingTextStyle}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Right"
+                       />
+            <TextBlock Text="{Binding IsLoading}" Width="20" Height="20" Margin="2,0,0,0"/>
+            </StackPanel>
+        </Grid>
+        
         <TreeView Name="ProcessTree" 
-                          ItemsSource="{Binding ProcessStack}" 
-                          ItemTemplate="{DynamicResource ProcessTreeTemplate}"
-                          />
+                  Grid.Row="1"
+                  ItemsSource="{Binding ProcessStack}" 
+                  ItemTemplate="{DynamicResource ProcessAnalysisTreeTemplate}"
+                  Grid.IsSharedSizeScope="True"
+                  >
+            <TreeView.Resources>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="ContextMenu" Value="{DynamicResource ProcessCallContextMenu}" />
+                    </Style>
+            </TreeView.Resources>
+            
+        </TreeView>
 
     </Grid>
 </UserControl>

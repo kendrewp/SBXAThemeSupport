@@ -28,7 +28,7 @@ namespace SBXAThemeSupport
     public delegate void CanSendCommandChangedEventHandler(object sender, CanSendCommandChangedEventArgs e);
 
     /// <summary>
-    ///     The SB/XA process runner.
+    ///     The SB/XA definition runner.
     /// </summary>
     public class SbProcessRunner
     {
@@ -62,7 +62,7 @@ namespace SBXAThemeSupport
         #region Delegates
 
         /// <summary>
-        ///     The sb plus process.
+        ///     The sb plus definition.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         /// <param name="currentFormHandle">The current form handle.</param>
@@ -86,7 +86,7 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Gets a value indicating whether has jobs to process.
+        ///     Gets a value indicating whether has jobs to definition.
         /// </summary>
         public bool HasJobsToProcess
         {
@@ -232,7 +232,7 @@ namespace SBXAThemeSupport
             }
 
             // get the next item
-            CustomLogger.LogDebug(() => string.Format("Jobs to process {0}", this.processes.Count));
+            CustomLogger.LogDebug(() => string.Format("Jobs to definition {0}", this.processes.Count));
             ActionDefinition targetAction = this.processes.Peek();
 
             // check if there are failed job because those should be executed as first

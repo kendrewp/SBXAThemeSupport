@@ -1,25 +1,35 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SBFile.cs" company="Ruf Informatik AG">
-//   Copyright © Ruf Informatik AG. All rights reserved.
-// </copyright>
-// <copyright file="SBFile.cs" company="Ascension Technologies, Inc.">
-//   Copyright © Ascension Technologies, Inc. All rights reserved.
-// </copyright>
-// --------------------------------------------------------------------------------------------------------------------
-namespace SBXAThemeSupport
+﻿namespace SBXAThemeSupport
 {
     using System;
+
+    using System.Threading;
+    using System.Windows;
+    using System.Windows.Threading;
 
     using Ionic.Zip;
 
     using SBXA.Runtime;
     using SBXA.Shared;
 
-    /// <summary>
-    ///     Generic interface to a file on the server.
-    /// </summary>
     public class SBFile
     {
+        public static void ReadDictionaryItem(string fileName, string itemName, object readState, SubroutineCallCompleted subroutineCallCompleted)
+        {
+            if (string.IsNullOrEmpty(fileName) || string.IsNullOrEmpty(itemName))
+            {
+                return;
+            }
+            var fName = fileName.StartsWith("DICT ") ? fileName : "DICT " + fileName;
+            if (Thread.CurrentThread.ManagedThreadId != Application.Current.Dispatcher.Thread.ManagedThreadId)
+            {
+                JobManager.RunInUIThread(DispatcherPriority.Input, ()=> Read(fName, itemName, subroutineCallCompleted, readState));
+            }
+            else
+            {
+                Read(fName, itemName, subroutineCallCompleted, readState);
+            }
+        }
+
         #region Public Methods and Operators
 
         /// <summary>
@@ -39,11 +49,27 @@ namespace SBXAThemeSupport
         /// </param>
         public static void Read(string fileName, string itemName, SubroutineCallCompleted readCompleted, object userState = null)
         {
-            SbProcessHandler.CallSubroutine(
-                readCompleted, 
-                "UT.XUI.READ", 
-                new[] { new SBString(fileName), new SBString(itemName), new SBString(), new SBString(), new SBString("0"), new SBString() }, 
-                userState ?? new object());
+            if (Thread.CurrentThread.ManagedThreadId != Application.Current.Dispatcher.Thread.ManagedThreadId)
+            {
+                JobManager.RunInUIThread(DispatcherPriority.Normal,
+                    () =>
+                    SbProcessHandler.CallSubroutine(
+                        readCompleted,
+                        "UT.XUI.READ",
+                        new[] { new SBString(fileName), new SBString(itemName), new SBString(), new SBString(), new SBString("0"), new SBString() },
+                        userState ?? new object()
+                        )
+                    );
+            }
+            else
+            {
+                    SbProcessHandler.CallSubroutine(
+                        readCompleted,
+                        "UT.XUI.READ",
+                        new[] { new SBString(fileName), new SBString(itemName), new SBString(), new SBString(), new SBString("0"), new SBString() },
+                        userState ?? new object()
+                        );
+            }
         }
 
         /// <summary>
@@ -88,11 +114,11 @@ namespace SBXAThemeSupport
         /// The subroutine call completed.
         /// </param>
         public static void Write(
-            string fileName, 
-            string id, 
-            string attribute, 
-            string mode, 
-            SBString record, 
+            string fileName,
+            string id,
+            string attribute,
+            string mode,
+            SBString record,
             SubroutineCallCompleted subroutineCallCompleted)
         {
             /*
@@ -110,7 +136,14 @@ namespace SBXAThemeSupport
             param1.SBInsert(3, attribute);
             param1.SBInsert(4, mode);
 
-            XuiDebug.WriteRecord(subroutineCallCompleted, param1, record);
+            if (Thread.CurrentThread.ManagedThreadId != Application.Current.Dispatcher.Thread.ManagedThreadId)
+            {
+                JobManager.RunInUIThread(DispatcherPriority.Input, () => XuiDebug.WriteRecord(subroutineCallCompleted, param1, record));
+            }
+            else
+            {
+                XuiDebug.WriteRecord(subroutineCallCompleted, param1, record);
+            }
         }
 
         /// <summary>
@@ -140,5 +173,6 @@ namespace SBXAThemeSupport
         }
 
         #endregion
+
     }
 }

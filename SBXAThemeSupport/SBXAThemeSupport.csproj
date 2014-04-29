@@ -159,13 +159,28 @@
     <Compile Include="Controls\FormInfoControl.xaml.cs">
       <DependentUpon>FormInfoControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\CombineTreeItemsConverter.cs" />
     <Compile Include="Converters\CommandParameterConverter.cs" />
     <Compile Include="Converters\InfoButtonConverter.cs" />
     <Compile Include="CustomLogger.cs" />
     <Compile Include="DebugAssistant\DebugWindowManager.cs" />
-    <Compile Include="DebugAssistant\Models\ProcessStack.cs" />
+    <Compile Include="DebugAssistant\ViewModels\RevisionDefinitionViewModel.cs" />
+    <Compile Include="Models\ApplicationInsightState.cs" />
+    <Compile Include="Models\BasicProgramDescription.cs" />
+    <Compile Include="Models\DictionaryDescription.cs" />
+    <Compile Include="Models\MenuDefinitionDescription.cs" />
+    <Compile Include="Models\SBExpression.cs" />
+    <Compile Include="Models\FieldDefinition.cs" />
+    <Compile Include="Models\FileUpdateDefinitionDescription.cs" />
+    <Compile Include="Models\InputDefinitionDescription.cs" />
+    <Compile Include="Models\OutputDefinitionDescription.cs" />
+    <Compile Include="Models\ParagraphDescription.cs" />
+    <Compile Include="Models\ProcessCall.cs" />
+    <Compile Include="Models\DefinitionDescription.cs" />
+    <Compile Include="Models\ProcessStack.cs" />
     <Compile Include="DebugAssistant\ViewModels\CommonVariables.cs" />
     <Compile Include="DebugAssistant\ViewModels\DebugViewModel.cs" />
+    <Compile Include="DebugAssistant\ViewModels\ProcessAnalysisViewModel.cs" />
     <Compile Include="Delimiters.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GlassExtensions.cs" />
@@ -176,6 +191,10 @@
     <Compile Include="LocalMachineCleanup.cs" />
     <Compile Include="Models\NestedAttributeCollection.cs" />
     <Compile Include="Models\ObservableEntity.cs" />
+    <Compile Include="Models\RevisionDefinitionItemCollection.cs" />
+    <Compile Include="Models\ScreenDefintion.cs" />
+    <Compile Include="Models\ScreenProcessDescription.cs" />
+    <Compile Include="Models\TreeItem.cs" />
     <Compile Include="ObservableStack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SbData.cs" />
@@ -198,11 +217,21 @@
     <Compile Include="Views\CommonViewer.xaml.cs">
       <DependentUpon>CommonViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\AnalysisTreeItemTemplateSelector.cs" />
+    <Compile Include="Views\CreateRevisionWindow.xaml.cs">
+      <DependentUpon>CreateRevisionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DebugConsoleWindow.xaml.cs">
       <DependentUpon>DebugConsoleWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ProcessAnalysis.xaml.cs">
+      <DependentUpon>ProcessAnalysis.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ProcessStack.xaml.cs">
       <DependentUpon>ProcessStack.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RevisionDefinition.xaml.cs">
+      <DependentUpon>RevisionDefinition.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SBStringViewer.xaml.cs">
       <DependentUpon>SBStringViewer.xaml</DependentUpon>
@@ -232,7 +261,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Templates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CommonViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CreateRevisionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -240,7 +277,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ProcessAnalysis.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ProcessStack.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RevisionDefinition.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -269,6 +314,38 @@
     <Resource Include="ChangeLog.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="DebugAssistant\Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\process.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\bug.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ui-scroll-pane-text-image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ui-text-field.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\folder-close-16.png" />
+    <Resource Include="Images\folder-open-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\matrix_code.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\paragraph_left_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\prog_basic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\StopButton.png" />
+    <Resource Include="Images\FileUpdate.png" />
+    <Resource Include="Images\regular-expression-icon.png" />
+    <Resource Include="Images\menu.png" />
     <Content Include="ThirdParty\Ionic.Zip.dll" />
     <Content Include="ThirdParty\Ionic.Zlib.dll" />
   </ItemGroup>

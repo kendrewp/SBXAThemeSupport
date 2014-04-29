@@ -6,6 +6,9 @@
 
 namespace SBXAThemeSupport
 {
+    using System;
+    using System.Windows.Threading;
+
     using SBXA.Runtime;
     using SBXA.Shared;
 
@@ -14,12 +17,13 @@ namespace SBXAThemeSupport
     /// </summary>
     /// <remarks>
     ///     * 1 - Turn DEBUG ON/OFF. PARAM1 contins 0 - Off, 1 - On
-    ///     * 2 - Process Called
-    ///     * 3 - Returned from process
+    ///     * 2 - definition Called
+    ///     * 3 - Returned from definition
     ///     * 4 - Get common var
     ///     * 5 - Send message to the client.
     ///     * 6 - Get the current setting of ISDebug
     ///     * 7 - Write record.
+    ///     * 8 - Stack expression
     /// </remarks>
     internal class XuiDebug
     {
@@ -80,6 +84,26 @@ namespace SBXAThemeSupport
                 "XUI.DEBUG", 
                 new[] { new SBString("7"), itemInfo, record, new SBString(), new SBString("0"), new SBString() }, 
                 new object[0]);
+        }
+
+        internal static void StackExpression(SubroutineCallCompleted expressionStackCompleted, string expression, string fileName)
+        {
+            JobManager.RunInUIThread(DispatcherPriority.Normal,
+                delegate
+                    {
+                        try
+                        {
+                            SbProcessHandler.CallSubroutine(
+                                expressionStackCompleted,
+                                "XUI.DEBUG",
+                                new[] { new SBString("8"), new SBString(expression), new SBString(fileName), new SBString(), new SBString("0"), new SBString() },
+                                new object[0]);
+                        }
+                        catch (Exception exception)
+                        {
+                            CustomLogger.LogException(exception, "A problem occurred calling XUI.DEBUG mode 8.");
+                        }
+                    });
         }
 
         #endregion

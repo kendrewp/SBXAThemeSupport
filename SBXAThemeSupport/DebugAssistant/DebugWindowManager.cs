@@ -23,6 +23,7 @@ namespace SBXAThemeSupport.DebugAssistant
     using SBXA.UI.WPFControls;
     using SBXA.UI.WPFControls.SBDebug;
 
+    using SBXAThemeSupport.DebugAssistant.ViewModels;
     using SBXAThemeSupport.Models;
     using SBXAThemeSupport.Utilities;
     using SBXAThemeSupport.ViewModels;
@@ -242,13 +243,7 @@ namespace SBXAThemeSupport.DebugAssistant
         /// </summary>
         public static void ShowDebugWindow()
         {
-            typeof(SBDebug).InvokeMember(
-                "ShowDebugWindow", 
-                BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy
-                | BindingFlags.NonPublic, 
-                Type.DefaultBinder, 
-                null, 
-                new object[] { "Y" });
+            ShowDebugWindow(true);
         }
 
         /// <summary>
@@ -266,6 +261,8 @@ namespace SBXAThemeSupport.DebugAssistant
                 Type.DefaultBinder, 
                 null, 
                 new object[] { show });
+
+            DebugViewModel.Instance.ApplicationInsightState.IsDebugWindowOpen = show;
         }
 
         #endregion
@@ -351,6 +348,7 @@ namespace SBXAThemeSupport.DebugAssistant
             thread.Start();
 
             Application.Current.Exit += CurrentOnExit;
+
         }
 
         #endregion

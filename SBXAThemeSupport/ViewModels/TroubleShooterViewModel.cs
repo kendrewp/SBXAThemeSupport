@@ -158,7 +158,7 @@ namespace SBXAThemeSupport.ViewModels
                 // first get the collection, if it does not exist create a new one.
                 var activeApplicationList = SBPlus.Current.GlobalStateFile.GetItem(ActiveApplicationListId).Object as ActiveApplicationList
                                             ?? new ActiveApplicationList();
-                // get the process id and name
+                // get the definition id and name
                 var currentProcess = Process.GetCurrentProcess();
                 var currentProcessId = currentProcess.Id;
                 var currentProcessName = currentProcess.ProcessName;
@@ -170,7 +170,7 @@ namespace SBXAThemeSupport.ViewModels
                 // create a new log entry with the process id
                 if (activeApplicationList.ContainsProcessId(currentProcessId))
                 {
-                    // this is an error condition - there should not be a process with the same id already.
+                    // this is an error condition - there should not be a definition with the same id already.
                     activeApplicationList.RemoveProcessId(currentProcessId);
                 }
 
@@ -179,7 +179,7 @@ namespace SBXAThemeSupport.ViewModels
                     new ApplicationStartStopLog { ProcessId = currentProcessId, Start = DateTime.Now, CleanExit = false });
                 SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), true);
 
-                // check for left over entries, but getting the list of active process ids, then going through the list of entries in the log collection
+                // check for left over entries, but getting the list of active definition ids, then going through the list of entries in the log collection
                 // if an entry in the collection is not active, and not marked as a clean exit, we have a problem. If it is a clean exit removed it.
                 var processCollection = Process.GetProcessesByName(currentProcessName);
                 var toRemove = new List<ApplicationStartStopLog>();
@@ -197,7 +197,7 @@ namespace SBXAThemeSupport.ViewModels
                     }
 
                     // and finally a bad entry, so do the required notifications.
-                    LogBadClose(); // only log an exception if this is the only process running.
+                    LogBadClose(); // only log an exception if this is the only definition running.
 
                     // log the error so remove the entry from the logs.
                     toRemove.Add(appLog); // cannot remove it while I am processing it.
@@ -235,11 +235,11 @@ namespace SBXAThemeSupport.ViewModels
             // first get the collection, if it does not exist create a new one.
             var activeApplicationList = SBPlus.Current.GlobalStateFile.GetItem(ActiveApplicationListId).Object as ActiveApplicationList
                                         ?? new ActiveApplicationList();
-            // get the process id and name
+            // get the definition id and name
             var currentProcess = Process.GetCurrentProcess();
             var currentProcessId = currentProcess.Id;
 
-            // create a new log entry with the process id
+            // create a new log entry with the definition id
             if (!activeApplicationList.ContainsProcessId(currentProcessId))
             {
                 return;
@@ -916,10 +916,10 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        ///     Gets or sets the process identifier.
+        ///     Gets or sets the definition identifier.
         /// </summary>
         /// <value>
-        ///     The process identifier.
+        ///     The definition identifier.
         /// </value>
         public int ProcessId
         {
@@ -1033,7 +1033,7 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        /// Removes the process identifier.
+        /// Removes the definition identifier.
         /// </summary>
         /// <param name="pid">
         /// The pid.

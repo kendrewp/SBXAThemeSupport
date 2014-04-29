@@ -1,0 +1,228 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:views="clr-namespace:SBXAThemeSupport.Views"
+                    xmlns:converters="clr-namespace:SBXAThemeSupport.Converters"
+                    xmlns:wpfControls="http://schemas.sbxa.com/WPFControls"
+                    xmlns:viewModels="clr-namespace:SBXAThemeSupport.DebugAssistant.ViewModels">
+
+    <converters:CombineTreeItemsConverter x:Key="CombineTreeItemsConverter" />
+
+    <Style x:Key="TreeItemDescriptionStyle" >
+        <Setter Property="FrameworkElement.Margin" Value="4,0,0,0"/>
+        <Setter Property="FrameworkElement.MaxWidth" Value="100" />
+    </Style>
+
+    <Style x:Key="TreeItemNameStyle">
+        <Setter Property="FrameworkElement.Margin" Value="4,0,0,0"/>
+    </Style>
+
+    <ContextMenu x:Key="ProcessCallContextMenu">
+        <MenuItem Header="Create Revision Definition for definition." Command="views:ProcessAnalysis.CreateRevisionDefinitionCommand" CommandParameter="{Binding}"/>
+    </ContextMenu>
+    
+    
+    <HierarchicalDataTemplate x:Key="ProcessStackTemplate" ItemsSource="{Binding ChildProcesses}"  >
+
+        <Grid wpfControls:SBUISupport.TemplateName="definitionStackTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="definitionStackDescription" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{DynamicResource TreeViewItemTextStyle}"/>
+        </Grid>
+
+    </HierarchicalDataTemplate>
+
+    <HierarchicalDataTemplate x:Key="ProcessTreeTemplate" ItemsSource="{Binding Children}"  >
+
+        <Grid wpfControls:SBUISupport.TemplateName="definitionTreeTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="definitionTreeImage" />
+                <ColumnDefinition SharedSizeGroup="definitionTreeDescription" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="1" Text="{Binding Name}" Style="{DynamicResource TreeItemNameStyle}"/>
+        </Grid>
+        
+    </HierarchicalDataTemplate>
+
+    <HierarchicalDataTemplate x:Key="BasicProgramDescriptionTemplate" ItemsSource="{Binding ProcessDescription.ProcessCollection}">
+        <Grid wpfControls:SBUISupport.TemplateName="BasicProgramDescriptionTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="description" />
+                <ColumnDefinition SharedSizeGroup="definitionDescription" />
+                <ColumnDefinition SharedSizeGroup="definitionName"/>
+                <ColumnDefinition SharedSizeGroup="fileName"/>
+                <ColumnDefinition SharedSizeGroup="basicProgramSourceExpression"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0"  Source="/SBXAThemeSupport;component/Images/prog_basic.png"/>
+            <TextBlock Grid.Column="1" Text="{Binding Description}" MaxWidth="50" TextTrimming="CharacterEllipsis" ToolTip="{Binding Description}"  Style="{DynamicResource TreeItemDescriptionStyle}"/>
+            <TextBlock Grid.Column="2" Text="{Binding ProcessDescription.Name}"     FontWeight="Bold" Margin="4,0,0,0"/>
+            <TextBlock Grid.Column="3" Text="{Binding ProcessDescription.FileName}" FontWeight="Bold" Margin="4,0,0,0"/>
+            <TextBlock Grid.Column="4" Text="{Binding ProcessDescription.SourceExpression}" Margin="10,0,0,0"/>
+        </Grid>
+    </HierarchicalDataTemplate>
+
+    <HierarchicalDataTemplate x:Key="ParagraphDescriptionTemplate" ItemsSource="{Binding ProcessDescription.ProcessCollection}">
+        <Grid wpfControls:SBUISupport.TemplateName="ParagraphDescriptionTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="definitionImage" />
+                <ColumnDefinition SharedSizeGroup="definitionDescription" />
+                <ColumnDefinition SharedSizeGroup="definitionName"/>
+                <ColumnDefinition SharedSizeGroup="sourceExpression"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0"  Source="/SBXAThemeSupport;component/Images/paragraph_left_2.png"/>
+            <TextBlock Grid.Column="1" Text="{Binding Description}" MaxWidth="50" TextTrimming="CharacterEllipsis" ToolTip="{Binding Description}"  Style="{DynamicResource TreeItemDescriptionStyle}"/>
+            <TextBlock Grid.Column="2" Text="{Binding ProcessDescription.Name}" FontWeight="Bold" Margin="4,0,0,0"/>
+            <TextBlock Grid.Column="3" Text="{Binding ProcessDescription.SourceExpression}" Margin="10,0,0,0"/>
+        </Grid>
+    </HierarchicalDataTemplate>
+
+    <HierarchicalDataTemplate x:Key="FileUpdateDescriptionTemplate" ItemsSource="{Binding ProcessDescription.ProcessCollection}">
+        <Grid wpfControls:SBUISupport.TemplateName="FileUpdateDescriptionTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="definitionImage" />
+                <ColumnDefinition SharedSizeGroup="definitionDescription" />
+                <ColumnDefinition SharedSizeGroup="definitionName"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0"  Source="/SBXAThemeSupport;component/Images/FileUpdate.png"/>
+            <TextBlock Grid.Column="1" Text="{Binding Description}" MaxWidth="50" TextTrimming="CharacterEllipsis" ToolTip="{Binding Description}"  Style="{DynamicResource TreeItemDescriptionStyle}"/>
+            <TextBlock Grid.Column="2" Text="{Binding ProcessDescription.Name}" FontWeight="Bold" Margin="4,0,0,0"/>
+        </Grid>
+    </HierarchicalDataTemplate>
+
+    <HierarchicalDataTemplate x:Key="ProcessCallTemplate" ItemsSource="{Binding ProcessDescription.ProcessCollection}">
+        <Grid wpfControls:SBUISupport.TemplateName="ProcessCallTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="definitionImage" />
+                <ColumnDefinition SharedSizeGroup="definitionDescription" />
+                <ColumnDefinition SharedSizeGroup="definitionName"/>
+                <ColumnDefinition SharedSizeGroup="sourceExpression"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0"  Source="/SBXAThemeSupport;component/Images/process.png"/>
+            <TextBlock Grid.Column="1" Text="{Binding Description}" MaxWidth="100" TextTrimming="CharacterEllipsis" ToolTip="{Binding Description}" Style="{DynamicResource TreeItemDescriptionStyle}"/>
+            <TextBlock Grid.Column="2" Text="{Binding ProcessDescription.Name}" FontWeight="Bold" Margin="4,0,0,0"/>
+            <TextBlock Grid.Column="3" Text="{Binding ProcessDescription.SourceExpression}" Margin="10,0,0,0"/>
+        </Grid>
+    </HierarchicalDataTemplate>
+
+    <HierarchicalDataTemplate x:Key="MenuDefinitionTemplate" ItemsSource="{Binding ProcessDescription.ProcessCollection}">
+        <Grid wpfControls:SBUISupport.TemplateName="MenuDefinitionTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="definitionImage" />
+                <ColumnDefinition SharedSizeGroup="definitionDescription" />
+                <ColumnDefinition SharedSizeGroup="definitionName"/>
+                <ColumnDefinition SharedSizeGroup="fileName"/>
+                <ColumnDefinition SharedSizeGroup="sourceExpression"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0"  Source="/SBXAThemeSupport;component/Images/menu.png"/>
+            <TextBlock Grid.Column="1" Text="{Binding Description}" MaxWidth="100" TextTrimming="CharacterEllipsis" ToolTip="{Binding Description}" Style="{DynamicResource TreeItemDescriptionStyle}"/>
+            <TextBlock Grid.Column="2" Text="{Binding ProcessDescription.Name}" FontWeight="Bold" Margin="4,0,0,0"/>
+            <TextBlock Grid.Column="3" Text="{Binding ProcessDescription.FileName}" FontWeight="Bold" Margin="4,0,0,0"/>
+            <TextBlock Grid.Column="4" Text="{Binding ProcessDescription.SourceExpression}" Margin="10,0,0,0"/>
+        </Grid>
+    </HierarchicalDataTemplate>
+
+    <HierarchicalDataTemplate x:Key="SBExpressionTemplate" ItemsSource="{Binding ProcessCollection}">
+        <Grid wpfControls:SBUISupport.TemplateName="SBExpressionTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="ExpressionImage" />
+                <ColumnDefinition SharedSizeGroup="Description" />
+                <ColumnDefinition SharedSizeGroup="SourceExpression"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0"  Source="/SBXAThemeSupport;component/Images/regular-expression-icon.png"/>
+            <TextBlock Grid.Column="1" Text="{Binding Description}" MaxWidth="150" TextTrimming="CharacterEllipsis" ToolTip="{Binding Description}" Style="{DynamicResource TreeItemDescriptionStyle}"/>
+            <TextBlock Grid.Column="3" Text="{Binding Expression}" Margin="10,0,0,0"/>
+        </Grid>
+    </HierarchicalDataTemplate>
+
+    <HierarchicalDataTemplate  x:Key="FieldDefinitionTemplate" >
+        <HierarchicalDataTemplate.ItemsSource>
+            <MultiBinding Converter="{StaticResource CombineTreeItemsConverter}" ConverterParameter="Dictionary,Screen">
+                <Binding Path="DictionaryExpressions" />
+                <Binding Path="ScreenExpressions" />
+            </MultiBinding>
+        </HierarchicalDataTemplate.ItemsSource>
+        
+        <Grid wpfControls:SBUISupport.TemplateName="FieldDefinitionTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="FieldImage" />
+                <ColumnDefinition SharedSizeGroup="FieldNameDescription" />
+                <ColumnDefinition SharedSizeGroup="FieldName"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0"  Source="/SBXAThemeSupport;component/Images/ui-text-field.png"/>
+            <TextBlock Grid.Column="1" Text="Field" MaxWidth="100" TextTrimming="CharacterEllipsis" Margin="4,0,0,0"/>
+            <TextBlock Grid.Column="2" Text="{Binding Name}" FontWeight="Bold" Margin="4,0,0,0"/>
+        </Grid>
+    </HierarchicalDataTemplate>
+
+    <HierarchicalDataTemplate  x:Key="TreeItemTemplate" ItemsSource="{Binding Children}">
+        <Grid wpfControls:SBUISupport.TemplateName="TreeItemTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="TreeItemImage" />
+                <ColumnDefinition SharedSizeGroup="TreeItemDescription" />
+                <ColumnDefinition SharedSizeGroup="TreeItemName"/>
+            </Grid.ColumnDefinitions>
+            <Image x:Name="FolderImage" Grid.Column="0"  Source="/SBXAThemeSupport;component/Images/folder-close-16.png"/>
+            <TextBlock Grid.Column="1" Text="{Binding Description}" TextTrimming="CharacterEllipsis" Style="{DynamicResource TreeItemDescriptionStyle}"/>
+            <TextBlock Grid.Column="2" Text="{Binding Name}" FontWeight="Bold" Margin="4,0,0,0"/>
+        </Grid>
+        <HierarchicalDataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
+                <Setter TargetName="FolderImage" Property="Source" Value="/SBXAThemeSupport;component/Images/folder-open-16.png"/>
+            </DataTrigger>
+        </HierarchicalDataTemplate.Triggers>
+    </HierarchicalDataTemplate>
+
+    <HierarchicalDataTemplate x:Key="ScreenDefinitionTemplate" >
+        <HierarchicalDataTemplate.ItemsSource>
+            <MultiBinding Converter="{StaticResource CombineTreeItemsConverter}" ConverterParameter="Fields,Definition">
+                <Binding Path="ProcessDescription.FieldDescriptions" />
+                <Binding Path="ProcessDescription.ProcessCollection" />
+            </MultiBinding>
+        </HierarchicalDataTemplate.ItemsSource>
+
+        <Grid wpfControls:SBUISupport.TemplateName="ScreenDefinitionTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="ScreenImage" />
+                <ColumnDefinition SharedSizeGroup="ScreenNameDescription" />
+                <ColumnDefinition SharedSizeGroup="ScreenName"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0"  Source="/SBXAThemeSupport;component/Images/ui-scroll-pane-text-image.png"/>
+            <TextBlock Grid.Column="1" Text="Screen Definition" MaxWidth="100" TextTrimming="CharacterEllipsis" Margin="4,0,0,0"/>
+            <TextBlock Grid.Column="2" Text="{Binding ProcessDescription.Name}" FontWeight="Bold" Margin="4,0,0,0"/>
+        </Grid>
+        
+        
+    </HierarchicalDataTemplate>
+
+    <HierarchicalDataTemplate x:Key="ProcessAnalysisTreeTemplate" ItemsSource="{Binding ProcessCollection}" >
+        
+        
+        <HierarchicalDataTemplate.ItemTemplateSelector>
+            
+            <views:AnalysisTreeItemTemplateSelector 
+                DefaultTemplate="{StaticResource ProcessCallTemplate}"
+                ScreenDefinitionTemplate="{StaticResource ScreenDefinitionTemplate}"
+                FieldDefinitionTemplate="{StaticResource FieldDefinitionTemplate}"
+                ParagraphDescriptionTemplate="{StaticResource ParagraphDescriptionTemplate}"
+                BasicProgramDescriptionTemplate="{StaticResource BasicProgramDescriptionTemplate}"
+                TreeItemTemplate="{StaticResource TreeItemTemplate}"
+                FileUpdateDescriptionTemplate="{StaticResource FileUpdateDescriptionTemplate}"
+                SBExpressionTemplate="{StaticResource SBExpressionTemplate}"
+                MenuDefinitionTemplate="{StaticResource MenuDefinitionTemplate}"
+                        />
+
+        </HierarchicalDataTemplate.ItemTemplateSelector>
+
+        <Grid wpfControls:SBUISupport.TemplateName="definitionAnalysisTreeTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="definitionAnalysisImage" />
+                <ColumnDefinition SharedSizeGroup="definitionAnalysisName"/>
+            </Grid.ColumnDefinitions>
+
+            <Image Grid.Column="0" Source="/SBXAThemeSupport;component/Images/process.png"/>
+            <TextBlock Grid.Column="1" Text="{Binding Name}" Style="{DynamicResource TreeItemNameStyle}"/>
+        </Grid>
+        
+    </HierarchicalDataTemplate>
+
+</ResourceDictionary>

@@ -119,4 +119,12 @@
         </Setter>
     </Style>
 
+    <Style x:Key="TreeViewItemTextStyle" TargetType="TextBlock">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsCurrent}" Value="true">
+                <Setter Property="Foreground" Value="Green"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

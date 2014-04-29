@@ -48,7 +48,7 @@ namespace SBXAThemeSupport.Converters
             {
                 foreach (var var in vals)
                 {
-                    tooltip.AppendLine(ctr == 0 ? string.Format("Process Name : {0}", var) : string.Format(var));
+                    tooltip.AppendLine(ctr == 0 ? string.Format("definition Name : {0}", var) : string.Format(var));
                     ctr++;
                 }
             }
