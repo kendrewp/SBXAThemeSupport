@@ -9,7 +9,7 @@ namespace SBXAThemeSupport.Models
     /// <summary>
     /// This class is the basis for SB/XA definitions, definition, field, etc.
     /// </summary>
-    public class DefinitionDescription : TreeItem, ITreeItem
+    public class DefinitionDescription : TreeItem
     {
         private bool isCurrent;
         public string SourceExpression { get; private set; }
@@ -87,20 +87,20 @@ namespace SBXAThemeSupport.Models
                 // free managed resources
                 foreach (var item in ChildProcesses)
                 {
-                    if (item is IDisposable)
+                    if (item != null)
                     {
                         ((IDisposable)item).Dispose();
                     }
                 }
                 foreach (var item in ProcessCollection)
                 {
-                    if (item is IDisposable)
+                    if (item != null)
                     {
                         ((IDisposable)item).Dispose();
                     }
                 }
-                base.Dispose(disposing);
             }
+            base.Dispose(disposing);
 
         }
 
@@ -144,7 +144,7 @@ namespace SBXAThemeSupport.Models
                     parameters = RevisionDefinitionViewModel.Dict;
                     fname = FileName.Substring(5);
                 }
-                RevisionDefinitionViewModel.AddItemToDefinition(collection, new RevisionDefinitionItem() { Action = "IO", FileName = fname, Item = Name, Parameters = parameters });
+                RevisionDefinitionViewModel.AddItemToDefinition(collection, new RevisionDefinitionItem { Action = "IO", FileName = fname, Item = Name, Parameters = parameters });
             }
         }
     }
@@ -158,6 +158,11 @@ namespace SBXAThemeSupport.Models
 
         public bool ContainsKey(string fileName, string processName, Type type)
         {
+            if (type == typeof(BasicProgramDescription))
+            {
+                // do not check against the file name as 1) it may not be there yet and 2) it does not matter as there can only be one program with the name cataloged (at least locally).
+                return this.Any(processDescription => (processDescription.Name.Equals(processName) && processDescription.GetType() == type));
+            }
             return this.Any(processDescription => (processDescription.Name.Equals(processName) && processDescription.FileName.Equals(fileName) && processDescription.GetType() == type));
         }
 
@@ -195,7 +200,7 @@ namespace SBXAThemeSupport.Models
                 // free managed resources
                 foreach (var item in this)
                 {
-                    if (item is IDisposable)
+                    if (item != null)
                     {
                         ((IDisposable)item).Dispose();
                     }

@@ -1,5 +1,7 @@
 ﻿namespace SBXAThemeSupport.Models
 {
+    using System.Diagnostics;
+
     using SBXAThemeSupport.DebugAssistant.ViewModels;
 
     /// <summary>
@@ -14,6 +16,7 @@
         public BasicProgramDescription(string fileName, string name)
             : base(fileName, name)
         {
+            Debug.WriteLine("[BasicProgramDescription.BasicProgramDescription(17)] "+fileName+", "+name);
         }
 
         public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
