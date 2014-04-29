@@ -1,13 +1,10 @@
-﻿using System;
-using SBXAThemeSupport.DebugAssistant.ViewModels;
-
-namespace SBXAThemeSupport.Models
+﻿namespace SBXAThemeSupport.Models
 {
-    using System.Collections.ObjectModel;
-
+    using System;
+    using SBXAThemeSupport.DebugAssistant.ViewModels;
     using SBXA.Shared;
 
-    public class FieldDefinition : DefinitionDescription, ITreeItem
+    public class FieldDefinition : DefinitionDescription
     {
         private string processBefore;
         private string processAfter;
@@ -17,7 +14,7 @@ namespace SBXAThemeSupport.Models
         private string inputConversion;
         private string styleName;
         private string derived;
-        private string _Default;
+        private string fieldDefault;
         private string dictionaryIntuitiveHelp;
         private string dictionaryConversionCode;
         private string dictionaryValidation;
@@ -131,19 +128,19 @@ namespace SBXAThemeSupport.Models
             }
         }
 
-        public string Default
+        public string FieldDefault
         {
-            get { return _Default; }
+            get { return fieldDefault; }
             set
             {
-                if (_Default != null && _Default.Equals(value))
+                if (fieldDefault != null && fieldDefault.Equals(value))
                 {
                     return;
                 }
-                _Default = value;
-                if (!string.IsNullOrEmpty(_Default))
+                fieldDefault = value;
+                if (!string.IsNullOrEmpty(fieldDefault))
                 {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Expression, _Default, this, "Default");
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(SourceDefinition.Screen, SourceDefinition.Expression, fieldDefault, this, "Default");
                 }
             }
         }
