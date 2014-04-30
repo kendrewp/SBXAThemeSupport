@@ -2,7 +2,6 @@ namespace SBXAThemeSupport.Models
 {
     using System;
     using System.Collections.Specialized;
-    using System.Diagnostics;
     using System.Windows.Threading;
 
     using SBXA.Runtime;

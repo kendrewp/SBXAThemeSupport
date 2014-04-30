@@ -880,7 +880,7 @@ namespace SBXAThemeSupport
         private static void HandleApplicationShutdown(object sender, ApplicationShutdownEventArgs e)
         {
             // Close the debug window is it is there.
-            DebugWindowManager.ShowDebugWindow(false);
+            DebugWindowManager.Dispose();
         }
 
         private static Assembly HandleAssemblyResolve(object sender, ResolveEventArgs args)

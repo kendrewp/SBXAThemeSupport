@@ -270,6 +270,12 @@ namespace SBXAThemeSupport.DebugAssistant
 
         #region Methods
 
+        public static void Dispose()
+        {
+            DebugViewModel.Disposing = true;
+            ShowDebugWindow(false);
+        }
+
         internal static void ShowSBString(string which, SBString data)
         {
             if (data == null)

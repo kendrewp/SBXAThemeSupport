@@ -47,7 +47,10 @@ namespace SBXAThemeSupport.Models
             set
             {
                 this.isDebugWindowOpen = value;
-                DebugViewModel.Instance.SaveState();
+                if (!DebugViewModel.Initializing)
+                {
+                    DebugViewModel.Instance.SaveState();
+                }
             }
         }
 

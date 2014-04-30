@@ -84,20 +84,20 @@ namespace SBXAThemeSupport.Views
         public DataTemplate ScreenDefinitionTemplate { get; set; }
 
         /// <summary>
+        ///     Gets or sets the selection process template.
+        /// </summary>
+        /// <value>
+        ///     The selection process template.
+        /// </value>
+        public DataTemplate SelectionProcessTemplate { get; set; }
+
+        /// <summary>
         ///     Gets or sets the tree item template.
         /// </summary>
         /// <value>
         ///     The tree item template.
         /// </value>
         public DataTemplate TreeItemTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the selection process template.
-        /// </summary>
-        /// <value>
-        /// The selection process template.
-        /// </value>
-        public DataTemplate SelectionProcessTemplate { get; set; }
 
         #endregion
 

@@ -15,6 +15,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using System.Diagnostics;
     using System.Threading;
     using System.Windows;
     using System.Windows.Threading;
@@ -188,6 +189,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         private DebugViewModel()
         {
+            Initializing = true;
             this.CheckIsConnected();
             // SBPlus.Current.ConnectionStatusChanged += HandleConnectionStatusChanged;
             SBPlusClient.Connected += this.HandleConnected;
@@ -199,6 +201,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             this.ProcessAnalysisViewModel = new ProcessAnalysisViewModel();
 
             this.ReadState();
+            Initializing = false;
         }
 
         #endregion
@@ -536,6 +539,12 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         #region Public Methods and Operators
 
+        private const string StateId = "ApplicationInsightState";
+
+        internal static bool Disposing;
+
+        internal static bool Initializing;
+
         /// <summary>
         ///     The enable error log.
         /// </summary>
@@ -787,7 +796,11 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// </summary>
         public void SaveState()
         {
-            string xml = this.ApplicationInsightState.SerializeToXml();
+            if (this.ApplicationInsightState != null && !Initializing && !Disposing)
+            {
+                string xml = this.ApplicationInsightState.SerializeToXml();
+                SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(StateId, xml), false);
+            }
         }
 
         #endregion
@@ -834,6 +847,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         {
             try
             {
+                Debug.WriteLine("[DebugViewModel.DoUpdateProcessStack(837)] " + add + ", " + processName);
                 lock (Instance.ProcessStack)
                 {
                     if (add)
@@ -877,16 +891,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     {
                         try
                         {
+                            Debug.WriteLine("[DebugViewModel.DoUpdateProcessStack(882)] Instance.ProcessStack.Count = " + Instance.ProcessStack.Count);
                             if (Instance.ProcessStack.Count == 0)
                             {
                                 return;
                             }
 
                             PopProcess(Instance.ProcessStack);
+                            Debug.WriteLine("[DebugViewModel.DoUpdateProcessStack(889)] Instance.ProcessStack.Count = " + Instance.ProcessStack.Count);
                         }
                         catch (Exception exception)
                         {
-                            SBPlusClient.LogError("Exception caught adding " + processName + " to ProcessHistoryStack.", exception);
+                            CustomLogger.LogException(exception, "Exception caught adding " + processName + " to ProcessHistoryStack.");
                         }
                     }
                 }
@@ -966,6 +982,13 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 var processDescription = processStack.Pop();
                 processDescription.HistoryProcessDescription = null;
                 Instance.CurrentProcess = parentProcess.HistoryProcessDescription;
+            }
+            else
+            {
+                // all the nested children have been removed so remove the top of the stack now.
+                var processDescription = stack.Pop();
+                processDescription.HistoryProcessDescription = null;
+                Instance.CurrentProcess = null;
             }
         }
 
@@ -1137,7 +1160,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         private void ReadState()
         {
-            this.ApplicationInsightState = new ApplicationInsightState();
+            if (this.ApplicationInsightState == null)
+            {
+                if (SBPlus.Current.GlobalStateFile.Exists(StateId))
+                {
+                    var xml = SBPlus.Current.GlobalStateFile.GetItem(StateId).Object as string;
+                    this.ApplicationInsightState = Extensions.DeserializeFromXml<ApplicationInsightState>(xml);
+                }
+                if (this.ApplicationInsightState == null)
+                {
+                    this.ApplicationInsightState = new ApplicationInsightState();
+                }
+            }
         }
 
         private void ReadXuiDebugCompleted(string subroutineName, SBString[] parameters, object userState)
