@@ -6,7 +6,6 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport
 {
     using System;
@@ -29,13 +28,13 @@ namespace SBXAThemeSupport
         #region Public Methods and Operators
 
         /// <summary>
-        ///     Sets glass background to whole window.
+        /// Sets glass background to whole window.
         /// </summary>
         /// <remarks>
-        ///     Remember to set your WPF Window Background to "Transparent"!
+        /// Remember to set your WPF Window Background to "Transparent"!
         /// </remarks>
         /// <param name="win">
-        ///     The Window to apply the glass background.
+        /// The Window to apply the glass background.
         /// </param>
         public static void GlassBackground(this Window win)
         {
@@ -45,22 +44,22 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Sets glass background to custom margins in the window.
+        /// Sets glass background to custom margins in the window.
         /// </summary>
         /// <param name="win">
-        ///     The Window to apply the glass background.
+        /// The Window to apply the glass background.
         /// </param>
         /// <param name="left">
-        ///     The left.
+        /// The left.
         /// </param>
         /// <param name="right">
-        ///     The right.
+        /// The right.
         /// </param>
         /// <param name="top">
-        ///     The top.
+        /// The top.
         /// </param>
         /// <param name="bottom">
-        ///     The bottom.
+        /// The bottom.
         /// </param>
         public static void GlassBackground(this Window win, int left, int right, int top, int bottom)
         {
@@ -86,9 +85,9 @@ namespace SBXAThemeSupport
                             // Margin for the DwmExtendFrameIntoClientArea WINAPI call.
                             var margins = new NonClientRegionApi.Margins
                                               {
-                                                  CxLeftWidth = left,
-                                                  CxRightWidth = right,
-                                                  CyBottomHeight = bottom,
+                                                  CxLeftWidth = left, 
+                                                  CxRightWidth = right, 
+                                                  CyBottomHeight = bottom, 
                                                   CyTopHeight = top
                                               };
 
@@ -119,16 +118,16 @@ namespace SBXAThemeSupport
             #region Public Methods and Operators
 
             /// <summary>
-            ///     The dwm extend frame into client area.
+            /// The dwm extend frame into client area.
             /// </summary>
             /// <param name="hwnd">
-            ///     The hwnd.
+            /// The hwnd.
             /// </param>
             /// <param name="pMarInset">
-            ///     The p mar inset.
+            /// The p mar inset.
             /// </param>
             /// <returns>
-            ///     The <see cref="int" />.
+            /// The <see cref="int"/>.
             /// </returns>
             [DllImport("DwmApi.dll")]
             public static extern int DwmExtendFrameIntoClientArea(IntPtr hwnd, ref Margins pMarInset);

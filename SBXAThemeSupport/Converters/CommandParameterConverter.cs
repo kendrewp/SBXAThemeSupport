@@ -6,7 +6,6 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.Converters
 {
     using System;
@@ -22,22 +21,22 @@ namespace SBXAThemeSupport.Converters
         #region Public Methods and Operators
 
         /// <summary>
-        ///     The convert.
+        /// The convert.
         /// </summary>
         /// <param name="value">
-        ///     The value.
+        /// The value.
         /// </param>
         /// <param name="targetType">
-        ///     The target type.
+        /// The target type.
         /// </param>
         /// <param name="parameter">
-        ///     The parameter.
+        /// The parameter.
         /// </param>
         /// <param name="culture">
-        ///     The culture.
+        /// The culture.
         /// </param>
         /// <returns>
-        ///     The <see cref="object" />.
+        /// The <see cref="object"/>.
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -45,22 +44,22 @@ namespace SBXAThemeSupport.Converters
         }
 
         /// <summary>
-        ///     The convert back.
+        /// The convert back.
         /// </summary>
         /// <param name="value">
-        ///     The value.
+        /// The value.
         /// </param>
         /// <param name="targetType">
-        ///     The target type.
+        /// The target type.
         /// </param>
         /// <param name="parameter">
-        ///     The parameter.
+        /// The parameter.
         /// </param>
         /// <param name="culture">
-        ///     The culture.
+        /// The culture.
         /// </param>
         /// <returns>
-        ///     The <see cref="object" />.
+        /// The <see cref="object"/>.
         /// </returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

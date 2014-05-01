@@ -6,7 +6,6 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.Utilities
 {
     using System.Timers;
@@ -27,10 +26,10 @@ namespace SBXAThemeSupport.Utilities
         #region Constructors and Destructors
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="TimerHelper" /> class.
+        /// Initializes a new instance of the <see cref="TimerHelper"/> class.
         /// </summary>
         /// <param name="interval">
-        ///     The interval.
+        /// The interval.
         /// </param>
         public TimerHelper(double interval)
             : base(interval)

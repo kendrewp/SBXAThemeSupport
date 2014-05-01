@@ -3,7 +3,6 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.Models
 {
     using SBXA.Shared;
@@ -16,19 +15,19 @@ namespace SBXAThemeSupport.Models
         #region Constructors and Destructors
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="OutputDefinitionDescription" /> class.
+        /// Initializes a new instance of the <see cref="OutputDefinitionDescription"/> class.
         /// </summary>
         /// <param name="fileName">
-        ///     The file name.
+        /// The file name.
         /// </param>
         /// <param name="name">
-        ///     The name.
+        /// The name.
         /// </param>
         /// <param name="expression">
-        ///     The expression.
+        /// The expression.
         /// </param>
         /// <param name="definition">
-        ///     The definition.
+        /// The definition.
         /// </param>
         public OutputDefinitionDescription(string fileName, string name, string expression, SBString definition)
             : base(fileName, name, expression, definition)

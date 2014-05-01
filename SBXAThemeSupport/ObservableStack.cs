@@ -9,7 +9,6 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport
 {
     using System;
@@ -18,11 +17,11 @@ namespace SBXAThemeSupport
     using System.ComponentModel;
 
     /// <summary>
-    ///     This stack implements INotifyCollectionChanged and INotifyPropertyChanged so that objects that are interested can
+    /// This stack implements INotifyCollectionChanged and INotifyPropertyChanged so that objects that are interested can
     ///     listen to change events.
     /// </summary>
     /// <typeparam name="T">
-    ///     The <see cref="Type" /> of objects that this collection will contain.
+    /// The <see cref="Type"/> of objects that this collection will contain.
     /// </typeparam>
     public class ObservableStack<T> : Stack<T>, INotifyCollectionChanged, INotifyPropertyChanged
     {
@@ -36,10 +35,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ObservableStack{T}" /> class.
+        /// Initializes a new instance of the <see cref="ObservableStack{T}"/> class.
         /// </summary>
         /// <param name="collection">
-        ///     The collection.
+        /// The collection.
         /// </param>
         public ObservableStack(IEnumerable<T> collection)
         {
@@ -50,10 +49,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ObservableStack{T}" /> class.
+        /// Initializes a new instance of the <see cref="ObservableStack{T}"/> class.
         /// </summary>
         /// <param name="list">
-        ///     The list.
+        /// The list.
         /// </param>
         public ObservableStack(List<T> list)
         {
@@ -131,10 +130,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Pushes the specified item.
+        /// Pushes the specified item.
         /// </summary>
         /// <param name="item">
-        ///     The item.
+        /// The item.
         /// </param>
         public new virtual void Push(T item)
         {
@@ -147,10 +146,10 @@ namespace SBXAThemeSupport
         #region Methods
 
         /// <summary>
-        ///     Raises the <see cref="E:CollectionChanged" /> event.
+        /// Raises the <see cref="E:CollectionChanged"/> event.
         /// </summary>
         /// <param name="e">
-        ///     The <see cref="NotifyCollectionChangedEventArgs" /> instance containing the event data.
+        /// The <see cref="NotifyCollectionChangedEventArgs"/> instance containing the event data.
         /// </param>
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
@@ -158,10 +157,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Raises the <see cref="E:PropertyChanged" /> event.
+        /// Raises the <see cref="E:PropertyChanged"/> event.
         /// </summary>
         /// <param name="e">
-        ///     The <see cref="PropertyChangedEventArgs" /> instance containing the event data.
+        /// The <see cref="PropertyChangedEventArgs"/> instance containing the event data.
         /// </param>
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
         {
@@ -169,10 +168,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Raises the collection changed.
+        /// Raises the collection changed.
         /// </summary>
         /// <param name="e">
-        ///     The <see cref="NotifyCollectionChangedEventArgs" /> instance containing the event data.
+        /// The <see cref="NotifyCollectionChangedEventArgs"/> instance containing the event data.
         /// </param>
         private void RaiseCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
@@ -184,10 +183,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Raises the property changed.
+        /// Raises the property changed.
         /// </summary>
         /// <param name="e">
-        ///     The <see cref="PropertyChangedEventArgs" /> instance containing the event data.
+        /// The <see cref="PropertyChangedEventArgs"/> instance containing the event data.
         /// </param>
         private void RaisePropertyChanged(PropertyChangedEventArgs e)
         {

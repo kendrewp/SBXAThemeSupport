@@ -1,4 +1,9 @@
-﻿namespace SBXAThemeSupport.DebugAssistant.ViewModels
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RevisionDefinitionViewModel.cs" company="Ruf Informatik AG">
+//   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+namespace SBXAThemeSupport.DebugAssistant.ViewModels
 {
     using System.Windows;
     using System.Windows.Threading;
@@ -13,24 +18,30 @@
     using ICommand = System.Windows.Input.ICommand;
 
     /// <summary>
-    ///     This class represents an item in a revision definition.
+    ///     The revision definition view model.
     /// </summary>
     public class RevisionDefinitionViewModel : ViewModel
     {
+        #region Constants
+
         /// <summary>
-        ///     The data
+        ///     The data.
         /// </summary>
         public const string Data = "3";
 
         /// <summary>
-        ///     The dictionary
+        ///     The dict.
         /// </summary>
         public const string Dict = "1";
 
         /// <summary>
-        ///     The dictionary and data
+        ///     The dict and data.
         /// </summary>
         public const string DictAndData = "2";
+
+        #endregion
+
+        #region Fields
 
         private readonly RevisionDefinitionItemCollection revisionDefinitionItemCollection = new RevisionDefinitionItemCollection();
 
@@ -38,11 +49,25 @@
 
         private bool isAllSelected;
 
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RevisionDefinitionViewModel"/> class.
+        /// </summary>
         public RevisionDefinitionViewModel()
         {
             SaveDefinitionCommand = new RelayCommand(this.SaveDefinitionCommandExecuted, this.CanExecuteSaveDefinitionCommand);
         }
 
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// Gets the save definition command.
+        /// </summary>
         public static ICommand SaveDefinitionCommand { get; private set; }
 
         /// <summary>
@@ -57,6 +82,7 @@
             {
                 return this.definitionName;
             }
+
             set
             {
                 if (this.definitionName != value)
@@ -68,10 +94,10 @@
         }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether this instance is all selected.
+        /// Gets or sets a value indicating whether [is all selected].
         /// </summary>
         /// <value>
-        ///     <c>true</c> if this instance is all selected; otherwise, <c>false</c>.
+        ///   <c>true</c> if [is all selected]; otherwise, <c>false</c>.
         /// </value>
         public bool IsAllSelected
         {
@@ -79,6 +105,7 @@
             {
                 return this.isAllSelected;
             }
+
             set
             {
                 if (this.isAllSelected != value)
@@ -90,6 +117,9 @@
             }
         }
 
+        /// <summary>
+        ///     Gets the revision definition item collection.
+        /// </summary>
         public RevisionDefinitionItemCollection RevisionDefinitionItemCollection
         {
             get
@@ -98,14 +128,24 @@
             }
         }
 
+        #endregion
+
+        #region Public Methods and Operators
+
         /// <summary>
-        ///     Creates the revision definition.
+        /// The create revision definition.
         /// </summary>
-        /// <param name="startItem">The start item.</param>
+        /// <param name="startItem">
+        /// The start item.
+        /// </param>
         public void CreateRevisionDefinition(TreeItem startItem)
         {
             startItem.AddChildrenToCollection(this.RevisionDefinitionItemCollection);
         }
+
+        #endregion
+
+        #region Methods
 
         internal static void AddItemToDefinition(RevisionDefinitionItemCollection collection, RevisionDefinitionItem item)
         {
@@ -114,16 +154,19 @@
                 // do not add items that do not have a file name.
                 return;
             }
+
             if (item.Action.Equals("IO") && (string.IsNullOrEmpty(item.FileName) || string.IsNullOrEmpty(item.Item)))
             {
                 // do not add items that do not have a file name and item name if the action is IO.
                 return;
             }
+
             if (ProcessAnalysisViewModel.IsExcludeFile(item.FileName))
             {
                 // do not include SB/XA program files.
                 return;
             }
+
             if (!collection.ContainsItem(item.FileName, item.Item))
             {
                 collection.Add(item);
@@ -166,7 +209,8 @@
             defn.Add(items);
             defn.Add(parameters);
 
-            JobManager.RunInUIThread(DispatcherPriority.Normal,
+            JobManager.RunInUIThread(
+                DispatcherPriority.Normal, 
                 delegate
                     {
                         var defnName = "REV.DEFN*" + this.DefinitionName + "*1";
@@ -186,5 +230,7 @@
                 item.Include = select;
             }
         }
+
+        #endregion
     }
 }

@@ -6,7 +6,6 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.Controls
 {
     using System;
@@ -28,10 +27,10 @@ namespace SBXAThemeSupport.Controls
         #region Methods
 
         /// <summary>
-        ///     The on preview key down.
+        /// The on preview key down.
         /// </summary>
         /// <param name="e">
-        ///     The e.
+        /// The e.
         /// </param>
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
@@ -85,10 +84,10 @@ namespace SBXAThemeSupport.Controls
         }
 
         /// <summary>
-        ///     The on preview mouse double click.
+        /// The on preview mouse double click.
         /// </summary>
         /// <param name="e">
-        ///     The e.
+        /// The e.
         /// </param>
         protected override void OnPreviewMouseDoubleClick(MouseButtonEventArgs e)
         {
@@ -112,10 +111,10 @@ namespace SBXAThemeSupport.Controls
         }
 
         /// <summary>
-        ///     The on preview mouse down.
+        /// The on preview mouse down.
         /// </summary>
         /// <param name="e">
-        ///     The e.
+        /// The e.
         /// </param>
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {

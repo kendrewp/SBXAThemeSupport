@@ -3,7 +3,6 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.Models
 {
     using System;
@@ -25,19 +24,19 @@ namespace SBXAThemeSupport.Models
         #region Constructors and Destructors
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ScreenDefintion" /> class.
+        /// Initializes a new instance of the <see cref="ScreenDefintion"/> class.
         /// </summary>
         /// <param name="fileName">
-        ///     The file name.
+        /// The file name.
         /// </param>
         /// <param name="name">
-        ///     The name.
+        /// The name.
         /// </param>
         /// <param name="expression">
-        ///     The expression.
+        /// The expression.
         /// </param>
         /// <param name="definition">
-        ///     The definition.
+        /// The definition.
         /// </param>
         public ScreenDefintion(string fileName, string name, string expression, SBString definition)
             : base(fileName, name, expression)
@@ -60,10 +59,10 @@ namespace SBXAThemeSupport.Models
         #region Public Methods and Operators
 
         /// <summary>
-        ///     The add children to collection.
+        /// The add children to collection.
         /// </summary>
         /// <param name="collection">
-        ///     The collection.
+        /// The collection.
         /// </param>
         public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
         {
@@ -71,27 +70,27 @@ namespace SBXAThemeSupport.Models
 
             // Primary screen definition
             SBFile.ReadDictionaryItem(
-                this.FileName,
-                this.Name,
-                new object[] { this.FileName, this.Name, collection },
+                this.FileName, 
+                this.Name, 
+                new object[] { this.FileName, this.Name, collection }, 
                 ReadDictItemCompleted);
             // .TXT
             SBFile.ReadDictionaryItem(
-                this.FileName,
-                this.Name + ".TXT",
-                new object[] { this.FileName, this.Name + ".TXT", collection },
+                this.FileName, 
+                this.Name + ".TXT", 
+                new object[] { this.FileName, this.Name + ".TXT", collection }, 
                 ReadDictItemCompleted);
             // .GUI
             SBFile.ReadDictionaryItem(
-                this.FileName,
-                this.Name + ".GUI",
-                new object[] { this.FileName, this.Name + ".GUI", collection },
+                this.FileName, 
+                this.Name + ".GUI", 
+                new object[] { this.FileName, this.Name + ".GUI", collection }, 
                 ReadDictItemCompleted);
             // .XUI
             SBFile.ReadDictionaryItem(
-                this.FileName,
-                this.Name + ".XUI",
-                new object[] { this.FileName, this.Name + ".XUI", collection },
+                this.FileName, 
+                this.Name + ".XUI", 
+                new object[] { this.FileName, this.Name + ".XUI", collection }, 
                 ReadDictItemCompleted);
 
             foreach (var fieldDescription in this.FieldDescriptions)
@@ -144,16 +143,16 @@ namespace SBXAThemeSupport.Models
                 {
                     // Adding screen definition item from dictionary.
                     JobManager.RunInDispatcherThread(
-                        DebugWindowManager.DebugConsoleWindow.Dispatcher,
-                        DispatcherPriority.Normal,
+                        DebugWindowManager.DebugConsoleWindow.Dispatcher, 
+                        DispatcherPriority.Normal, 
                         () =>
                         RevisionDefinitionViewModel.AddItemToDefinition(
-                            revisionDefinitionItemCollection,
+                            revisionDefinitionItemCollection, 
                             new RevisionDefinitionItem
                                 {
-                                    Action = "IO",
-                                    FileName = fileName.StartsWith("DICT ") ? fileName.Substring(5) : fileName,
-                                    Item = itemName,
+                                    Action = "IO", 
+                                    FileName = fileName.StartsWith("DICT ") ? fileName.Substring(5) : fileName, 
+                                    Item = itemName, 
                                     Parameters = RevisionDefinitionViewModel.Dict
                                 }));
                 }
@@ -190,57 +189,57 @@ namespace SBXAThemeSupport.Models
                             {
                                 ProcessBefore =
                                     definition.Extract(
-                                        ProcessesBefore,
-                                        fno).Value,
+                                        ProcessesBefore, 
+                                        fno).Value, 
                                 ProcessAfter =
                                     definition.Extract(
-                                        ProcessesAfter,
-                                        fno).Value,
+                                        ProcessesAfter, 
+                                        fno).Value, 
                                 IntuitiveHelp =
                                     definition.Extract(IntHelp, fno)
-                                    .Value,
+                                    .Value, 
                                 ConversionCode =
                                     definition.Extract(
-                                        ConversionCode,
-                                        fno).Value,
+                                        ConversionCode, 
+                                        fno).Value, 
                                 FieldDefault =
                                     (!string.IsNullOrEmpty(
                                         definition.Extract(
-                                            FieldPos,
+                                            FieldPos, 
                                             fno).Value)
                                      && definition.Extract(
-                                         FieldPos,
+                                         FieldPos, 
                                          fno)
                                             .Value.Substring(0, 1)
                                             .Equals("0"))
                                         ? string.Empty
                                         : definition.Extract(
-                                            DefaultDerived,
-                                            fno).Value,
+                                            DefaultDerived, 
+                                            fno).Value, 
                                 Derived =
                                     (!string.IsNullOrEmpty(
                                         definition.Extract(
-                                            FieldPos,
+                                            FieldPos, 
                                             fno).Value)
                                      && !definition.Extract(
-                                         FieldPos,
+                                         FieldPos, 
                                          fno)
                                              .Value.Substring(0, 1)
                                              .Equals("0"))
                                         ? string.Empty
                                         : definition.Extract(
-                                            DefaultDerived,
-                                            fno).Value,
+                                            DefaultDerived, 
+                                            fno).Value, 
                                 Validation =
                                     definition.Extract(
-                                        Validation,
-                                        fno).Value,
+                                        Validation, 
+                                        fno).Value, 
                                 StyleName =
                                     (definition.Dcount() >= StyleName
                                      && definition.Dcount(StyleName)
                                      >= fno)
                                         ? definition.Extract(
-                                            StyleName,
+                                            StyleName, 
                                             fno).Value
                                         : string.Empty
                             });
@@ -253,10 +252,10 @@ namespace SBXAThemeSupport.Models
                     if (!definition.Extract(Buttons, bNo).IsNullOrEmpty())
                     {
                         DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                            SourceDefinition.Screen,
-                            SourceDefinition.Process,
-                            definition.Extract(Buttons, bNo).Value,
-                            this,
+                            SourceDefinition.Screen, 
+                            SourceDefinition.Process, 
+                            definition.Extract(Buttons, bNo).Value, 
+                            this, 
                             "Button " + definition.Extract(ButtonDesc, bNo).Value);
                     }
                 }
@@ -265,60 +264,60 @@ namespace SBXAThemeSupport.Models
                 if (!string.IsNullOrWhiteSpace(definition.Extract(7, 1).Value))
                 {
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                        SourceDefinition.Screen,
-                        SourceDefinition.Process,
-                        definition.Extract(7, 1).Value,
-                        this,
+                        SourceDefinition.Screen, 
+                        SourceDefinition.Process, 
+                        definition.Extract(7, 1).Value, 
+                        this, 
                         "Before Screen Display");
                 }
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(7, 2).Value))
                 {
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                        SourceDefinition.Screen,
-                        SourceDefinition.Process,
-                        definition.Extract(7, 2).Value,
-                        this,
+                        SourceDefinition.Screen, 
+                        SourceDefinition.Process, 
+                        definition.Extract(7, 2).Value, 
+                        this, 
                         "After Screen Display");
                 }
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(7, 3).Value))
                 {
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                        SourceDefinition.Screen,
-                        SourceDefinition.Process,
-                        definition.Extract(7, 3).Value,
-                        this,
+                        SourceDefinition.Screen, 
+                        SourceDefinition.Process, 
+                        definition.Extract(7, 3).Value, 
+                        this, 
                         "After Read Record");
                 }
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(7, 4).Value))
                 {
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                        SourceDefinition.Screen,
-                        SourceDefinition.Process,
-                        definition.Extract(7, 4).Value,
-                        this,
+                        SourceDefinition.Screen, 
+                        SourceDefinition.Process, 
+                        definition.Extract(7, 4).Value, 
+                        this, 
                         "After Accept");
                 }
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(7, 5).Value))
                 {
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                        SourceDefinition.Screen,
-                        SourceDefinition.Process,
-                        definition.Extract(7, 5).Value,
-                        this,
+                        SourceDefinition.Screen, 
+                        SourceDefinition.Process, 
+                        definition.Extract(7, 5).Value, 
+                        this, 
                         "After Update");
                 }
 
                 if (!string.IsNullOrWhiteSpace(definition.Extract(7, 6).Value))
                 {
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                        SourceDefinition.Screen,
-                        SourceDefinition.Process,
-                        definition.Extract(7, 6).Value,
-                        this,
+                        SourceDefinition.Screen, 
+                        SourceDefinition.Process, 
+                        definition.Extract(7, 6).Value, 
+                        this, 
                         "If Escape");
                 }
 

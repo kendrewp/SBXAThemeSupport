@@ -6,7 +6,6 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.ViewModels
 {
     using System.ComponentModel;
@@ -28,10 +27,10 @@ namespace SBXAThemeSupport.ViewModels
         #region Methods
 
         /// <summary>
-        ///     The raise property changed.
+        /// The raise property changed.
         /// </summary>
         /// <param name="propertyName">
-        ///     The property name.
+        /// The property name.
         /// </param>
         protected void RaisePropertyChanged(string propertyName)
         {

@@ -9,7 +9,6 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.Views
 {
     using System.Windows.Controls;
@@ -26,8 +25,8 @@ namespace SBXAThemeSupport.Views
         #region Static Fields
 
         public static readonly RoutedUICommand RefreshCommonCommand = new RoutedUICommand(
-            "RefreshCommonCommand",
-            "RefreshCommonCommand",
+            "RefreshCommonCommand", 
+            "RefreshCommonCommand", 
             typeof(CommonViewer));
 
         private static readonly CommandBinding RefreshCommonCommandBinding = new CommandBinding(RefreshCommonCommand);

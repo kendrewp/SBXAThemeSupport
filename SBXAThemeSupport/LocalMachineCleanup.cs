@@ -9,7 +9,6 @@
 //   Copyright © American Auto Shield, LLC. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport
 {
     using System;
@@ -27,10 +26,10 @@ namespace SBXAThemeSupport
         #region Public Methods and Operators
 
         /// <summary>
-        ///     This will remove the logs from before the date specified in before.
+        /// This will remove the logs from before the date specified in before.
         /// </summary>
         /// <param name="before">
-        ///     The date which should be used to figure out which logs are cleaned.
+        /// The date which should be used to figure out which logs are cleaned.
         /// </param>
         public static void CleanLogs(DateTime before)
         {
@@ -56,10 +55,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Calling this routine will remove all the SB/XA folders from previous versions.
+        /// Calling this routine will remove all the SB/XA folders from previous versions.
         /// </summary>
         /// <param name="deleteAll">
-        ///     The delete All.
+        /// The delete All.
         /// </param>
         public static void CleanVersionFolders(bool deleteAll = false)
         {

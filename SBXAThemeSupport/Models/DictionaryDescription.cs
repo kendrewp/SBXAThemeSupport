@@ -3,7 +3,6 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.Models
 {
     /// <summary>
@@ -14,10 +13,10 @@ namespace SBXAThemeSupport.Models
         #region Constructors and Destructors
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="DictionaryDescription" /> class.
+        /// Initializes a new instance of the <see cref="DictionaryDescription"/> class.
         /// </summary>
         /// <param name="fileName">
-        ///     The file name.
+        /// The file name.
         /// </param>
         public DictionaryDescription(string fileName)
             : base(fileName, fileName)
@@ -29,10 +28,10 @@ namespace SBXAThemeSupport.Models
         #region Public Methods and Operators
 
         /// <summary>
-        ///     The add children to collection.
+        /// The add children to collection.
         /// </summary>
         /// <param name="collection">
-        ///     The collection.
+        /// The collection.
         /// </param>
         public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
         {
@@ -44,9 +43,19 @@ namespace SBXAThemeSupport.Models
 
         #endregion
 
+        #region Methods
+
+        /// <summary>
+        /// The add self.
+        /// </summary>
+        /// <param name="collection">
+        /// The collection.
+        /// </param>
         protected override void AddSelf(RevisionDefinitionItemCollection collection)
         {
             // I do not want to add the name of the dictionary. base.AddSelf(collection);
         }
+
+        #endregion
     }
 }

@@ -1,4 +1,9 @@
-﻿namespace SBXAThemeSupport.Models
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DefinitionDescription.cs" company="Ruf Informatik AG">
+//   Copyright © Ruf Informatik AG. All rights reserved.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+namespace SBXAThemeSupport.Models
 {
     using System;
     using System.Collections.ObjectModel;
@@ -11,8 +16,23 @@
     /// </summary>
     public class DefinitionDescription : TreeItem
     {
+        #region Fields
+
         private bool isCurrent;
 
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefinitionDescription"/> class.
+        /// </summary>
+        /// <param name="fileName">
+        /// The file name.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
         public DefinitionDescription(string fileName, string name)
             : base(name)
         {
@@ -25,6 +45,18 @@
             this.FileName = fileName;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefinitionDescription"/> class.
+        /// </summary>
+        /// <param name="fileName">
+        /// The file name.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        /// <param name="expression">
+        /// The expression.
+        /// </param>
         public DefinitionDescription(string fileName, string name, string expression)
             : this(fileName, name)
         {
@@ -34,22 +66,45 @@
             }
         }
 
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        ///     Gets the child processes.
+        /// </summary>
         public ProcessStack ChildProcesses { get; private set; }
 
+        /// <summary>
+        ///     Gets or sets the dictionary expressions.
+        /// </summary>
         public ObservableCollection<SBExpression> DictionaryExpressions { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the expressions.
+        /// </summary>
         public ObservableCollection<SBExpression> Expressions { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the file name.
+        /// </summary>
         public string FileName { get; set; }
 
+        /// <summary>
+        ///     Gets or sets the history process description.
+        /// </summary>
         public DefinitionDescription HistoryProcessDescription { get; set; }
 
+        /// <summary>
+        ///     Gets or sets a value indicating whether is current.
+        /// </summary>
         public bool IsCurrent
         {
             get
             {
                 return this.isCurrent;
             }
+
             set
             {
                 this.isCurrent = value;
@@ -57,14 +112,36 @@
             }
         }
 
+        /// <summary>
+        ///     Gets or sets a value indicating whether is error.
+        /// </summary>
         public bool IsError { get; set; }
 
+        /// <summary>
+        ///     Gets the process collection.
+        /// </summary>
         public ObservableCollection<ProcessCall> ProcessCollection { get; private set; }
 
+        /// <summary>
+        ///     Gets or sets the screen expressions.
+        /// </summary>
         public ObservableCollection<SBExpression> ScreenExpressions { get; set; }
 
+        /// <summary>
+        ///     Gets the source expression.
+        /// </summary>
         public string SourceExpression { get; private set; }
 
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// The add children to collection.
+        /// </summary>
+        /// <param name="collection">
+        /// The collection.
+        /// </param>
         public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
         {
             foreach (var item in this.ProcessCollection)
@@ -92,15 +169,22 @@
             this.AddSelf(collection);
         }
 
+        /// <summary>
+        ///     The clear.
+        /// </summary>
         public void Clear()
         {
             foreach (var item in this.ChildProcesses)
             {
                 item.Clear();
             }
+
             this.ChildProcesses.Clear();
         }
 
+        /// <summary>
+        ///     The clear history references.
+        /// </summary>
         public void ClearHistoryReferences()
         {
             this.HistoryProcessDescription = null;
@@ -110,6 +194,16 @@
             }
         }
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// The add self.
+        /// </summary>
+        /// <param name="collection">
+        /// The collection.
+        /// </param>
         protected virtual void AddSelf(RevisionDefinitionItemCollection collection)
         {
             if (!this.IsError)
@@ -122,15 +216,18 @@
                     parameters = RevisionDefinitionViewModel.Dict;
                     fname = this.FileName.Substring(5);
                 }
-                RevisionDefinitionViewModel.AddItemToDefinition(collection, new RevisionDefinitionItem { Action = "IO", FileName = fname, Item = this.Name, Parameters = parameters });
+
+                RevisionDefinitionViewModel.AddItemToDefinition(
+                    collection, 
+                    new RevisionDefinitionItem { Action = "IO", FileName = fname, Item = this.Name, Parameters = parameters });
             }
         }
 
         /// <summary>
-        ///     Releases unmanaged and - optionally - managed resources.
+        /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing">
-        ///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
+        /// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
         ///     unmanaged resources.
         /// </param>
         protected override void Dispose(bool disposing)
@@ -145,6 +242,7 @@
                         ((IDisposable)item).Dispose();
                     }
                 }
+
                 foreach (var item in this.ProcessCollection)
                 {
                     if (item != null)
@@ -153,18 +251,42 @@
                     }
                 }
             }
+
             base.Dispose(disposing);
         }
+
+        #endregion
     }
 
+    /// <summary>
+    ///     The process collection.
+    /// </summary>
     public class ProcessCollection : Collection<DefinitionDescription>, IDisposable
     {
+        #region Constructors and Destructors
+
+        /// <summary>
+        ///     Finalizes an instance of the <see cref="ProcessCollection" /> class.
+        /// </summary>
         ~ProcessCollection()
         {
             // Finalizer calls Dispose(false)
             this.Dispose(false);
         }
 
+        #endregion
+
+        #region Public Indexers
+
+        /// <summary>
+        /// The this.
+        /// </summary>
+        /// <param name="key">
+        /// The key.
+        /// </param>
+        /// <returns>
+        /// The <see cref="DefinitionDescription"/>.
+        /// </returns>
         public DefinitionDescription this[string key]
         {
             get
@@ -173,11 +295,44 @@
             }
         }
 
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// The contains key.
+        /// </summary>
+        /// <param name="fileName">
+        /// The file name.
+        /// </param>
+        /// <param name="processName">
+        /// The process name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public bool ContainsKey(string fileName, string processName)
         {
-            return this.Any(processDescription => (processDescription.FileName.Equals(fileName) && processDescription.Name.Equals(processName)));
+            return
+                this.Any(
+                    processDescription => (processDescription.FileName.Equals(fileName) && processDescription.Name.Equals(processName)));
         }
 
+        /// <summary>
+        /// The contains key.
+        /// </summary>
+        /// <param name="fileName">
+        /// The file name.
+        /// </param>
+        /// <param name="processName">
+        /// The process name.
+        /// </param>
+        /// <param name="type">
+        /// The type.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public bool ContainsKey(string fileName, string processName, Type type)
         {
             if (type == typeof(BasicProgramDescription))
@@ -185,7 +340,12 @@
                 // do not check against the file name as 1) it may not be there yet and 2) it does not matter as there can only be one program with the name cataloged (at least locally).
                 return this.Any(processDescription => (processDescription.Name.Equals(processName) && processDescription.GetType() == type));
             }
-            return this.Any(processDescription => (processDescription.Name.Equals(processName) && processDescription.FileName.Equals(fileName) && processDescription.GetType() == type));
+
+            return
+                this.Any(
+                    processDescription =>
+                    (processDescription.Name.Equals(processName) && processDescription.FileName.Equals(fileName)
+                     && processDescription.GetType() == type));
         }
 
         /// <summary>
@@ -197,11 +357,21 @@
             GC.SuppressFinalize(this);
         }
 
+        #endregion
+
         // NOTE: Leave out the finalizer altogether if this class doesn't 
         // own unmanaged resources itself, but leave the other methods
         // exactly as they are. 
 
         // The bulk of the clean-up code is implemented in Dispose(bool)
+        #region Methods
+
+        /// <summary>
+        /// The dispose.
+        /// </summary>
+        /// <param name="disposing">
+        /// The disposing.
+        /// </param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -214,8 +384,11 @@
                         ((IDisposable)item).Dispose();
                     }
                 }
+
                 this.Clear();
             }
         }
+
+        #endregion
     }
 }

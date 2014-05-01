@@ -3,7 +3,6 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.Views
 {
     using System.Windows;
@@ -20,9 +19,9 @@ namespace SBXAThemeSupport.Views
         #region Static Fields
 
         public static readonly DependencyProperty StartItemProperty = DependencyProperty.Register(
-            "StartItem",
-            typeof(TreeItem),
-            typeof(RevisionDefinition),
+            "StartItem", 
+            typeof(TreeItem), 
+            typeof(RevisionDefinition), 
             new PropertyMetadata(OnStartItemChanged));
 
         #endregion

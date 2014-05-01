@@ -9,7 +9,6 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.Models
 {
     using System;
@@ -58,13 +57,18 @@ namespace SBXAThemeSupport.Models
 
         #endregion
 
+        // NOTE: Leave out the finalizer altogether if this class doesn't 
+        // own unmanaged resources itself, but leave the other methods
+        // exactly as they are. 
+
+        // The bulk of the clean-up code is implemented in Dispose(bool)
         #region Methods
 
         /// <summary>
-        ///     The dispose.
+        /// The dispose.
         /// </summary>
         /// <param name="disposing">
-        ///     The disposing.
+        /// The disposing.
         /// </param>
         protected virtual void Dispose(bool disposing)
         {
@@ -82,11 +86,5 @@ namespace SBXAThemeSupport.Models
         }
 
         #endregion
-
-        // NOTE: Leave out the finalizer altogether if this class doesn't 
-        // own unmanaged resources itself, but leave the other methods
-        // exactly as they are. 
-
-        // The bulk of the clean-up code is implemented in Dispose(bool)
     }
 }

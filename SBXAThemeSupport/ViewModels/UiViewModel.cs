@@ -6,7 +6,6 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.ViewModels
 {
     using System.Collections;
@@ -48,13 +47,13 @@ namespace SBXAThemeSupport.ViewModels
         #region Public Methods and Operators
 
         /// <summary>
-        ///     The disabled key.
+        /// The disabled key.
         /// </summary>
         /// <param name="disabledKey">
-        ///     The the key that will be used to maanage the disabled field.
+        /// The the key that will be used to maanage the disabled field.
         /// </param>
         /// <param name="fieldName">
-        ///     The field name.
+        /// The field name.
         /// </param>
         public void DisabledKey(string disabledKey, string fieldName)
         {
@@ -75,13 +74,13 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        ///     The enabled key.
+        /// The enabled key.
         /// </summary>
         /// <param name="disabledKey">
-        ///     The disabled key.
+        /// The disabled key.
         /// </param>
         /// <param name="fieldName">
-        ///     The field name.
+        /// The field name.
         /// </param>
         public void EnabledKey(string disabledKey, string fieldName)
         {
@@ -102,16 +101,16 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        ///     The is key disabled.
+        /// The is key disabled.
         /// </summary>
         /// <param name="keyEventArgs">
-        ///     The key event args.
+        /// The key event args.
         /// </param>
         /// <param name="fieldName">
-        ///     The field name.
+        /// The field name.
         /// </param>
         /// <returns>
-        ///     The <see cref="bool" />.
+        /// The <see cref="bool"/>.
         /// </returns>
         public bool IsKeyDisabled(KeyEventArgs keyEventArgs, string fieldName)
         {

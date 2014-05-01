@@ -6,7 +6,6 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport
 {
     using System;
@@ -37,13 +36,13 @@ namespace SBXAThemeSupport
         #region Public Methods and Operators
 
         /// <summary>
-        ///     The call process.
+        /// The call process.
         /// </summary>
         /// <param name="processName">
-        ///     The process name.
+        /// The process name.
         /// </param>
         /// <param name="isInContext">
-        ///     The is in context.
+        /// The is in context.
         /// </param>
         public static void CallProcess(string processName, bool isInContext)
         {
@@ -51,19 +50,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The call process.
+        /// The call process.
         /// </summary>
         /// <param name="processName">
-        ///     The process name.
+        /// The process name.
         /// </param>
         /// <param name="isInContext">
-        ///     The is in context.
+        /// The is in context.
         /// </param>
         /// <param name="parameter">
-        ///     The parameter.
+        /// The parameter.
         /// </param>
         /// <param name="name">
-        ///     The name.
+        /// The name.
         /// </param>
         public static void CallProcess(string processName, bool isInContext, string parameter, string name = null)
         {
@@ -72,19 +71,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The call process.
+        /// The call process.
         /// </summary>
         /// <param name="processName">
-        ///     The process name.
+        /// The process name.
         /// </param>
         /// <param name="isInContext">
-        ///     The is in context.
+        /// The is in context.
         /// </param>
         /// <param name="parameter">
-        ///     The parameter.
+        /// The parameter.
         /// </param>
         /// <param name="name">
-        ///     The name.
+        /// The name.
         /// </param>
         public static void CallProcess(string processName, bool isInContext, string[] parameter, string name = null)
         {
@@ -98,19 +97,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The call process rtn flag.
+        /// The call process rtn flag.
         /// </summary>
         /// <param name="processName">
-        ///     The process name.
+        /// The process name.
         /// </param>
         /// <param name="callbackMethod">
-        ///     The callback method.
+        /// The callback method.
         /// </param>
         /// <param name="parameter">
-        ///     The parameter.
+        /// The parameter.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
-        ///     processName
+        /// processName
         /// </exception>
         public static void CallProcessRtnFlag(string processName, Action<string, string> callbackMethod, params string[] parameter)
         {
@@ -143,29 +142,29 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     This method will execute a subroutine on the server synchronously. If the server is busy, then based on the ignore
+        /// This method will execute a subroutine on the server synchronously. If the server is busy, then based on the ignore
         ///     if busy flag will either ignore the call or throw an exception.
         /// </summary>
         /// <param name="subroutineName">
-        ///     The name of the subroutine
+        /// The name of the subroutine
         /// </param>
         /// <param name="parCount">
-        ///     The numbr of parameters
+        /// The numbr of parameters
         /// </param>
         /// <param name="parameter">
-        ///     The actual parameters being passed to the subroutine
+        /// The actual parameters being passed to the subroutine
         /// </param>
         /// <param name="commandCouldCauseUiAction">
-        ///     If this is true it means that the basic subroutine will not do anything to cause the server to make a call to the
+        /// If this is true it means that the basic subroutine will not do anything to cause the server to make a call to the
         ///     client and therefore we do not have to worry about checking if the UI is busy.
         /// </param>
         /// <returns>
-        ///     The values that were passed back from the subroutine.
+        /// The values that were passed back from the subroutine.
         /// </returns>
         public static SBString[] CallSubroutine(
-            string subroutineName,
-            int parCount,
-            SBString[] parameter,
+            string subroutineName, 
+            int parCount, 
+            SBString[] parameter, 
             bool commandCouldCauseUiAction = false)
         {
             if (subroutineName == null)
@@ -183,8 +182,8 @@ namespace SBXAThemeSupport
             CustomLogger.LogDebug(
                 () =>
                 string.Format(
-                    "IsServerReady {0} commandCouldCauseUiAction {1}",
-                    ApplicationHelper.CanSendServerCommands(false),
+                    "IsServerReady {0} commandCouldCauseUiAction {1}", 
+                    ApplicationHelper.CanSendServerCommands(false), 
                     commandCouldCauseUiAction));
 
             SBString[] retunSbStrings = null;
@@ -196,7 +195,7 @@ namespace SBXAThemeSupport
             {
                 object myReturnObject = null;
                 JobManager.RunSyncInUIThread(
-                    DispatcherPriority.Normal,
+                    DispatcherPriority.Normal, 
                     () =>
                     myReturnObject =
                     ExecuteSubroutineReturningException(subroutineName, parameter, commandCouldCauseUiAction: commandCouldCauseUiAction));
@@ -213,19 +212,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The call subroutine.
+        /// The call subroutine.
         /// </summary>
         /// <param name="callback">
-        ///     The callback.
+        /// The callback.
         /// </param>
         /// <param name="subroutineName">
-        ///     The subroutine name.
+        /// The subroutine name.
         /// </param>
         /// <param name="parCount">
-        ///     The par count.
+        /// The par count.
         /// </param>
         /// <param name="parameter">
-        ///     The parameter.
+        /// The parameter.
         /// </param>
         public static void CallSubroutine(Action<bool, SBString[]> callback, string subroutineName, int parCount, SBString[] parameter)
         {
@@ -239,19 +238,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The call subroutine.
+        /// The call subroutine.
         /// </summary>
         /// <param name="callback">
-        ///     The callback.
+        /// The callback.
         /// </param>
         /// <param name="subroutineName">
-        ///     The subroutine name.
+        /// The subroutine name.
         /// </param>
         /// <param name="parCount">
-        ///     The par count.
+        /// The par count.
         /// </param>
         /// <param name="parameter">
-        ///     The parameter.
+        /// The parameter.
         /// </param>
         public static void CallSubroutine(Action<bool, SBString[]> callback, string subroutineName, int parCount, params string[] parameter)
         {
@@ -260,28 +259,28 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Calls the subroutine.
+        /// Calls the subroutine.
         /// </summary>
         /// <param name="subroutineCallCompleted">
-        ///     The subroutine call completed.
+        /// The subroutine call completed.
         /// </param>
         /// <param name="subroutineName">
-        ///     Name of the subroutine.
+        /// Name of the subroutine.
         /// </param>
         /// <param name="parameters">
-        ///     The parameters.
+        /// The parameters.
         /// </param>
         /// <param name="callbackRuntime">
-        ///     The callback runtime.
+        /// The callback runtime.
         /// </param>
         /// <param name="onlyServerSide">
-        ///     if set to <c>true</c> [only server side].
+        /// if set to <c>true</c> [only server side].
         /// </param>
         public static void CallSubroutine(
-            SubroutineCallCompleted subroutineCallCompleted,
-            string subroutineName,
-            SBString[] parameters,
-            object callbackRuntime,
+            SubroutineCallCompleted subroutineCallCompleted, 
+            string subroutineName, 
+            SBString[] parameters, 
+            object callbackRuntime, 
             bool onlyServerSide = false)
         {
             SbProcessRunner.Instance.ExecuteMethod(
@@ -289,19 +288,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The basic routine makes no callback to the client
+        /// The basic routine makes no callback to the client
         /// </summary>
         /// <param name="subroutineName">
-        ///     Name of the subroutine.
+        /// Name of the subroutine.
         /// </param>
         /// <param name="parCount">
-        ///     The par count.
+        /// The par count.
         /// </param>
         /// <param name="parameter">
-        ///     The parameter.
+        /// The parameter.
         /// </param>
         /// <returns>
-        ///     The <see cref="SBString[]" />.
+        /// The <see cref="SBString[]"/>.
         /// </returns>
         public static SBString[] CallSubroutineBasicOnly(string subroutineName, int parCount, SBString[] parameter)
         {
@@ -309,19 +308,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The Basic routine makes no callbacks to the client
+        /// The Basic routine makes no callbacks to the client
         /// </summary>
         /// <param name="subroutineName">
-        ///     Name of the subroutine
+        /// Name of the subroutine
         /// </param>
         /// <param name="parCount">
-        ///     Parameter count
+        /// Parameter count
         /// </param>
         /// <param name="parameter">
-        ///     The parameter
+        /// The parameter
         /// </param>
         /// <returns>
-        ///     The <see cref="SBString[]" />.
+        /// The <see cref="SBString[]"/>.
         /// </returns>
         public static SBString[] CallSubroutineBasicOnly(string subroutineName, int parCount, params string[] parameter)
         {
@@ -330,13 +329,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The callback from sbxa.
+        /// The callback from sbxa.
         /// </summary>
         /// <param name="callbackdata">
-        ///     The callbackdata.
+        /// The callbackdata.
         /// </param>
         /// <param name="otherData">
-        ///     The other data.
+        /// The other data.
         /// </param>
         public static void CallbackFromSbxa(string callbackdata, string otherData)
         {
@@ -362,10 +361,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The logto.
+        /// The logto.
         /// </summary>
         /// <param name="accountName">
-        ///     The account name.
+        /// The account name.
         /// </param>
         public static void Logto(string accountName)
         {
@@ -396,8 +395,8 @@ namespace SBXAThemeSupport
 
             // each call of process will confirm a DISP message unexpected, so it canCauseUnexpectedResponsesToServer 
             SbProcessRunner.Instance.ExecuteMethod(
-                () => CallProcessInternal(procIncludingParam, ApplicationHelper.CurrentFormSbHandle, SBPlus.Current, isInContext),
-                canCauseUnexpectedResponsesToServer: true,
+                () => CallProcessInternal(procIncludingParam, ApplicationHelper.CurrentFormSbHandle, SBPlus.Current, isInContext), 
+                canCauseUnexpectedResponsesToServer: true, 
                 name: name);
         }
 
@@ -454,9 +453,9 @@ namespace SBXAThemeSupport
         }
 
         private static void ExecuteSubroutine(
-            string subroutineName,
-            SBString[] parameters,
-            object userState,
+            string subroutineName, 
+            SBString[] parameters, 
+            object userState, 
             SubroutineCallCompleted subroutineCallCompleted)
         {
             SBPlusClient.Current.ExecuteSubroutine(subroutineName, parameters, userState, subroutineCallCompleted);
@@ -472,9 +471,9 @@ namespace SBXAThemeSupport
             CustomLogger.LogDebug(
                 () =>
                 string.Format(
-                    "IsServerWaiting {0} CanSendServerCommands {1} commandCouldCauseUiAction {2}",
-                    ApplicationHelper.CanSendServerCommands(false),
-                    ApplicationHelper.CanSendServerCommands(),
+                    "IsServerWaiting {0} CanSendServerCommands {1} commandCouldCauseUiAction {2}", 
+                    ApplicationHelper.CanSendServerCommands(false), 
+                    ApplicationHelper.CanSendServerCommands(), 
                     commandCouldCauseUiAction));
 
             if (ApplicationHelper.CanSendServerCommands(commandCouldCauseUiAction))
@@ -499,8 +498,8 @@ namespace SBXAThemeSupport
                 CustomLogger.LogWarning(
                     () =>
                     string.Format(
-                        "Call to subroutine {0} was ignored because the server is busy. Arguments {1}",
-                        subroutineName,
+                        "Call to subroutine {0} was ignored because the server is busy. Arguments {1}", 
+                        subroutineName, 
                         arguments != null && arguments.Length > 0 ? arguments[0].GetStandardString() : string.Empty));
                 throw notReadyException;
             }
@@ -520,23 +519,23 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Dispatcher does not propagate the exception
+        /// Dispatcher does not propagate the exception
         /// </summary>
         /// <param name="subroutineName">
-        ///     Name of the subroutine.
+        /// Name of the subroutine.
         /// </param>
         /// <param name="arguments">
-        ///     The arguments.
+        /// The arguments.
         /// </param>
         /// <param name="commandCouldCauseUiAction">
-        ///     if set to <c>true</c> [command could cause UI action].
+        /// if set to <c>true</c> [command could cause UI action].
         /// </param>
         /// <returns>
-        ///     The <see cref="object" />.
+        /// The <see cref="object"/>.
         /// </returns>
         private static object ExecuteSubroutineReturningException(
-            string subroutineName,
-            SBString[] arguments,
+            string subroutineName, 
+            SBString[] arguments, 
             bool commandCouldCauseUiAction = false)
         {
             try
@@ -572,25 +571,25 @@ namespace SBXAThemeSupport
             var callbackRuntime = new CallbackRuntime<bool, SBString[]>();
             callbackRuntime.Callback = callback;
             SBPlusClient.Current.ExecuteSubroutine(
-                subroutinename,
-                parameters,
-                callbackRuntime,
-                SubroutineOkCallback,
+                subroutinename, 
+                parameters, 
+                callbackRuntime, 
+                SubroutineOkCallback, 
                 SubroutineFailedCallback);
         }
 
         private static void SubroutineCallback(
-            string subroutineName,
-            SBString[] parameters,
-            object callbackRuntime,
-            SubroutineCallCompleted subroutineCallCompleted,
+            string subroutineName, 
+            SBString[] parameters, 
+            object callbackRuntime, 
+            SubroutineCallCompleted subroutineCallCompleted, 
             SubroutineCallFailed subroutineCallFailed = null)
         {
             SBPlusClient.Current.ExecuteSubroutine(
-                subroutineName,
-                parameters,
-                callbackRuntime,
-                subroutineCallCompleted,
+                subroutineName, 
+                parameters, 
+                callbackRuntime, 
+                subroutineCallCompleted, 
                 subroutineCallFailed);
         }
 

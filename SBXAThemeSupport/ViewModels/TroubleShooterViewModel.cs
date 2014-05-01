@@ -6,7 +6,6 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.ViewModels
 {
     using System;
@@ -33,12 +32,12 @@ namespace SBXAThemeSupport.ViewModels
         /// <summary>
         ///     The server.
         /// </summary>
-        Server,
+        Server, 
 
         /// <summary>
         ///     The email.
         /// </summary>
-        Email,
+        Email, 
 
         /// <summary>
         ///     The local folder.
@@ -254,13 +253,13 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        ///     Doeses the run once exist.
+        /// Doeses the run once exist.
         /// </summary>
         /// <param name="name">
-        ///     The name.
+        /// The name.
         /// </param>
         /// <returns>
-        ///     The <see cref="bool" />.
+        /// The <see cref="bool"/>.
         /// </returns>
         public static bool DoesRunOnceExist(string name)
         {
@@ -282,10 +281,10 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        ///     Haves the run once.
+        /// Haves the run once.
         /// </summary>
         /// <param name="name">
-        ///     The name.
+        /// The name.
         /// </param>
         public static void HaveRunOnce(string name)
         {
@@ -310,17 +309,17 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        ///     The send abnormal close.
+        /// The send abnormal close.
         /// </summary>
         /// <param name="message">
-        ///     The message.
+        /// The message.
         /// </param>
         /// <param name="deleteFiles">
-        ///     True is the files sent to the troubleshooter should be deleted after they have been packaged
+        /// True is the files sent to the troubleshooter should be deleted after they have been packaged
         ///     up.
         /// </param>
         /// <param name="orgId">
-        ///     The org Id.
+        /// The org Id.
         /// </param>
         public static void SendAbnormalClose(string message, bool deleteFiles, string orgId = null)
         {
@@ -363,28 +362,28 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        ///     Sends the abnormal close.
+        /// Sends the abnormal close.
         /// </summary>
         /// <param name="message">
-        ///     The message.
+        /// The message.
         /// </param>
         /// <param name="abortDescriptionFileName">
-        ///     Name of the abort description file.
+        /// Name of the abort description file.
         /// </param>
         /// <param name="additionalFiles">
-        ///     The additional files.
+        /// The additional files.
         /// </param>
         /// <param name="delete">
-        ///     The delete.
+        /// The delete.
         /// </param>
         /// <param name="orgId">
-        ///     The org identifier.
+        /// The org identifier.
         /// </param>
         public static void SendAbnormalClose(
-            string message,
-            string abortDescriptionFileName,
-            string[] additionalFiles,
-            bool delete = true,
+            string message, 
+            string abortDescriptionFileName, 
+            string[] additionalFiles, 
+            bool delete = true, 
             string orgId = null)
         {
             var windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
@@ -424,16 +423,16 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        ///     The send exception.
+        /// The send exception.
         /// </summary>
         /// <param name="exception">
-        ///     The exception.
+        /// The exception.
         /// </param>
         /// <param name="deleteFiles">
-        ///     True if the files packaged up should be deleted.
+        /// True if the files packaged up should be deleted.
         /// </param>
         /// <param name="orgId">
-        ///     The org Id.
+        /// The org Id.
         /// </param>
         public static void SendException(Exception exception, bool deleteFiles = true, string orgId = null)
         {
@@ -473,16 +472,16 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        ///     Sends the freeze.
+        /// Sends the freeze.
         /// </summary>
         /// <param name="message">
-        ///     The message.
+        /// The message.
         /// </param>
         /// <param name="deleteFiles">
-        ///     True if the files packaged up should be deleted.
+        /// True if the files packaged up should be deleted.
         /// </param>
         /// <param name="orgId">
-        ///     The org Id.
+        /// The org Id.
         /// </param>
         public static void SendFreeze(string message, bool deleteFiles, string orgId = null)
         {
@@ -630,10 +629,10 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        ///     This method will recursively clean all the files and folders from the folder specified
+        /// This method will recursively clean all the files and folders from the folder specified
         /// </summary>
         /// <param name="folder">
-        ///     The folder to clean.
+        /// The folder to clean.
         /// </param>
         private static void CleanFolder(string folder)
         {
@@ -674,7 +673,7 @@ namespace SBXAThemeSupport.ViewModels
             // string processInfo = "ExceptionReporter.exe "+fileName;
             var processInfo = new ProcessStartInfo("SBXAExceptionReporter.exe")
                                   {
-                                      UseShellExecute = false,
+                                      UseShellExecute = false, 
                                       Arguments = fileName + " " + uniqueId + " " + logFolder
                                   };
             Process.Start(processInfo);
@@ -690,11 +689,11 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         private static void LogProblemInServer(
-            string problemType,
-            string fileName,
-            string[] additionalFiles,
-            string userId,
-            string logFolder,
+            string problemType, 
+            string fileName, 
+            string[] additionalFiles, 
+            string userId, 
+            string logFolder, 
             bool deleteFiles)
         {
             // check if the file exists, if not ignore the call so we do not crash.
@@ -732,17 +731,17 @@ namespace SBXAThemeSupport.ViewModels
             }
 
             SBFile.Read(
-                "VOC",
-                ServerFileName,
-                CheckForTroubleShooterFileCompleted,
+                "VOC", 
+                ServerFileName, 
+                CheckForTroubleShooterFileCompleted, 
                 new object[] { id, problemType, fileName, additionalFiles, userId, logFolder, text });
         }
 
         private static bool MoveFilesToUpload(
-            string uniqueId,
-            string sourceFolder,
-            IEnumerable<string> additionalFiles,
-            bool zipFolder,
+            string uniqueId, 
+            string sourceFolder, 
+            IEnumerable<string> additionalFiles, 
+            bool zipFolder, 
             bool deleteOriginal)
         {
             var fileList = Directory.GetFiles(sourceFolder);
@@ -835,12 +834,12 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         private static void RegisterProblem(
-            string problemType,
-            string fileName,
-            string[] additionalFiles,
-            string userId,
-            string logFolder,
-            bool deleteFiles,
+            string problemType, 
+            string fileName, 
+            string[] additionalFiles, 
+            string userId, 
+            string logFolder, 
+            bool deleteFiles, 
             string orgId = null)
         {
             // First move all the files to the upload location.
@@ -1029,16 +1028,16 @@ namespace SBXAThemeSupport.ViewModels
         #region Public Indexers
 
         /// <summary>
-        ///     Gets or sets the <see cref="ApplicationStartStopLog" /> with the specified pid.
+        /// Gets or sets the <see cref="ApplicationStartStopLog"/> with the specified pid.
         /// </summary>
         /// <value>
-        ///     The <see cref="ApplicationStartStopLog" />.
+        /// The <see cref="ApplicationStartStopLog"/>.
         /// </value>
         /// <param name="pid">
-        ///     The pid.
+        /// The pid.
         /// </param>
         /// <returns>
-        ///     An instance of <see cref="ApplicationStartStopLog" /> or null.
+        /// An instance of <see cref="ApplicationStartStopLog"/> or null.
         /// </returns>
         public new ApplicationStartStopLog this[int pid]
         {
@@ -1064,13 +1063,13 @@ namespace SBXAThemeSupport.ViewModels
         #region Public Methods and Operators
 
         /// <summary>
-        ///     Determines whether [contains] [the specified pid].
+        /// Determines whether [contains] [the specified pid].
         /// </summary>
         /// <param name="pid">
-        ///     The pid.
+        /// The pid.
         /// </param>
         /// <returns>
-        ///     True if the item exists in the colleciton.
+        /// True if the item exists in the colleciton.
         /// </returns>
         public bool ContainsProcessId(int pid)
         {
@@ -1078,10 +1077,10 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        ///     Removes the process identifier.
+        /// Removes the process identifier.
         /// </summary>
         /// <param name="pid">
-        ///     The pid.
+        /// The pid.
         /// </param>
         public void RemoveProcessId(int pid)
         {

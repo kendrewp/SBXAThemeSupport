@@ -3,7 +3,6 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport
 {
     /// <summary>
@@ -53,19 +52,19 @@ namespace SBXAThemeSupport
         #region Public Methods and Operators
 
         /// <summary>
-        ///     The set delimiters.
+        /// The set delimiters.
         /// </summary>
         /// <param name="attributeMark">
-        ///     The attribute mark.
+        /// The attribute mark.
         /// </param>
         /// <param name="valueMark">
-        ///     The value mark.
+        /// The value mark.
         /// </param>
         /// <param name="subValueMark">
-        ///     The sub value mark.
+        /// The sub value mark.
         /// </param>
         /// <param name="fileDelimitter">
-        ///     The file delimitter.
+        /// The file delimitter.
         /// </param>
         public static void SetDelimiters(char attributeMark, char valueMark, char subValueMark, char fileDelimitter)
         {

@@ -3,7 +3,6 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.Utilities
 {
     using SBXA.Runtime;
@@ -17,28 +16,28 @@ namespace SBXAThemeSupport.Utilities
         #region Public Methods and Operators
 
         /// <summary>
-        ///     The upload.
+        /// The upload.
         /// </summary>
         /// <param name="sourceFileName">
-        ///     The source file name.
+        /// The source file name.
         /// </param>
         /// <param name="targetFileName">
-        ///     The target file name.
+        /// The target file name.
         /// </param>
         /// <param name="itemId">
-        ///     The item id.
+        /// The item id.
         /// </param>
         /// <param name="options">
-        ///     The options.
+        /// The options.
         /// </param>
         /// <param name="uploadCompleted">
-        ///     The upload completed.
+        /// The upload completed.
         /// </param>
         public static void Upload(
-            string sourceFileName,
-            string targetFileName,
-            string itemId,
-            string options,
+            string sourceFileName, 
+            string targetFileName, 
+            string itemId, 
+            string options, 
             SubroutineCallCompleted uploadCompleted)
         {
             // SUBROUTINE TU.UPLOAD(DOS.FILE.NAME, F.RXFILE, ITEMID, OPTIONS, DESCRIPTION, STATUS.REC)
@@ -52,9 +51,9 @@ namespace SBXAThemeSupport.Utilities
             message.SBInsert(4, itemId);
 
             SbProcessHandler.CallSubroutine(
-                uploadCompleted,
-                "SB.FT.MASTER",
-                new[] { new SBString("3"), message, new SBString(), new SBString(options + "O"), new SBString() },
+                uploadCompleted, 
+                "SB.FT.MASTER", 
+                new[] { new SBString("3"), message, new SBString(), new SBString(options + "O"), new SBString() }, 
                 new object[] { sourceFileName, targetFileName, itemId, options });
 
             /*

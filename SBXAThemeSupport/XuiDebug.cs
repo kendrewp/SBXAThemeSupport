@@ -9,7 +9,6 @@
 //   Copyright © American Auto Shield, LLC All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport
 {
     using System;
@@ -38,30 +37,30 @@ namespace SBXAThemeSupport
         internal static void EnableDebug(SubroutineCallCompleted subroutineCallCompleted, bool enable)
         {
             SbProcessHandler.CallSubroutine(
-                subroutineCallCompleted,
-                "XUI.DEBUG",
+                subroutineCallCompleted, 
+                "XUI.DEBUG", 
                 new[]
                     {
                         new SBString("1"), new SBString(enable ? "1" : "0"), new SBString(), new SBString(), new SBString("0"), new SBString()
-                    },
+                    }, 
                 new object[0]);
         }
 
         internal static void GetCommonVariable(SubroutineCallCompleted subroutineCallCompleted, string whichVariable)
         {
             SbProcessHandler.CallSubroutine(
-                subroutineCallCompleted,
-                "XUI.DEBUG",
-                new[] { new SBString("4"), new SBString(whichVariable), new SBString(), new SBString(), new SBString("0"), new SBString() },
+                subroutineCallCompleted, 
+                "XUI.DEBUG", 
+                new[] { new SBString("4"), new SBString(whichVariable), new SBString(), new SBString(), new SBString("0"), new SBString() }, 
                 new object[0]);
         }
 
         internal static void IsDebugEnabled(SubroutineCallCompleted subroutineCallCompleted)
         {
             SbProcessHandler.CallSubroutine(
-                subroutineCallCompleted,
-                "XUI.DEBUG",
-                new[] { new SBString("6"), new SBString(), new SBString(), new SBString(), new SBString("0"), new SBString() },
+                subroutineCallCompleted, 
+                "XUI.DEBUG", 
+                new[] { new SBString("6"), new SBString(), new SBString(), new SBString(), new SBString("0"), new SBString() }, 
                 new object[0]);
         }
 
@@ -73,19 +72,19 @@ namespace SBXAThemeSupport
         internal static void StackExpression(SubroutineCallCompleted expressionStackCompleted, string expression, string fileName)
         {
             JobManager.RunInUIThread(
-                DispatcherPriority.Normal,
+                DispatcherPriority.Normal, 
                 delegate
                     {
                         try
                         {
                             SbProcessHandler.CallSubroutine(
-                                expressionStackCompleted,
-                                "XUI.DEBUG",
+                                expressionStackCompleted, 
+                                "XUI.DEBUG", 
                                 new[]
                                     {
-                                        new SBString("8"), new SBString(expression), new SBString(fileName), new SBString(), new SBString("0"),
+                                        new SBString("8"), new SBString(expression), new SBString(fileName), new SBString(), new SBString("0"), 
                                         new SBString()
-                                    },
+                                    }, 
                                 new object[0]);
                         }
                         catch (Exception exception)
@@ -96,30 +95,30 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Writes the record.
+        /// Writes the record.
         /// </summary>
         /// <remarks>
-        ///     FILE.NAME = PARAM1&lt;1&gt;
+        /// FILE.NAME = PARAM1&lt;1&gt;
         ///     ID = PARAM1&lt;2&gt;
         ///     ATTR = PARAM1&lt;3&gt;
         ///     MODE = PARAM1&lt;4&gt;
         ///     REC = PARAM2
         /// </remarks>
         /// <param name="writeCompleted">
-        ///     The write completed.
+        /// The write completed.
         /// </param>
         /// <param name="itemInfo">
-        ///     The item information.
+        /// The item information.
         /// </param>
         /// <param name="record">
-        ///     The record.
+        /// The record.
         /// </param>
         internal static void WriteRecord(SubroutineCallCompleted writeCompleted, SBString itemInfo, SBString record)
         {
             SbProcessHandler.CallSubroutine(
-                writeCompleted,
-                "XUI.DEBUG",
-                new[] { new SBString("7"), itemInfo, record, new SBString(), new SBString("0"), new SBString() },
+                writeCompleted, 
+                "XUI.DEBUG", 
+                new[] { new SBString("7"), itemInfo, record, new SBString(), new SBString("0"), new SBString() }, 
                 new object[0]);
         }
 

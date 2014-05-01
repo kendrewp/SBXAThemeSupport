@@ -9,7 +9,6 @@
 //   Copyright © Woolworths, Limited. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport
 {
     using System;
@@ -47,22 +46,22 @@ namespace SBXAThemeSupport
         #region Public Methods and Operators
 
         /// <summary>
-        ///     The add object to tag.
+        /// The add object to tag.
         /// </summary>
         /// <param name="gridData">
-        ///     The grid data.
+        /// The grid data.
         /// </param>
         /// <param name="newInstance">
-        ///     The new instance.
+        /// The new instance.
         /// </param>
         /// <param name="key">
-        ///     The key.
+        /// The key.
         /// </param>
         /// <param name="isOverwrite">
-        ///     The is overwrite.
+        /// The is overwrite.
         /// </param>
         /// <typeparam name="T">
-        ///     object to tag
+        /// object to tag
         /// </typeparam>
         public static void AddObjectToTag<T>(this ITag gridData, T newInstance, string key = null, bool isOverwrite = false)
         {
@@ -93,16 +92,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The add range.
+        /// The add range.
         /// </summary>
         /// <param name="list">
-        ///     The list.
+        /// The list.
         /// </param>
         /// <param name="newItems">
-        ///     The new items.
+        /// The new items.
         /// </param>
         /// <typeparam name="T">
-        ///     to tag
+        /// to tag
         /// </typeparam>
         public static void AddRange<T>(this IList<T> list, IEnumerable<T> newItems)
         {
@@ -118,13 +117,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The add range.
+        /// The add range.
         /// </summary>
         /// <param name="list">
-        ///     The list.
+        /// The list.
         /// </param>
         /// <param name="newItems">
-        ///     The new items.
+        /// The new items.
         /// </param>
         public static void AddRange(this IList list, IEnumerable newItems)
         {
@@ -140,13 +139,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The build up.
+        /// The build up.
         /// </summary>
         /// <param name="serviceLocator">
-        ///     The service locator.
+        /// The service locator.
         /// </param>
         /// <param name="instance">
-        ///     The instance.
+        /// The instance.
         /// </param>
         public static void BuildUp(this IServiceLocator serviceLocator, object instance)
         {
@@ -163,16 +162,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The deep clone.
+        /// The deep clone.
         /// </summary>
         /// <param name="obj">
-        ///     The obj.
+        /// The obj.
         /// </param>
         /// <typeparam name="T">
-        ///     The type of the object that this method is extending.
+        /// The type of the object that this method is extending.
         /// </typeparam>
         /// <returns>
-        ///     The <see cref="T" />.
+        /// The <see cref="T"/>.
         /// </returns>
         public static T DeepClone<T>(this T obj)
         {
@@ -186,25 +185,25 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Dequeues the specified queue.
+        /// Dequeues the specified queue.
         /// </summary>
         /// <typeparam name="T">
-        ///     The type of the object that this method is extending.
+        /// The type of the object that this method is extending.
         /// </typeparam>
         /// <param name="queue">
-        ///     The queue.
+        /// The queue.
         /// </param>
         /// <param name="throwException">
-        ///     if set to <c>true</c> [throw exception].
+        /// if set to <c>true</c> [throw exception].
         /// </param>
         /// <returns>
-        ///     The object that is being extended.
+        /// The object that is being extended.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     queue
+        /// queue
         /// </exception>
         /// <exception cref="System.Exception">
-        ///     Not able to peek element from the queue
+        /// Not able to peek element from the queue
         /// </exception>
         public static T Dequeue<T>(this ConcurrentQueue<T> queue, bool throwException = false)
         {
@@ -233,16 +232,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Deserialize the object and execute the Method OnLoaded() when exists
+        /// Deserialize the object and execute the Method OnLoaded() when exists
         /// </summary>
         /// <typeparam name="T">
-        ///     The type of the object that this method is extending.
+        /// The type of the object that this method is extending.
         /// </typeparam>
         /// <param name="xmlData">
-        ///     The XML data which contains the values for the object to be deserialized.
+        /// The XML data which contains the values for the object to be deserialized.
         /// </param>
         /// <returns>
-        ///     The <see cref="T" />.
+        /// The <see cref="T"/>.
         /// </returns>
         public static T DeserializeFromXml<T>(string xmlData)
         {
@@ -262,10 +261,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The do events.
+        /// The do events.
         /// </summary>
         /// <param name="frameworkElement">
-        ///     The framework element.
+        /// The framework element.
         /// </param>
         public static void DoEvents(this FrameworkElement frameworkElement)
         {
@@ -294,7 +293,7 @@ namespace SBXAThemeSupport
 
             var frame = new DispatcherFrame(true);
             Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
+                DispatcherPriority.Background, 
                 (SendOrPostCallback)delegate(object arg)
                     {
                         var f = arg as DispatcherFrame;
@@ -305,7 +304,7 @@ namespace SBXAThemeSupport
                         }
 
                         f.Continue = false;
-                    },
+                    }, 
                 frame);
 
             if (Application.Current.Dispatcher.CheckAccess())
@@ -332,16 +331,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The find ancestor.
+        /// The find ancestor.
         /// </summary>
         /// <param name="dependencyObject">
-        ///     The dependency object.
+        /// The dependency object.
         /// </param>
         /// <typeparam name="T">
-        ///     The type of the object that this method is extending.
+        /// The type of the object that this method is extending.
         /// </typeparam>
         /// <returns>
-        ///     The <see cref="T" />.
+        /// The <see cref="T"/>.
         /// </returns>
         public static T FindAncestor<T>(this object dependencyObject) where T : DependencyObject
         {
@@ -376,19 +375,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The find visual child by name.
+        /// The find visual child by name.
         /// </summary>
         /// <param name="parent">
-        ///     The parent.
+        /// The parent.
         /// </param>
         /// <param name="name">
-        ///     The name.
+        /// The name.
         /// </param>
         /// <typeparam name="T">
-        ///     The type of the object that this method is extending.
+        /// The type of the object that this method is extending.
         /// </typeparam>
         /// <returns>
-        ///     The <see cref="T" />.
+        /// The <see cref="T"/>.
         /// </returns>
         public static T FindVisualChildByName<T>(this DependencyObject parent, string name) where T : DependencyObject
         {
@@ -412,22 +411,22 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The for each.
+        /// The for each.
         /// </summary>
         /// <param name="source">
-        ///     The source.
+        /// The source.
         /// </param>
         /// <param name="action">
-        ///     The action.
+        /// The action.
         /// </param>
         /// <typeparam name="T">
-        ///     IEnumerable
+        /// IEnumerable
         /// </typeparam>
         /// <returns>
-        ///     The <see cref="IEnumerable" />.
+        /// The <see cref="IEnumerable"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        ///     not null exeption
+        /// not null exeption
         /// </exception>
         public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
@@ -445,13 +444,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The get date internal.
+        /// The get date internal.
         /// </summary>
         /// <param name="dateTime">
-        ///     The date time.
+        /// The date time.
         /// </param>
         /// <returns>
-        ///     The <see cref="string" />.
+        /// The <see cref="string"/>.
         /// </returns>
         public static string GetDateInternal(this DateTime dateTime)
         {
@@ -459,13 +458,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The get date internal.
+        /// The get date internal.
         /// </summary>
         /// <param name="dateTime">
-        ///     The date time.
+        /// The date time.
         /// </param>
         /// <returns>
-        ///     The <see cref="string" />.
+        /// The <see cref="string"/>.
         /// </returns>
         public static string GetDateInternal(this DateTime? dateTime)
         {
@@ -473,19 +472,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The get date time.
+        /// The get date time.
         /// </summary>
         /// <param name="internalDate">
-        ///     The internal date.
+        /// The internal date.
         /// </param>
         /// <param name="internalTime">
-        ///     The internal time.
+        /// The internal time.
         /// </param>
         /// <param name="defaultValue">
-        ///     The default value.
+        /// The default value.
         /// </param>
         /// <returns>
-        ///     The <see cref="DateTime" />.
+        /// The <see cref="DateTime"/>.
         /// </returns>
         public static DateTime GetDateTime(this string internalDate, string internalTime, DateTime defaultValue)
         {
@@ -494,16 +493,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The get date time nullable.
+        /// The get date time nullable.
         /// </summary>
         /// <param name="internalDate">
-        ///     The internal date.
+        /// The internal date.
         /// </param>
         /// <param name="internalTime">
-        ///     The internal time.
+        /// The internal time.
         /// </param>
         /// <returns>
-        ///     The <see cref="DateTime" />.
+        /// The <see cref="DateTime"/>.
         /// </returns>
         public static DateTime? GetDateTimeNullable(this string internalDate, string internalTime)
         {
@@ -528,19 +527,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The get object from tag.
+        /// The get object from tag.
         /// </summary>
         /// <param name="gridData">
-        ///     The grid data.
+        /// The grid data.
         /// </param>
         /// <param name="key">
-        ///     The key.
+        /// The key.
         /// </param>
         /// <typeparam name="T">
-        ///     param
+        /// param
         /// </typeparam>
         /// <returns>
-        ///     The <see cref="T" />.
+        /// The <see cref="T"/>.
         /// </returns>
         public static T GetObjectFromTag<T>(this ITag gridData, string key = null)
         {
@@ -566,13 +565,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The get time internal.
+        /// The get time internal.
         /// </summary>
         /// <param name="dateTime">
-        ///     The date time.
+        /// The date time.
         /// </param>
         /// <returns>
-        ///     The <see cref="string" />.
+        /// The <see cref="string"/>.
         /// </returns>
         public static string GetTimeInternal(this DateTime dateTime)
         {
@@ -580,13 +579,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The get time internal.
+        /// The get time internal.
         /// </summary>
         /// <param name="dateTime">
-        ///     The date time.
+        /// The date time.
         /// </param>
         /// <returns>
-        ///     The <see cref="string" />.
+        /// The <see cref="string"/>.
         /// </returns>
         public static string GetTimeInternal(this DateTime? dateTime)
         {
@@ -594,13 +593,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The is nan.
+        /// The is nan.
         /// </summary>
         /// <param name="number">
-        ///     The number.
+        /// The number.
         /// </param>
         /// <returns>
-        ///     The <see cref="bool" />.
+        /// The <see cref="bool"/>.
         /// </returns>
         public static bool IsNan(this double number)
         {
@@ -608,13 +607,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The is numeric.
+        /// The is numeric.
         /// </summary>
         /// <param name="toParse">
-        ///     The to parse.
+        /// The to parse.
         /// </param>
         /// <returns>
-        ///     The <see cref="bool" />.
+        /// The <see cref="bool"/>.
         /// </returns>
         public static bool IsNumeric(this string toParse)
         {
@@ -645,16 +644,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The no exception action.
+        /// The no exception action.
         /// </summary>
         /// <param name="obj">
-        ///     The obj.
+        /// The obj.
         /// </param>
         /// <param name="action">
-        ///     The action.
+        /// The action.
         /// </param>
         /// <returns>
-        ///     The <see cref="Exception" />.
+        /// The <see cref="Exception"/>.
         /// </returns>
         public static Exception NoExceptionAction(this object obj, Action action)
         {
@@ -676,25 +675,25 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Peeks the specified queue.
+        /// Peeks the specified queue.
         /// </summary>
         /// <typeparam name="T">
-        ///     The type of the object that this method is extending.
+        /// The type of the object that this method is extending.
         /// </typeparam>
         /// <param name="queue">
-        ///     The queue.
+        /// The queue.
         /// </param>
         /// <param name="throwException">
-        ///     if set to <c>true</c> [throw exception].
+        /// if set to <c>true</c> [throw exception].
         /// </param>
         /// <returns>
-        ///     The object that is being extended.
+        /// The object that is being extended.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        ///     queue
+        /// queue
         /// </exception>
         /// <exception cref="System.Exception">
-        ///     Not able to peek element from the queue
+        /// Not able to peek element from the queue
         /// </exception>
         public static T Peek<T>(this ConcurrentQueue<T> queue, bool throwException = false)
         {
@@ -723,16 +722,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The remove object from tag.
+        /// The remove object from tag.
         /// </summary>
         /// <param name="gridData">
-        ///     The grid data.
+        /// The grid data.
         /// </param>
         /// <param name="key">
-        ///     The key.
+        /// The key.
         /// </param>
         /// <typeparam name="T">
-        ///     param
+        /// param
         /// </typeparam>
         public static void RemoveObjectFromTag<T>(this ITag gridData, string key = null)
         {
@@ -754,16 +753,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     resolves the name to handle
+        /// resolves the name to handle
         /// </summary>
         /// <param name="sbPlus">
-        ///     param
+        /// param
         /// </param>
         /// <param name="handeOrSbName">
-        ///     handler or sbname
+        /// handler or sbname
         /// </param>
         /// <returns>
-        ///     The <see cref="string" />.
+        /// The <see cref="string"/>.
         /// </returns>
         public static string ResolveServerTokensByRuf(this SBPlus sbPlus, string handeOrSbName)
         {
@@ -802,16 +801,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The serialize to xml.
+        /// The serialize to xml.
         /// </summary>
         /// <param name="objectToSerialize">
-        ///     The object to serialize.
+        /// The object to serialize.
         /// </param>
         /// <typeparam name="T">
-        ///     The type of the object that this method is extending.
+        /// The type of the object that this method is extending.
         /// </typeparam>
         /// <returns>
-        ///     The <see cref="string" />.
+        /// The <see cref="string"/>.
         /// </returns>
         public static string SerializeToXml<T>(this T objectToSerialize)
         {
@@ -827,19 +826,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The show.
+        /// The show.
         /// </summary>
         /// <param name="ctx">
-        ///     The ctx.
+        /// The ctx.
         /// </param>
         /// <param name="positionX">
-        ///     The position x.
+        /// The position x.
         /// </param>
         /// <param name="positionY">
-        ///     The position y.
+        /// The position y.
         /// </param>
         /// <param name="relativeTo">
-        ///     The relative to.
+        /// The relative to.
         /// </param>
         public static void Show(this ContextMenu ctx, double positionX, double positionY, UIElement relativeTo)
         {
@@ -850,16 +849,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The to attributes.
+        /// The to attributes.
         /// </summary>
         /// <param name="sbStringValue">
-        ///     The sb string value.
+        /// The sb string value.
         /// </param>
         /// <param name="valPos">
-        ///     The val pos.
+        /// The val pos.
         /// </param>
         /// <returns>
-        ///     The <see cref="string[]" />.
+        /// The <see cref="string[]"/>.
         /// </returns>
         public static string[] ToAttributes(this string sbStringValue, int valPos = 1)
         {
@@ -868,13 +867,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The to bool.
+        /// The to bool.
         /// </summary>
         /// <param name="stringValue">
-        ///     The string value.
+        /// The string value.
         /// </param>
         /// <returns>
-        ///     The <see cref="bool" />.
+        /// The <see cref="bool"/>.
         /// </returns>
         public static bool ToBool(this string stringValue)
         {
@@ -913,13 +912,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The to bool if empty true.
+        /// The to bool if empty true.
         /// </summary>
         /// <param name="stringValue">
-        ///     The string value.
+        /// The string value.
         /// </param>
         /// <returns>
-        ///     The <see cref="bool" />.
+        /// The <see cref="bool"/>.
         /// </returns>
         public static bool ToBoolIfEmptyTrue(this string stringValue)
         {
@@ -932,19 +931,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     To the double.
+        /// To the double.
         /// </summary>
         /// <param name="stringValue">
-        ///     The string value.
+        /// The string value.
         /// </param>
         /// <param name="defaultValue">
-        ///     The default value.
+        /// The default value.
         /// </param>
         /// <returns>
-        ///     The object as a <see cref="double" />.
+        /// The object as a <see cref="double"/>.
         /// </returns>
         /// <exception cref="System.InvalidCastException">
-        ///     If it is not possible the exception is thrown.
+        /// If it is not possible the exception is thrown.
         /// </exception>
         public static double ToDouble(this string stringValue, double? defaultValue = null)
         {
@@ -963,13 +962,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     To the exception details.
+        /// To the exception details.
         /// </summary>
         /// <param name="exception">
-        ///     The exception.
+        /// The exception.
         /// </param>
         /// <returns>
-        ///     A <see cref="StringBuilder" /> with the nested details of the exception.
+        /// A <see cref="StringBuilder"/> with the nested details of the exception.
         /// </returns>
         public static StringBuilder ToExceptionDetails(this Exception exception)
         {
@@ -991,19 +990,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     To the int.
+        /// To the int.
         /// </summary>
         /// <param name="stringValue">
-        ///     The string value.
+        /// The string value.
         /// </param>
         /// <param name="defaultValue">
-        ///     The default value.
+        /// The default value.
         /// </param>
         /// <returns>
-        ///     The object as a <see cref="int" />.
+        /// The object as a <see cref="int"/>.
         /// </returns>
         /// <exception cref="System.InvalidCastException">
-        ///     If it is not possible the exception is thrown.
+        /// If it is not possible the exception is thrown.
         /// </exception>
         public static int ToInt(this string stringValue, int? defaultValue = null)
         {
@@ -1022,13 +1021,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The to sb param.
+        /// The to sb param.
         /// </summary>
         /// <param name="stringToConvert">
-        ///     The string to convert.
+        /// The string to convert.
         /// </param>
         /// <returns>
-        ///     The <see cref="string" />.
+        /// The <see cref="string"/>.
         /// </returns>
         public static string ToSbParam(this string stringToConvert)
         {
@@ -1047,13 +1046,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The to unsecure string.
+        /// The to unsecure string.
         /// </summary>
         /// <param name="secureString">
-        ///     The secure string.
+        /// The secure string.
         /// </param>
         /// <returns>
-        ///     The <see cref="string" />.
+        /// The <see cref="string"/>.
         /// </returns>
         public static string ToUnsecureString(this SecureString secureString)
         {
@@ -1073,16 +1072,16 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The to values.
+        /// The to values.
         /// </summary>
         /// <param name="sbStringValue">
-        ///     The sb string value.
+        /// The sb string value.
         /// </param>
         /// <param name="attPos">
-        ///     The att pos.
+        /// The att pos.
         /// </param>
         /// <returns>
-        ///     The <see cref="string[]" />.
+        /// The <see cref="string[]"/>.
         /// </returns>
         public static string[] ToValues(this string sbStringValue, int attPos = 1)
         {

@@ -3,7 +3,6 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport
 {
     using System;
@@ -19,16 +18,16 @@ namespace SBXAThemeSupport
         #region Public Methods and Operators
 
         /// <summary>
-        ///     The can convert from.
+        /// The can convert from.
         /// </summary>
         /// <param name="context">
-        ///     The context.
+        /// The context.
         /// </param>
         /// <param name="sourceType">
-        ///     The source type.
+        /// The source type.
         /// </param>
         /// <returns>
-        ///     The <see cref="bool" />.
+        /// The <see cref="bool"/>.
         /// </returns>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
@@ -36,25 +35,25 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The convert.
+        /// The convert.
         /// </summary>
         /// <param name="value">
-        ///     The value.
+        /// The value.
         /// </param>
         /// <param name="targetType">
-        ///     The target type.
+        /// The target type.
         /// </param>
         /// <param name="parameter">
-        ///     The parameter.
+        /// The parameter.
         /// </param>
         /// <param name="culture">
-        ///     The culture.
+        /// The culture.
         /// </param>
         /// <returns>
-        ///     The <see cref="object" />.
+        /// The <see cref="object"/>.
         /// </returns>
         /// <exception cref="System.NotImplementedException">
-        ///     Not ImplementedException
+        /// Not ImplementedException
         /// </exception>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -62,25 +61,25 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The convert back.
+        /// The convert back.
         /// </summary>
         /// <param name="value">
-        ///     The value.
+        /// The value.
         /// </param>
         /// <param name="targetType">
-        ///     The target type.
+        /// The target type.
         /// </param>
         /// <param name="parameter">
-        ///     The parameter.
+        /// The parameter.
         /// </param>
         /// <param name="culture">
-        ///     The culture.
+        /// The culture.
         /// </param>
         /// <returns>
-        ///     The <see cref="object" />.
+        /// The <see cref="object"/>.
         /// </returns>
         /// <exception cref="System.NotImplementedException">
-        ///     Not ImplementedException
+        /// Not ImplementedException
         /// </exception>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -88,19 +87,19 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The convert from.
+        /// The convert from.
         /// </summary>
         /// <param name="context">
-        ///     The context.
+        /// The context.
         /// </param>
         /// <param name="culture">
-        ///     The culture.
+        /// The culture.
         /// </param>
         /// <param name="value">
-        ///     The value.
+        /// The value.
         /// </param>
         /// <returns>
-        ///     The <see cref="object" />.
+        /// The <see cref="object"/>.
         /// </returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
@@ -114,22 +113,22 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     The convert to.
+        /// The convert to.
         /// </summary>
         /// <param name="context">
-        ///     The context.
+        /// The context.
         /// </param>
         /// <param name="culture">
-        ///     The culture.
+        /// The culture.
         /// </param>
         /// <param name="value">
-        ///     The value.
+        /// The value.
         /// </param>
         /// <param name="destinationType">
-        ///     The destination type.
+        /// The destination type.
         /// </param>
         /// <returns>
-        ///     The <see cref="object" />.
+        /// The <see cref="object"/>.
         /// </returns>
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {

@@ -9,7 +9,6 @@
 //   Copyright © American Auto Shield, LLC All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport
 {
     using System;
@@ -30,10 +29,10 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ServerNotReadyException" /> class.
+        /// Initializes a new instance of the <see cref="ServerNotReadyException"/> class.
         /// </summary>
         /// <param name="message">
-        ///     The message.
+        /// The message.
         /// </param>
         public ServerNotReadyException(string message)
             : base(message)
@@ -41,13 +40,13 @@ namespace SBXAThemeSupport
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ServerNotReadyException" /> class.
+        /// Initializes a new instance of the <see cref="ServerNotReadyException"/> class.
         /// </summary>
         /// <param name="message">
-        ///     The message.
+        /// The message.
         /// </param>
         /// <param name="exception">
-        ///     The exception.
+        /// The exception.
         /// </param>
         public ServerNotReadyException(string message, Exception exception)
             : base(message, exception)

@@ -3,7 +3,6 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.Models
 {
     using System;
@@ -58,10 +57,10 @@ namespace SBXAThemeSupport.Models
         #region Public Methods and Operators
 
         /// <summary>
-        ///     The add children to collection.
+        /// The add children to collection.
         /// </summary>
         /// <param name="collection">
-        ///     The collection.
+        /// The collection.
         /// </param>
         public abstract void AddChildrenToCollection(RevisionDefinitionItemCollection collection);
 
@@ -90,10 +89,10 @@ namespace SBXAThemeSupport.Models
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="TreeItem" /> class.
+        /// Initializes a new instance of the <see cref="TreeItem"/> class.
         /// </summary>
         /// <param name="name">
-        ///     The name.
+        /// The name.
         /// </param>
         public TreeItem(string name)
         {
@@ -146,25 +145,26 @@ namespace SBXAThemeSupport.Models
 
         #endregion
 
+        // The bulk of the clean-up code is implemented in Dispose(bool)
         #region Public Methods and Operators
 
         /// <summary>
-        ///     The add children to collection.
+        /// The add children to collection.
         /// </summary>
         /// <param name="collection">
-        ///     The collection.
+        /// The collection.
         /// </param>
         public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
         {
             foreach (var item in this.children)
             {
                 RevisionDefinitionViewModel.AddItemToDefinition(
-                    collection,
+                    collection, 
                     new RevisionDefinitionItem()
                         {
-                            Action = "1",
-                            FileName = "fileName",
-                            Item = item.GetType().Name,
+                            Action = "1", 
+                            FileName = "fileName", 
+                            Item = item.GetType().Name, 
                             Parameters = "parameters"
                         });
             }
@@ -184,10 +184,10 @@ namespace SBXAThemeSupport.Models
         #region Methods
 
         /// <summary>
-        ///     The dispose.
+        /// The dispose.
         /// </summary>
         /// <param name="disposing">
-        ///     The disposing.
+        /// The disposing.
         /// </param>
         protected virtual void Dispose(bool disposing)
         {
@@ -211,7 +211,5 @@ namespace SBXAThemeSupport.Models
         }
 
         #endregion
-
-        // The bulk of the clean-up code is implemented in Dispose(bool)
     }
 }

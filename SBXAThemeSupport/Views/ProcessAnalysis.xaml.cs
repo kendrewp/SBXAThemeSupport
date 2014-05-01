@@ -3,7 +3,6 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace SBXAThemeSupport.Views
 {
     using System;
@@ -30,7 +29,7 @@ namespace SBXAThemeSupport.Views
         {
             this.InitializeComponent();
             CreateRevisionDefinitionCommand = new RelayCommand(
-                this.ExecutedCreateRevisionDefinitionCommand,
+                this.ExecutedCreateRevisionDefinitionCommand, 
                 this.CanExecuteCreateRevisionDefinitionCommand);
         }
 
