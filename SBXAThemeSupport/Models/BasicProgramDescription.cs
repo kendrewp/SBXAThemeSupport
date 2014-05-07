@@ -51,31 +51,23 @@ namespace SBXAThemeSupport.Models
 
         #region Public Methods and Operators
 
-        /// <summary>
-        /// The add children to collection.
-        /// </summary>
-        /// <param name="collection">
-        /// The collection.
-        /// </param>
-        public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
+        protected override void AddSelf(RevisionDefinitionItemCollection collection)
         {
             if (!this.IsError)
             {
                 RevisionDefinitionViewModel.AddItemToDefinition(
-                    collection, 
+                    collection,
                     new RevisionDefinitionItem()
-                        {
-                            Action = "IO", 
-                            FileName = this.FileName, 
-                            Item = this.Name, 
-                            Parameters = RevisionDefinitionViewModel.Data
-                        });
+                    {
+                        Action = "IO",
+                        FileName = this.FileName,
+                        Item = this.Name,
+                        Parameters = RevisionDefinitionViewModel.Data
+                    });
                 RevisionDefinitionViewModel.AddItemToDefinition(
-                    collection, 
+                    collection,
                     new RevisionDefinitionItem() { Action = "FB", FileName = this.FileName, Item = string.Empty, Parameters = string.Empty });
             }
-
-            base.AddChildrenToCollection(collection);
         }
 
         #endregion

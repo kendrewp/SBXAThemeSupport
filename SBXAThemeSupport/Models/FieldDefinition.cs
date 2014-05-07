@@ -6,6 +6,7 @@
 namespace SBXAThemeSupport.Models
 {
     using System;
+    using System.Collections.ObjectModel;
 
     using SBXA.Shared;
 
@@ -55,6 +56,8 @@ namespace SBXAThemeSupport.Models
         private string styleName;
 
         private string validation;
+
+        private bool hasDictionary;
 
         #endregion
 
@@ -654,29 +657,42 @@ namespace SBXAThemeSupport.Models
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance has dictionary.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance has dictionary; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasDictionary
+        {
+            get
+            {
+                return hasDictionary;
+            }
+            set
+            {
+                hasDictionary = value;
+            }
+        }
+
         #endregion
 
         #region Public Methods and Operators
 
-        /// <summary>
-        /// The add children to collection.
-        /// </summary>
-        /// <param name="collection">
-        /// The collection.
-        /// </param>
-        public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
+        protected override void AddSelf(RevisionDefinitionItemCollection collection)
         {
-            RevisionDefinitionViewModel.AddItemToDefinition(
-                collection, 
-                new RevisionDefinitionItem()
-                    {
-                        Action = "IO", 
-                        FileName = this.FileName, 
-                        Item = this.Name, 
-                        Parameters = RevisionDefinitionViewModel.Dict
-                    });
-
-            base.AddChildrenToCollection(collection);
+            if (HasDictionary)
+            {
+                RevisionDefinitionViewModel.AddItemToDefinition(
+                    collection,
+                    new RevisionDefinitionItem()
+                        {
+                            Action = "IO",
+                            FileName = this.FileName,
+                            Item = this.Name,
+                            Parameters = RevisionDefinitionViewModel.Dict
+                        });
+            }
         }
 
         #endregion
@@ -701,8 +717,10 @@ namespace SBXAThemeSupport.Models
                 if (parameters[5].Count != 1 || !parameters[5].Value.Equals("0"))
                 {
                     // item not found.
+                    this.HasDictionary = false;
                     return;
                 }
+                this.HasDictionary = true;
 
                 var state = userState as object[];
                 if (state == null)

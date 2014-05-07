@@ -115,7 +115,7 @@ namespace SBXAThemeSupport.Models
                     return;
                 }
 
-                if (parameters[5].Count != 1 || !parameters[5].Value.Equals("0"))
+                if (parameters[5].Count != 1 || !parameters[5].Value.Equals("0") || parameters[3].IsNullOrEmpty())
                 {
                     // item not found.
                     return;

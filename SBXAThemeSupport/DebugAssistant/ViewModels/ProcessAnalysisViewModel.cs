@@ -11,6 +11,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
     using System.Collections.Specialized;
     using System.Diagnostics;
     using System.IO;
+    using System.Windows;
     using System.Windows.Threading;
 
     using SBXA.Runtime;
@@ -110,7 +111,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// </summary>
         public ProcessAnalysisViewModel()
         {
-            AnalyseProcessCommand = new RelayCommand(this.AnalyseProcessCommandExecuted, this.CanExecuteAnalyseProcessCommand);
+            AnalyseProcessCommand = new RelayCommand(this.ExecutedAnalyseProcessCommand, this.CanExecuteAnalyseProcessCommand);
         }
 
         #endregion
@@ -473,6 +474,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 return;
             }
 
+
             string callType;
             var pName = GetProcessName(expression, out callType);
             if (!string.IsNullOrEmpty(pName))
@@ -486,6 +488,12 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         this.LoadBasicProgramFromExpression(pName, parent, hookPoint);
                         break;
                     case "M":
+                        break;
+                    case "D":
+                        this.AddExpressionToCollection(source, hookType, hookPoint, parent, expression);
+                        break;
+                    case "V":
+                        this.AddExpressionToCollection(source, hookType, hookPoint, parent, expression);
                         break;
                     default:
                         this.LoadProcess(pName, parent, expression, hookPoint, sysid);
@@ -598,6 +606,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                                             });
                                     break;
                                 case SourceDefinition.Screen:
+/*
                                     if (hookType == SourceDefinition.Process)
                                     {
                                         //AddItemToCollection(processDescription.ProcessCollection, );
@@ -613,6 +622,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                                     }
                                     else
                                     {
+*/
                                         this.AddItemToCollection(
                                             processDescription.ScreenExpressions, 
                                             new SBExpression(processDescription.FileName, expression, hookType, sysid)
@@ -620,7 +630,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                                                     Description =
                                                         description
                                                 });
+/*
                                     }
+*/
 
                                     break;
                                 case SourceDefinition.Menu:
@@ -786,15 +798,50 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     });
         }
 
-        private void AnalyseProcessCommandExecuted(object parameter)
+        private void ExecutedAnalyseProcessCommand(object parameter)
         {
             this.ReadControlRecord(); // Make sure I have the latest control record.
             this.IsLoading = 0;
-            this.LoadProcessFromExpression(
-                SourceDefinition.Unknown, 
-                SourceDefinition.Process, 
-                DebugViewModel.Instance.ProcessAnalysisViewModel.ProcessName);
+            var pName = DebugViewModel.Instance.ProcessAnalysisViewModel.ProcessName;
+            // Add process to MRU list, but it it is not found it will be removed.
+            AddProcessToMru(DebugViewModel.Instance.ProcessAnalysisViewModel.ProcessName);
+            DebugViewModel.Instance.ProcessAnalysisViewModel.ProcessName = pName;
+            this.LoadProcess(DebugViewModel.Instance.ProcessAnalysisViewModel.ProcessName);
+            
         }
+
+        private static void AddProcessToMru(string process)
+        {
+            var mru = DebugViewModel.Instance.ApplicationInsightState.MruProcessList;
+            if (mru.Contains(process))
+            {
+                mru.Remove(process); // remove it so that we can insert it at the top again.
+            }
+            mru.Insert(0, process);
+            // force the UI to update.
+            DebugViewModel.Instance.ApplicationInsightState.MruProcessList = new StringCollection();
+            // Now remove all those with an index > 9
+            while (mru.Count > 10)
+            {
+                mru.RemoveAt(10);
+            }
+            DebugViewModel.Instance.ApplicationInsightState.MruProcessList = mru;
+            DebugViewModel.Instance.SaveState();
+        }
+
+        private static void RemoveProcessFromMru(string process)
+        {
+            var mru = DebugViewModel.Instance.ApplicationInsightState.MruProcessList;
+            if (mru.Contains(process))
+            {
+                mru.Remove(process); // remove it so that we can insert it at the top again.
+                // force the UI to update.
+                DebugViewModel.Instance.ApplicationInsightState.MruProcessList = new StringCollection();
+                DebugViewModel.Instance.ApplicationInsightState.MruProcessList = mru;
+                DebugViewModel.Instance.SaveState();
+            }
+        }
+
 
         private bool CanExecuteAnalyseProcessCommand(object parameter)
         {
@@ -1146,6 +1193,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 var pName = parameters[1].Value;
                 if (parameters[5].Count != 1 || !parameters[5].Value.Equals("0"))
                 {
+                    // Failed to read the process.
                     if (parameters[0].Value.EndsWith("MENUS"))
                     {
                         // Failed, but now I need to check if there is a global process file and if so try read it from there.
@@ -1161,7 +1209,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                                 "Failed to read {0} from {1}.", 
                                 parameters[1].Value, 
                                 parameters[0].Value);
-                            this.AddProcessToCollection(processFileName, pName, null, processState);
+                            this.AddProcessToCollection(processFileName, pName, null, processState, true);
                         }
                     }
                     else
@@ -1179,13 +1227,17 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                                 "Failed to read {0} from {1}.", 
                                 parameters[1].Value, 
                                 parameters[0].Value);
-                            this.AddProcessToCollection(processFileName, pName, null, processState);
+                            this.AddProcessToCollection(processFileName, pName, null, processState, true);
+                            // Now remove it from the MRU is it is there and display a message.
+                            RemoveProcessFromMru(pName);
+                            MessageBox.Show(string.Format("Failed to read process '{0}', referenced by '{1}' in the file '{2}'.", pName, 
+                                (!string.IsNullOrEmpty(processState.ParentDefinitionDescription.Name) ? processState.ParentDefinitionDescription.Name : string.Empty), 
+                                (!string.IsNullOrEmpty(processState.ParentDefinitionDescription.FileName) ? processState.ParentDefinitionDescription.FileName : string.Empty) ));
                         }
                     }
 
                     return;
                 }
-
                 this.AddProcessToCollection(processFileName, pName, parameters[3], processState);
             }
             catch (Exception ex)

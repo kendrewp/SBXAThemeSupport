@@ -6,6 +6,9 @@
 namespace SBXAThemeSupport.Models
 {
     using System;
+    using System.Collections.Specialized;
+
+    using SBXA.Shared;
 
     using SBXAThemeSupport.DebugAssistant.ViewModels;
 
@@ -13,11 +16,13 @@ namespace SBXAThemeSupport.Models
     ///     The application insight state.
     /// </summary>
     [Serializable]
-    public class ApplicationInsightState
+    public class ApplicationInsightState : SBEntityBase
     {
         #region Fields
 
         private bool isDebugWindowOpen;
+
+        private StringCollection mruProcessList;
 
         #endregion
 
@@ -50,6 +55,20 @@ namespace SBXAThemeSupport.Models
                 {
                     DebugViewModel.Instance.SaveState();
                 }
+            }
+        }
+
+        public StringCollection MruProcessList
+        {
+            get
+            {
+                return this.mruProcessList;
+            }
+            set
+            {
+                var oldValue = this.mruProcessList;
+                this.mruProcessList = value;
+                this.OnPropertyChanged("MruProcessList", oldValue, this.mruProcessList);
             }
         }
 

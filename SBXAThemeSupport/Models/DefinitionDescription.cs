@@ -120,12 +120,12 @@ namespace SBXAThemeSupport.Models
         /// <summary>
         ///     Gets the process collection.
         /// </summary>
-        public ObservableCollection<ProcessCall> ProcessCollection { get; private set; }
+        public virtual ObservableCollection<ProcessCall> ProcessCollection { get; private set; }
 
         /// <summary>
         ///     Gets or sets the screen expressions.
         /// </summary>
-        public ObservableCollection<SBExpression> ScreenExpressions { get; set; }
+        public virtual ObservableCollection<SBExpression> ScreenExpressions { get; set; }
 
         /// <summary>
         ///     Gets the source expression.

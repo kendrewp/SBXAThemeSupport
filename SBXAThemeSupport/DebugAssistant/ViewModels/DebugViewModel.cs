@@ -789,7 +789,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 {
                     JobManager.RunInDispatcherThread(
                         DebugWindowManager.DebugConsoleWindow.Dispatcher, 
-                        DispatcherPriority.Send, 
+                        DispatcherPriority.Normal, 
                         () => DoUpdateProcessStack(add, processName));
                 }
                 else
@@ -995,7 +995,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 {
                     JobManager.RunInDispatcherThread(
                         DebugWindowManager.DebugConsoleWindow.Dispatcher, 
-                        DispatcherPriority.Send, 
+                        DispatcherPriority.Normal, 
                         () => UpdateProperties(parameters));
                 }
                 else
@@ -1214,6 +1214,10 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 if (this.ApplicationInsightState == null)
                 {
                     this.ApplicationInsightState = new ApplicationInsightState();
+                }
+                if (ApplicationInsightState.MruProcessList == null)
+                {
+                    ApplicationInsightState.MruProcessList = new StringCollection();
                 }
             }
         }

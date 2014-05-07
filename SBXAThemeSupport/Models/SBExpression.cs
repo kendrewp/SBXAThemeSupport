@@ -7,6 +7,7 @@ namespace SBXAThemeSupport.Models
 {
     using System;
     using System.Collections.Specialized;
+    using System.Diagnostics;
     using System.Windows.Threading;
 
     using SBXA.Runtime;
@@ -32,7 +33,14 @@ namespace SBXAThemeSupport.Models
                                                                                "SELECT", 
                                                                                "G:F2", 
                                                                                "G:F3", 
-                                                                               "G:F4"
+                                                                               "G:F4",
+                                                                               "README",
+                                                                               "DIARY",
+                                                                               "CALC",
+                                                                               "DIALOG",
+                                                                               "LOCK.KEYBRD5",
+                                                                               "ACTION",
+                                                                               "TOGGLE"
                                                                            };
 
         #endregion
@@ -170,6 +178,18 @@ namespace SBXAThemeSupport.Models
                                     DebugViewModel.Instance.ProcessAnalysisViewModel.SetIsLoading(1);
                                     XuiDebug.StackExpression(this.ExpressionStackCompleted, processName, this.FileName);
                                     break;
+                                case "D":
+                                    // Default in a process slot, e.g. D:()
+                                    // It is possible that there are calls and executes inside the P:() so I need to stack it and parse it out.
+                                    DebugViewModel.Instance.ProcessAnalysisViewModel.SetIsLoading(1);
+                                    XuiDebug.StackExpression(this.ExpressionStackCompleted, processName, this.FileName);
+                                    break;
+                                case "V":
+                                    // Validation in a process slot e.g. V:()
+                                    // It is possible that there are calls and executes inside the P:() so I need to stack it and parse it out.
+                                    DebugViewModel.Instance.ProcessAnalysisViewModel.SetIsLoading(1);
+                                    XuiDebug.StackExpression(this.ExpressionStackCompleted, processName, this.FileName);
+                                    break;
                                 case "":
                                     if (processName.Equals("SELECT"))
                                     {
@@ -295,7 +315,7 @@ namespace SBXAThemeSupport.Models
         {
             DebugViewModel.Instance.ProcessAnalysisViewModel.SetIsLoading(-1);
             // It is possible that the expression is not evaluated. e.g. C:GROUP.CODE.VAL or V:Y,N
-            // Debug.WriteLine("[SBExpression.ExpressionStackCompleted(56)] " + parameters[4].GetStandardString() + " " + parameters[5].GetStandardString() + " " + parameters[1].GetStandardString() + ", " + parameters[3].GetStandardString());
+            Debug.WriteLine("[SBExpression.ExpressionStackCompleted(56)] " + parameters[4].GetStandardString() + " " + parameters[5].GetStandardString() + " " + parameters[1].GetStandardString() + ", " + parameters[3].GetStandardString());
             switch (parameters[4].Value)
             {
                 case "2":

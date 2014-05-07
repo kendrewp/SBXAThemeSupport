@@ -88,11 +88,11 @@ namespace SBXAThemeSupport.Models
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public bool ContainsItem(string fileName, string itemName)
+        public bool ContainsItem(string action, string fileName, string itemName)
         {
             foreach (var item in this)
             {
-                if (item.FileName.Equals(fileName) && item.Item.Equals(itemName))
+                if (item.Action.Equals(action) && item.FileName.Equals(fileName) && item.Item.Equals(itemName))
                 {
                     return true;
                 }

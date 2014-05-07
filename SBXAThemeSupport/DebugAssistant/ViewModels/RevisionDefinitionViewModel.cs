@@ -167,7 +167,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 return;
             }
 
-            if (!collection.ContainsItem(item.FileName, item.Item))
+            if (!collection.ContainsItem(item.Action, item.FileName, item.Item))
             {
                 collection.Add(item);
             }
