@@ -7,12 +7,21 @@ namespace SBXAThemeSupport
 {
     using System;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Threading;
 
     using SBXA.Runtime;
     using SBXA.Shared;
     using SBXA.UI.Client;
     using SBXA.UI.WPFControls;
+
+    using ThicknessConverter = Xceed.Wpf.DataGrid.Converters.ThicknessConverter;
+
+    public enum Platform
+    {
+        UniData,
+        UniVerse
+    }
 
     /// <summary>
     ///     The application helper.
@@ -52,9 +61,29 @@ namespace SBXAThemeSupport
         /// </summary>
         public static event CanSendCommandChangedEventHandler CanSendCommandChanged;
 
+        private static Platform platform;
+
         #endregion
 
         #region Public Properties
+
+        /// <summary>
+        /// Gets the platform.
+        /// </summary>
+        /// <value>
+        /// The platform.
+        /// </value>
+        public static Platform Platform
+        {
+            get
+            {
+                return platform;
+            }
+            set
+            {
+                platform = value;
+            }
+        }
 
         /// <summary>
         ///     Gets the current account name.
@@ -341,7 +370,35 @@ namespace SBXAThemeSupport
         private static void SBPlusClientOnConnected(object sender, EventArgs eventArgs)
         {
             SBPlus.Current.InputStateChanged += HandleInputStateChanged;
+            JobManager.RunInUIThread(DispatcherPriority.Input, ()=> SBFile.Read("DMCONT", "SB.CONTROL", ReadControlRecordCompleted, new object()));
         }
+
+        private static void ReadControlRecordCompleted(string subroutineName, SBString[] parameters, object userState)
+        {
+            try
+            {
+                var status = parameters[5];
+                if (status.Count != 1 || !status.Value.Equals("0"))
+                {
+                    return;
+                }
+                var controlRec = parameters[3];
+                switch (controlRec.Extract(9).Value)
+                {
+                    case "UV":
+                        Platform = Platform.UniVerse;
+                        break;
+                    case "UDATA":
+                        Platform = Platform.UniData;
+                        break;
+                }
+            }
+            catch (Exception exception)
+            {
+                CustomLogger.LogException(exception, "There was a problem reading the control record.");
+            }
+        }
+
 
         private static void SBPlusDisconnected(object sender, EventArgs args)
         {
