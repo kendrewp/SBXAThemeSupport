@@ -1,4 +1,5 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<!-- Templates required by this project -->
+    <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:views="clr-namespace:SBXAThemeSupport.Views"
                     xmlns:converters="clr-namespace:SBXAThemeSupport.Converters"
@@ -19,15 +20,18 @@
     <ContextMenu x:Key="ProcessCallContextMenu">
         <MenuItem Header="Create Revision Definition for definition." Command="views:ProcessAnalysis.CreateRevisionDefinitionCommand" CommandParameter="{Binding}"/>
     </ContextMenu>
-    
-    
+
+    <ContextMenu x:Key="ProcessStackTreeItemContextMenu">
+        <MenuItem Header="Copy" Command="views:ProcessStack.CopyNodeTextCommand" CommandParameter="{Binding}"/>
+    </ContextMenu>
+
     <HierarchicalDataTemplate x:Key="ProcessStackTemplate" ItemsSource="{Binding ChildProcesses}"  >
 
         <Grid wpfControls:SBUISupport.TemplateName="definitionStackTemplate">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition SharedSizeGroup="definitionStackDescription" />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{DynamicResource TreeViewItemTextStyle}"/>
+            <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{DynamicResource TreeViewItemTextStyle}" ContextMenu="{DynamicResource ProcessStackTreeItemContextMenu}"/>
         </Grid>
 
     </HierarchicalDataTemplate>

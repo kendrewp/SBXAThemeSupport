@@ -151,14 +151,22 @@ namespace SBXAThemeSupport
                 return;
             }
 
-            // use reflection to call the LogException method on the Logger.
-            Logger.GetType()
-                .InvokeMember(
-                    "LogWarning", 
-                    BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.Public, 
-                    null, 
-                    null, 
-                    new object[] { message(), loggerName });
+            try
+            {
+                // use reflection to call the LogException method on the Logger.
+                Logger.GetType()
+                    .InvokeMember(
+                        "LogWarning",
+                        BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.Public,
+                        null,
+                        null,
+                        new object[] { message(), loggerName });
+            }
+            catch (Exception exception)
+            {
+                SBPlusClient.LogError("There was a problem logging and Warning.", exception);
+                SBPlusClient.LogWarning(message());
+            }
         }
 
         #endregion

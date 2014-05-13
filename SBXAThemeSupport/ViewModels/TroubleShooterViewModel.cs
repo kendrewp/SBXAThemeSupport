@@ -51,7 +51,7 @@ namespace SBXAThemeSupport.ViewModels
     /// <remarks>
     ///     Uploading of log files.
     ///     <para>
-    ///         1) Files are uploaded to ServerFileName which by default is YYTROUBLESHOOTER.DATA.Z
+    ///         1) Files are uploaded to ServerFileName which by default is YYTROUBLESHOOTER.DATA.ZE
     ///         2) Files are uploaded from the [SB/XA log folder]/ToUpload, i.e. C:\Users\%userName%\AppData\Roaming\Rocket
     ///         Software\SBXA\Logs\ToUpload
     ///         3) When the application starts and connects to the server, there is a check to see if the previous instance of
@@ -85,7 +85,7 @@ namespace SBXAThemeSupport.ViewModels
         static TroubleShooterViewModel()
         {
             ReportProblemsTo = ReportProblemsTo.Server;
-            ServerFileName = "YYTROUBLESHOOTER.DATA.Z";
+            ServerFileName = "YYTROUBLESHOOTER.DATA.ZE";
         }
 
         #endregion
@@ -305,6 +305,7 @@ namespace SBXAThemeSupport.ViewModels
                 // ReSharper disable once EmptyGeneralCatchClause
             catch (Exception exception)
             {
+                CustomLogger.LogException(exception, "There was a problem in the HaveRunOnce method.");
             }
         }
 

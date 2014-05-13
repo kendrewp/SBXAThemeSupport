@@ -16,7 +16,14 @@
                 <TreeView Name="ProcessStackTree" 
                           ItemsSource="{Binding ProcessStack}" 
                           ItemTemplate="{DynamicResource ProcessStackTemplate}"
-                          />
+                          Style="{DynamicResource ApplicationInsightTreeViewStyle}"
+                              >
+                    <TreeView.Resources>
+                        <Style TargetType="TreeViewItem">
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                        </Style>
+                    </TreeView.Resources>
+                </TreeView>
             </TabItem>
             
             <TabItem Header="Trace" Name="TraceStackItem">
@@ -29,7 +36,14 @@
                               Grid.Row="1" 
                               ItemsSource="{Binding ProcessHistoryStack}" 
                               ItemTemplate="{DynamicResource ProcessStackTemplate}"
-                              />
+                              Style="{DynamicResource ApplicationInsightTreeViewStyle}"
+                              >
+                        <TreeView.Resources>
+                            <Style TargetType="TreeViewItem">
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                            </Style>
+                        </TreeView.Resources>
+                        </TreeView>
                     <Button Content="Clear" Grid.Row="0" Height="23" HorizontalAlignment="Right" Margin="0" Name="ClearProcessHistory" 
                             VerticalAlignment="Top" Width="75"
                             Command="views:ProcessStack.ClearStackCommand"

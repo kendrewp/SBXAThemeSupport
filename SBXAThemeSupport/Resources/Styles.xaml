@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:wpfControls="http://schemas.sbxa.com/WPFControls">
     
     <!-- The IconButtonStyle -->
     <Style x:Key="IconButtonStyle"
@@ -120,11 +121,21 @@
     </Style>
 
     <Style x:Key="TreeViewItemTextStyle" TargetType="TextBlock">
+        <Setter Property="wpfControls:SBUISupport.StyleName" Value="TreeViewItemTextStyle" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsCurrent}" Value="true">
                 <Setter Property="Foreground" Value="Green"/>
             </DataTrigger>
         </Style.Triggers>
+    </Style>
+    
+    <Style x:Key="ApplicationInsightTreeViewStyle" TargetType="TreeView">
+        <Setter Property="wpfControls:SBUISupport.StyleName" Value="ApplicationInsightTreeViewStyle" />
+        <Setter Property="BorderBrush" Value="Gray" />
+    </Style>
+    
+    <Style x:Key="ApplicationInsightTreeViewItemStyle" TargetType="TreeViewItem">
+        <Setter Property="wpfControls:SBUISupport.StyleName" Value="ApplicationInsightTreeViewItemStyle" />
     </Style>
 
 </ResourceDictionary>

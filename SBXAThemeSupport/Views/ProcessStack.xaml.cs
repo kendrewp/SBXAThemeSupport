@@ -11,10 +11,12 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport.Views
 {
+    using System;
     using System.Windows.Controls;
     using System.Windows.Input;
 
     using SBXAThemeSupport.DebugAssistant.ViewModels;
+    using SBXAThemeSupport.Models;
 
     /// <summary>
     ///     Interaction logic for ProcessStack.xaml
@@ -28,7 +30,14 @@ namespace SBXAThemeSupport.Views
             "ClearStackCommand", 
             typeof(ProcessStack));
 
+        public static readonly RoutedUICommand CopyNodeTextCommand = new RoutedUICommand(
+            "CopyNodeTextCommand",
+            "CopyNodeTextCommand",
+            typeof(ProcessStack));
+
         private static readonly CommandBinding ClearStackCommandBinding = new CommandBinding(ClearStackCommand);
+
+        private static readonly CommandBinding CopyNodeTextCommandBinding = new CommandBinding(CopyNodeTextCommand);
 
         #endregion
 
@@ -40,6 +49,8 @@ namespace SBXAThemeSupport.Views
         static ProcessStack()
         {
             ClearStackCommandBinding.Executed += ExecutedClearStackCommand;
+            CopyNodeTextCommandBinding.Executed += ExecutedCopyNodeTextCommand;
+            CopyNodeTextCommandBinding.CanExecute += CanExecuteCopyNodeTextCommand;
         }
 
         /// <summary>
@@ -50,11 +61,36 @@ namespace SBXAThemeSupport.Views
             this.InitializeComponent();
 
             this.CommandBindings.Add(ClearStackCommandBinding);
+            this.CommandBindings.Add(CopyNodeTextCommandBinding);
         }
 
         #endregion
 
         #region Methods
+
+        private static void CanExecuteCopyNodeTextCommand(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private static void ExecutedCopyNodeTextCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var treeItem = e.Parameter as TreeItem;
+                if (treeItem == null || string.IsNullOrEmpty(treeItem.Name))
+                {
+                    return;
+                }
+
+                System.Windows.Clipboard.Clear();
+                System.Windows.Clipboard.SetText(treeItem.Name);
+            }
+            catch (Exception exception)
+            {
+                CustomLogger.LogException(exception, "A problem occurred when trying to copy the text of a trace node.");
+            }
+        }
 
         private static void ExecutedClearStackCommand(object sender, ExecutedRoutedEventArgs e)
         {
