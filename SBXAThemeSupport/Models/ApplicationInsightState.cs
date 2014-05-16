@@ -58,12 +58,16 @@ namespace SBXAThemeSupport.Models
             }
         }
 
+        /// <summary>
+        ///     Gets or sets the mru process list.
+        /// </summary>
         public StringCollection MruProcessList
         {
             get
             {
                 return this.mruProcessList;
             }
+
             set
             {
                 var oldValue = this.mruProcessList;

@@ -7,6 +7,9 @@
                     xmlns:viewModels="clr-namespace:SBXAThemeSupport.DebugAssistant.ViewModels">
 
     <converters:CombineTreeItemsConverter x:Key="CombineTreeItemsConverter" />
+    <converters:TimeConverter x:Key="TimeConverter" />
+    <converters:TimeDifferenceConverter x:Key="TimeDifferenceConverter" />
+    
 
     <Style x:Key="TreeItemDescriptionStyle" >
         <Setter Property="FrameworkElement.Margin" Value="4,0,0,0"/>
@@ -25,13 +28,35 @@
         <MenuItem Header="Copy" Command="views:ProcessStack.CopyNodeTextCommand" CommandParameter="{Binding}"/>
     </ContextMenu>
 
-    <HierarchicalDataTemplate x:Key="ProcessStackTemplate" ItemsSource="{Binding ChildProcesses}"  >
+    <HierarchicalDataTemplate x:Key="ProcessStackTemplate" ItemsSource="{Binding ChildProcesses}" >
 
         <Grid wpfControls:SBUISupport.TemplateName="definitionStackTemplate">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition SharedSizeGroup="definitionStackDescription" />
+                <ColumnDefinition SharedSizeGroup="space" Width="10" />
+                <ColumnDefinition SharedSizeGroup="startTime" />
+                <ColumnDefinition SharedSizeGroup="endTime" />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{DynamicResource TreeViewItemTextStyle}" ContextMenu="{DynamicResource ProcessStackTreeItemContextMenu}"/>
+            <TextBlock Grid.Column="2" Style="{DynamicResource TreeViewItemTextStyle}" Margin="0" ToolTip="This value is the time, in milliseconds that the process took to execute. It is measured on the server so does not include the time to notify the client of the process call.">
+                <wpfControls:SBRun x:Name="ProcessingTimeText">
+                    <wpfControls:SBRun.BoundText>
+                        <MultiBinding Converter="{StaticResource TimeDifferenceConverter}">
+                            <Binding Path="ServerStartMilliseconds" />
+                            <Binding Path="ServerEndMilliseconds" />
+                        </MultiBinding>
+                    </wpfControls:SBRun.BoundText>
+                </wpfControls:SBRun>
+
+            </TextBlock>
+<!--
+                    <MultiBinding Converter="{StaticResource TimeDifferenceConverter}">
+                        <Binding Path="StartTime" />
+                        <Binding Path="EndTime" />
+                    </MultiBinding>
+            <TextBlock Grid.Column="2" Text="{Binding StartTime, Converter={StaticResource TimeConverter}}" Style="{DynamicResource TreeViewItemTextStyle}" Margin="0,0,0,0"/>
+            <TextBlock Grid.Column="3" Text="{Binding EndTime, Converter={StaticResource TimeConverter}}" Style="{DynamicResource TreeViewItemTextStyle}" Margin="5,0,0,0"/>
+-->
         </Grid>
 
     </HierarchicalDataTemplate>

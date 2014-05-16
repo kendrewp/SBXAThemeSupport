@@ -1,4 +1,6 @@
-﻿April 29, 20014 Kendrew Peacey	Added saving and resatoring of state in ApplicationInsight.
+﻿May 16, 2014	Kendrew Peacey	Changed the order of the processes in the stack so that they are now in the correct order.
+May 16, 2014	Kendrew Peacey	Added process time to the process stack.
+April 29, 2014  Kendrew Peacey	Added saving and resatoring of state in ApplicationInsight.
 April 28, 2014  Kendrew Peacey	Added process analysis
 April 9, 2014	Kendrew Peacey	Improved DoEvents to do better error checking.
 March 28, 2014  Kendrew Peacey	Added support for uploading logs to the server as opposed to moving them somewhere else.

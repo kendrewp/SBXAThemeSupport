@@ -73,7 +73,7 @@ namespace SBXAThemeSupport
 
         #endregion
 
-        #region Protected Events
+        #region Events
 
         /// <summary>
         ///     Occurs when a property value changes.

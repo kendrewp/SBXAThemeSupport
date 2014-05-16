@@ -154,7 +154,7 @@ namespace SBXAThemeSupport.DebugAssistant
         }
 
         /// <summary>
-        /// The dispose.
+        ///     The dispose.
         /// </summary>
         public static void Dispose()
         {

@@ -148,6 +148,7 @@
     <Compile Include="Converters\CombineTreeItemsConverter.cs" />
     <Compile Include="Converters\CommandParameterConverter.cs" />
     <Compile Include="Converters\InfoButtonConverter.cs" />
+    <Compile Include="Converters\TimeConverter.cs" />
     <Compile Include="CustomLogger.cs" />
     <Compile Include="DebugAssistant\DebugWindowManager.cs" />
     <Compile Include="DebugAssistant\ViewModels\RevisionDefinitionViewModel.cs" />

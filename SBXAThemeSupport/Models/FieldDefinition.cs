@@ -6,7 +6,6 @@
 namespace SBXAThemeSupport.Models
 {
     using System;
-    using System.Collections.ObjectModel;
 
     using SBXA.Shared;
 
@@ -45,6 +44,8 @@ namespace SBXAThemeSupport.Models
 
         private string fieldDefault;
 
+        private bool hasDictionary;
+
         private string inputConversion;
 
         private string intuitiveHelp;
@@ -56,8 +57,6 @@ namespace SBXAThemeSupport.Models
         private string styleName;
 
         private string validation;
-
-        private bool hasDictionary;
 
         #endregion
 
@@ -478,6 +477,25 @@ namespace SBXAThemeSupport.Models
         }
 
         /// <summary>
+        ///     Gets or sets a value indicating whether this instance has dictionary.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance has dictionary; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasDictionary
+        {
+            get
+            {
+                return this.hasDictionary;
+            }
+
+            set
+            {
+                this.hasDictionary = value;
+            }
+        }
+
+        /// <summary>
         ///     Gets or sets the input conversion.
         /// </summary>
         public string InputConversion
@@ -657,47 +675,31 @@ namespace SBXAThemeSupport.Models
             }
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance has dictionary.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if this instance has dictionary; otherwise, <c>false</c>.
-        /// </value>
-        public bool HasDictionary
-        {
-            get
-            {
-                return hasDictionary;
-            }
-            set
-            {
-                hasDictionary = value;
-            }
-        }
-
         #endregion
 
-        #region Public Methods and Operators
+        #region Methods
 
+        /// <summary>
+        /// The add self.
+        /// </summary>
+        /// <param name="collection">
+        /// The collection.
+        /// </param>
         protected override void AddSelf(RevisionDefinitionItemCollection collection)
         {
-            if (HasDictionary)
+            if (this.HasDictionary)
             {
                 RevisionDefinitionViewModel.AddItemToDefinition(
-                    collection,
+                    collection, 
                     new RevisionDefinitionItem()
                         {
-                            Action = "IO",
-                            FileName = this.FileName,
-                            Item = this.Name,
+                            Action = "IO", 
+                            FileName = this.FileName, 
+                            Item = this.Name, 
                             Parameters = RevisionDefinitionViewModel.Dict
                         });
             }
         }
-
-        #endregion
-
-        #region Methods
 
         private void ReadFieldDefinitionCompleted(string subroutineName, SBString[] parameters, object userState)
         {
@@ -720,6 +722,7 @@ namespace SBXAThemeSupport.Models
                     this.HasDictionary = false;
                     return;
                 }
+
                 this.HasDictionary = true;
 
                 var state = userState as object[];

@@ -33,10 +33,10 @@ namespace SBXAThemeSupport.Models
         public string FileName { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [include].
+        ///     Gets or sets a value indicating whether [include].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [include]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [include]; otherwise, <c>false</c>.
         /// </value>
         public bool Include
         {
@@ -79,6 +79,9 @@ namespace SBXAThemeSupport.Models
         /// <summary>
         /// The contains item.
         /// </summary>
+        /// <param name="action">
+        /// The action.
+        /// </param>
         /// <param name="fileName">
         /// The file name.
         /// </param>

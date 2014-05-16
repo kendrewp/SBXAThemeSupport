@@ -18,7 +18,15 @@ namespace SBXAThemeSupport.Models
     {
         #region Fields
 
+        private DateTime endTime;
+
         private bool isCurrent;
+
+        private int serverEndMilliseconds;
+
+        private int serverStartMilliseconds;
+
+        private DateTime startTime;
 
         #endregion
 
@@ -81,6 +89,26 @@ namespace SBXAThemeSupport.Models
         public ObservableCollection<SBExpression> DictionaryExpressions { get; set; }
 
         /// <summary>
+        ///     Gets or sets the end time.
+        /// </summary>
+        /// <value>
+        ///     The end time.
+        /// </value>
+        public DateTime EndTime
+        {
+            get
+            {
+                return this.endTime;
+            }
+
+            set
+            {
+                this.endTime = value;
+                this.RaisePropertyChanged("EndTime");
+            }
+        }
+
+        /// <summary>
         ///     Gets or sets the expressions.
         /// </summary>
         public ObservableCollection<SBExpression> Expressions { get; set; }
@@ -128,9 +156,69 @@ namespace SBXAThemeSupport.Models
         public virtual ObservableCollection<SBExpression> ScreenExpressions { get; set; }
 
         /// <summary>
+        ///     Gets or sets the server end milliseconds.
+        /// </summary>
+        /// <value>
+        ///     The server end milliseconds.
+        /// </value>
+        public int ServerEndMilliseconds
+        {
+            get
+            {
+                return this.serverEndMilliseconds;
+            }
+
+            set
+            {
+                this.serverEndMilliseconds = value;
+                this.RaisePropertyChanged("ServerEndMilliseconds");
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the server start milliseconds.
+        /// </summary>
+        /// <value>
+        ///     The server start milliseconds.
+        /// </value>
+        public int ServerStartMilliseconds
+        {
+            get
+            {
+                return this.serverStartMilliseconds;
+            }
+
+            set
+            {
+                this.serverStartMilliseconds = value;
+                this.RaisePropertyChanged("ServerStartMilliseconds");
+            }
+        }
+
+        /// <summary>
         ///     Gets the source expression.
         /// </summary>
         public string SourceExpression { get; private set; }
+
+        /// <summary>
+        ///     Gets or sets the start time.
+        /// </summary>
+        /// <value>
+        ///     The start time.
+        /// </value>
+        public DateTime StartTime
+        {
+            get
+            {
+                return this.startTime;
+            }
+
+            set
+            {
+                this.startTime = value;
+                this.RaisePropertyChanged("StartTime");
+            }
+        }
 
         #endregion
 

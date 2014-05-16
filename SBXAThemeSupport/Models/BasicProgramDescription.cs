@@ -49,23 +49,29 @@ namespace SBXAThemeSupport.Models
 
         #endregion
 
-        #region Public Methods and Operators
+        #region Methods
 
+        /// <summary>
+        /// The add self.
+        /// </summary>
+        /// <param name="collection">
+        /// The collection.
+        /// </param>
         protected override void AddSelf(RevisionDefinitionItemCollection collection)
         {
             if (!this.IsError)
             {
                 RevisionDefinitionViewModel.AddItemToDefinition(
-                    collection,
+                    collection, 
                     new RevisionDefinitionItem()
-                    {
-                        Action = "IO",
-                        FileName = this.FileName,
-                        Item = this.Name,
-                        Parameters = RevisionDefinitionViewModel.Data
-                    });
+                        {
+                            Action = "IO", 
+                            FileName = this.FileName, 
+                            Item = this.Name, 
+                            Parameters = RevisionDefinitionViewModel.Data
+                        });
                 RevisionDefinitionViewModel.AddItemToDefinition(
-                    collection,
+                    collection, 
                     new RevisionDefinitionItem() { Action = "FB", FileName = this.FileName, Item = string.Empty, Parameters = string.Empty });
             }
         }

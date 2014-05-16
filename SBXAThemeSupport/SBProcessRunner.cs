@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SBProcessRunner.cs" company="Ruf Informatik AG">
+// <copyright file="SbProcessRunner.cs" company="Ruf Informatik AG">
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -143,6 +143,7 @@ namespace SBXAThemeSupport
                 name, 
                 isRetryWhenServerNotAccept, 
                 isRunOnUiThread);
+
             this.processes.Enqueue(actionDefinition);
 
             this.RunProcess();

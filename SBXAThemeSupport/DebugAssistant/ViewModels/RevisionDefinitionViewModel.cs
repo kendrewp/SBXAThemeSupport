@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport.DebugAssistant.ViewModels
 {
-    using System.Windows.Forms;
+    using System.Windows;
     using System.Windows.Threading;
 
     using SBXA.Runtime;
@@ -16,7 +16,6 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
     using SBXAThemeSupport.ViewModels;
 
     using ICommand = System.Windows.Input.ICommand;
-    using MessageBox = System.Windows.MessageBox;
 
     /// <summary>
     ///     The revision definition view model.
@@ -46,23 +45,26 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         private readonly RevisionDefinitionItemCollection revisionDefinitionItemCollection = new RevisionDefinitionItemCollection();
 
+        private string currentAction;
+
         private string definitionName;
 
         private bool isAllSelected;
-        private string currentAction;
 
         #endregion
 
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RevisionDefinitionViewModel"/> class.
+        ///     Initializes a new instance of the <see cref="RevisionDefinitionViewModel" /> class.
         /// </summary>
         public RevisionDefinitionViewModel()
         {
             SaveDefinitionCommand = new RelayCommand(this.SaveDefinitionCommandExecuted, this.CanExecuteSaveDefinitionCommand);
             CreateFileCommand = new RelayCommand(this.CreateFileCommandExecuted, this.CanExecuteCreateFileCommandCommand);
-            MaintainDefinitionCommand = new RelayCommand(this.MaintainDefinitionCommandExecuted, this.CanExecuteMaintainDefinitionCommandCommand);
+            MaintainDefinitionCommand = new RelayCommand(
+                this.MaintainDefinitionCommandExecuted, 
+                this.CanExecuteMaintainDefinitionCommandCommand);
             CreateDefinitionCommand = new RelayCommand(this.CreateDefinitionCommandExecuted, this.CanExecuteCreateDefinitionCommand);
         }
 
@@ -71,33 +73,56 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         #region Public Properties
 
         /// <summary>
-        /// Gets the save definition command.
-        /// </summary>
-        public static ICommand SaveDefinitionCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the create file command.
+        ///     Gets the save definition command.
         /// </summary>
         /// <value>
-        /// The create file command.
+        ///     The create definition command.
+        /// </value>
+        public static ICommand CreateDefinitionCommand { get; private set; }
+
+        /// <summary>
+        ///     Gets the create file command.
+        /// </summary>
+        /// <value>
+        ///     The create file command.
         /// </value>
         public static ICommand CreateFileCommand { get; private set; }
 
         /// <summary>
-        /// Gets the maintain definition command.
+        ///     Gets the maintain definition command.
         /// </summary>
         /// <value>
-        /// The maintain definition command.
+        ///     The maintain definition command.
         /// </value>
         public static ICommand MaintainDefinitionCommand { get; private set; }
 
         /// <summary>
-        /// Gets the create definition command.
+        ///     Gets the save definition command.
+        /// </summary>
+        public static ICommand SaveDefinitionCommand { get; private set; }
+
+        /// <summary>
+        ///     Gets or sets the current action.
         /// </summary>
         /// <value>
-        /// The create definition command.
+        ///     The current action.
         /// </value>
-        public static ICommand CreateDefinitionCommand { get; private set; }
+        public string CurrentAction
+        {
+            get
+            {
+                return this.currentAction;
+            }
+
+            set
+            {
+                if (this.currentAction != value)
+                {
+                    this.currentAction = value;
+                    this.RaisePropertyChanged("CurrentAction");
+                }
+            }
+        }
 
         /// <summary>
         ///     Gets or sets the name of the definition.
@@ -123,33 +148,10 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the current action.
+        ///     Gets or sets a value indicating whether [is all selected].
         /// </summary>
         /// <value>
-        /// The current action.
-        /// </value>
-        public string CurrentAction
-        {
-            get
-            {
-                return this.currentAction;
-            }
-
-            set
-            {
-                if (this.currentAction != value)
-                {
-                    this.currentAction = value;
-                    this.RaisePropertyChanged("CurrentAction");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether [is all selected].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [is all selected]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [is all selected]; otherwise, <c>false</c>.
         /// </value>
         public bool IsAllSelected
         {
@@ -230,116 +232,26 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             MessageBox.Show("Definition Saved.");
         }
 
-        #region SaveDefinitionCommand
-
-        private bool CanExecuteSaveDefinitionCommand(object parameter)
+        private bool CanExecuteCreateDefinitionCommand(object parameter)
         {
             return !string.IsNullOrEmpty(this.DefinitionName) && !string.IsNullOrWhiteSpace(this.DefinitionName);
         }
-
-        private void SaveDefinitionCommandExecuted(object parameter)
-        {
-            this.CreateDefinition();
-        }
-
-        #endregion SaveDefinitionCommand
-
-        #region CreateFileCommand
 
         private bool CanExecuteCreateFileCommandCommand(object parameter)
         {
             return !string.IsNullOrEmpty(this.DefinitionName) && !string.IsNullOrWhiteSpace(this.DefinitionName);
         }
 
-        private void CreateFileCommandExecuted(object parameter)
-        {
-            CurrentAction = "Checking if " + this.DefinitionName + " exists.";
-            SBFile.Read("VOC", "REV_" + this.DefinitionName, CreateRevFileFile, this.DefinitionName);
-        }
-
-        private void CreateRevFileFile(string subroutineName, SBString[] parameters, object userState)
-        {
-            var status = parameters[5];
-            var fileName = userState as string;
-            if (status.Count != 1 || !status.Value.Equals("0"))
-            {
-                SBString cmd = null;
-                switch (ApplicationHelper.Platform)
-                {
-                    case Platform.UniData:
-                        cmd = new SBString(string.Format(">:CREATE-FILE DIR REV_{0}", fileName));
-                        break;
-                    case Platform.UniVerse:
-                        cmd = new SBString(string.Format(">:CREATE-FILE REV_{0} 1,1,18 1,1,19", fileName));
-                        break;
-                }
-                if (cmd != null)
-                {
-                    CurrentAction = "Executing " + cmd.Value;
-                    JobManager.RunInUIThread(DispatcherPriority.Normal, () => SbProcessHandler.CallSubroutine(CreateFileCompleted, "SB.PROCESS", new[] { cmd }, new object[] { "REV_" + this.DefinitionName }));
-                }
-                return;
-            }
-            CurrentAction = string.Format("{0} already exists, so we did not attempt to create it.", (fileName ?? "NULL!"));
-            MessageBox.Show(CurrentAction);
-
-        }
-
-        private void CreateFileCompleted(string subroutineName, SBString[] parameters, object userState)
-        {
-            var fileName = ((object[])userState)[0] as string;
-            CurrentAction = "Checking if " + fileName + " exists.";
-            SBFile.Read("VOC", fileName, FinisedCreateRevFileCompleted, fileName);
-        }
-
-        private void FinisedCreateRevFileCompleted(string subroutineName, SBString[] parameters, object userState)
-        {
-            var fileName = userState as string;
-            var status = parameters[5];
-            if (status.Count != 1 || !status.Value.Equals("0"))
-            {
-                CurrentAction = "Failed to created file " + (fileName ?? "NULL!");
-                MessageBox.Show("Failed to created file " + (fileName ?? "NULL!"));
-                return;
-            }
-            CurrentAction = "Created file " + (fileName ?? "NULL!");
-            MessageBox.Show("Created file " + (fileName ?? "NULL!"));
-        }        
-
-        #endregion CreateFileCommand
-
-        #region MaintainDefinitionCommand
-
         private bool CanExecuteMaintainDefinitionCommandCommand(object parameter)
         {
-            return !string.IsNullOrEmpty(this.DefinitionName) && !string.IsNullOrWhiteSpace(this.DefinitionName) && ApplicationHelper.CanSendServerCommands();
+            return !string.IsNullOrEmpty(this.DefinitionName) && !string.IsNullOrWhiteSpace(this.DefinitionName)
+                   && ApplicationHelper.CanSendServerCommands();
         }
 
-        private void MaintainDefinitionCommandExecuted(object parameter)
-        {
-            var cmd = string.Format("P:(DATA '{0}';EXEC 'REV.DEFN')", this.DefinitionName);
-            JobManager.RunInUIThread(DispatcherPriority.Normal, () => SbProcessHandler.CallProcess(cmd, false));
-        }
-
-        #endregion MaintainDefinitionCommand
-
-        #region CreateDefinitionCommand
-
-        private bool CanExecuteCreateDefinitionCommand(object parameter)
+        private bool CanExecuteSaveDefinitionCommand(object parameter)
         {
             return !string.IsNullOrEmpty(this.DefinitionName) && !string.IsNullOrWhiteSpace(this.DefinitionName);
         }
-
-        private void CreateDefinitionCommandExecuted(object parameter)
-        {
-            JobManager.RunInUIThread(DispatcherPriority.Normal, () => SbProcessHandler.CallProcess("REV.MAKE.MEDIA", false));
-/*
-            var cmd = string.Format("P:(DATA '{0}';EXEC 'REV.DEFN')", this.DefinitionName);
-            JobManager.RunInUIThread(DispatcherPriority.Normal, () => SbProcessHandler.CallProcess(cmd, false));
-*/
-        }
-
-        #endregion CreateDefinitionCommand
 
         private void CreateDefinition()
         {
@@ -374,6 +286,91 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         var defnName = "REV.DEFN*" + this.DefinitionName + "*1";
                         SBFile.Write(SBPlusClient.Current.SystemId + "DEFN", defnName, defn, DefinitionWriteCompleted);
                     });
+        }
+
+        private void CreateDefinitionCommandExecuted(object parameter)
+        {
+            JobManager.RunInUIThread(DispatcherPriority.Normal, () => SbProcessHandler.CallProcess("REV.MAKE.MEDIA", false));
+            /*
+            var cmd = string.Format("P:(DATA '{0}';EXEC 'REV.DEFN')", this.DefinitionName);
+            JobManager.RunInUIThread(DispatcherPriority.Normal, () => SbProcessHandler.CallProcess(cmd, false));
+*/
+        }
+
+        private void CreateFileCommandExecuted(object parameter)
+        {
+            this.CurrentAction = "Checking if " + this.DefinitionName + " exists.";
+            SBFile.Read("VOC", "REV_" + this.DefinitionName, this.CreateRevFileFile, this.DefinitionName);
+        }
+
+        private void CreateFileCompleted(string subroutineName, SBString[] parameters, object userState)
+        {
+            var fileName = ((object[])userState)[0] as string;
+            this.CurrentAction = "Checking if " + fileName + " exists.";
+            SBFile.Read("VOC", fileName, this.FinisedCreateRevFileCompleted, fileName);
+        }
+
+        private void CreateRevFileFile(string subroutineName, SBString[] parameters, object userState)
+        {
+            var status = parameters[5];
+            var fileName = userState as string;
+            if (status.Count != 1 || !status.Value.Equals("0"))
+            {
+                SBString cmd = null;
+                switch (ApplicationHelper.Platform)
+                {
+                    case Platform.UniData:
+                        cmd = new SBString(string.Format(">:CREATE-FILE DIR REV_{0}", fileName));
+                        break;
+                    case Platform.UniVerse:
+                        cmd = new SBString(string.Format(">:CREATE-FILE REV_{0} 1,1,18 1,1,19", fileName));
+                        break;
+                }
+
+                if (cmd != null)
+                {
+                    this.CurrentAction = "Executing " + cmd.Value;
+                    JobManager.RunInUIThread(
+                        DispatcherPriority.Normal, 
+                        () =>
+                        SbProcessHandler.CallSubroutine(
+                            this.CreateFileCompleted, 
+                            "SB.PROCESS", 
+                            new[] { cmd }, 
+                            new object[] { "REV_" + this.DefinitionName }));
+                }
+
+                return;
+            }
+
+            this.CurrentAction = string.Format("{0} already exists, so we did not attempt to create it.", fileName ?? "NULL!");
+            MessageBox.Show(this.CurrentAction);
+        }
+
+        private void FinisedCreateRevFileCompleted(string subroutineName, SBString[] parameters, object userState)
+        {
+            var fileName = userState as string;
+            var status = parameters[5];
+            if (status.Count != 1 || !status.Value.Equals("0"))
+            {
+                this.CurrentAction = "Failed to created file " + (fileName ?? "NULL!");
+                MessageBox.Show("Failed to created file " + (fileName ?? "NULL!"));
+                return;
+            }
+
+            this.CurrentAction = "Created file " + (fileName ?? "NULL!");
+            MessageBox.Show("Created file " + (fileName ?? "NULL!"));
+        }
+
+        private void MaintainDefinitionCommandExecuted(object parameter)
+        {
+            var cmd = string.Format("P:(DATA '{0}';EXEC 'REV.DEFN')", this.DefinitionName);
+            JobManager.RunInUIThread(DispatcherPriority.Normal, () => SbProcessHandler.CallProcess(cmd, false));
+        }
+
+        private void SaveDefinitionCommandExecuted(object parameter)
+        {
+            this.CreateDefinition();
         }
 
         private void SelectAll(bool select)

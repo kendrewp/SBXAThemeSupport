@@ -33,13 +33,13 @@ namespace SBXAThemeSupport.Models
                                                                                "SELECT", 
                                                                                "G:F2", 
                                                                                "G:F3", 
-                                                                               "G:F4",
-                                                                               "README",
-                                                                               "DIARY",
-                                                                               "CALC",
-                                                                               "DIALOG",
-                                                                               "LOCK.KEYBRD5",
-                                                                               "ACTION",
+                                                                               "G:F4", 
+                                                                               "README", 
+                                                                               "DIARY", 
+                                                                               "CALC", 
+                                                                               "DIALOG", 
+                                                                               "LOCK.KEYBRD5", 
+                                                                               "ACTION", 
                                                                                "TOGGLE"
                                                                            };
 
@@ -315,7 +315,9 @@ namespace SBXAThemeSupport.Models
         {
             DebugViewModel.Instance.ProcessAnalysisViewModel.SetIsLoading(-1);
             // It is possible that the expression is not evaluated. e.g. C:GROUP.CODE.VAL or V:Y,N
-            Debug.WriteLine("[SBExpression.ExpressionStackCompleted(56)] " + parameters[4].GetStandardString() + " " + parameters[5].GetStandardString() + " " + parameters[1].GetStandardString() + ", " + parameters[3].GetStandardString());
+            Debug.WriteLine(
+                "[SBExpression.ExpressionStackCompleted(56)] " + parameters[4].GetStandardString() + " " + parameters[5].GetStandardString()
+                + " " + parameters[1].GetStandardString() + ", " + parameters[3].GetStandardString());
             switch (parameters[4].Value)
             {
                 case "2":

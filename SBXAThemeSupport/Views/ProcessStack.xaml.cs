@@ -31,8 +31,8 @@ namespace SBXAThemeSupport.Views
             typeof(ProcessStack));
 
         public static readonly RoutedUICommand CopyNodeTextCommand = new RoutedUICommand(
-            "CopyNodeTextCommand",
-            "CopyNodeTextCommand",
+            "CopyNodeTextCommand", 
+            "CopyNodeTextCommand", 
             typeof(ProcessStack));
 
         private static readonly CommandBinding ClearStackCommandBinding = new CommandBinding(ClearStackCommand);
@@ -73,6 +73,11 @@ namespace SBXAThemeSupport.Views
             e.CanExecute = true;
         }
 
+        private static void ExecutedClearStackCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            DebugViewModel.Instance.ClearHistoryStack();
+        }
+
         private static void ExecutedCopyNodeTextCommand(object sender, ExecutedRoutedEventArgs e)
         {
             try
@@ -90,11 +95,6 @@ namespace SBXAThemeSupport.Views
             {
                 CustomLogger.LogException(exception, "A problem occurred when trying to copy the text of a trace node.");
             }
-        }
-
-        private static void ExecutedClearStackCommand(object sender, ExecutedRoutedEventArgs e)
-        {
-            DebugViewModel.Instance.ClearHistoryStack();
         }
 
         #endregion

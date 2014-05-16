@@ -37,6 +37,7 @@
                               ItemsSource="{Binding ProcessHistoryStack}" 
                               ItemTemplate="{DynamicResource ProcessStackTemplate}"
                               Style="{DynamicResource ApplicationInsightTreeViewStyle}"
+                              Grid.IsSharedSizeScope="True" 
                               >
                         <TreeView.Resources>
                             <Style TargetType="TreeViewItem">

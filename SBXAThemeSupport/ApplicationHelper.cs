@@ -7,7 +7,6 @@ namespace SBXAThemeSupport
 {
     using System;
     using System.Windows;
-    using System.Windows.Controls;
     using System.Windows.Threading;
 
     using SBXA.Runtime;
@@ -15,11 +14,19 @@ namespace SBXAThemeSupport
     using SBXA.UI.Client;
     using SBXA.UI.WPFControls;
 
-    using ThicknessConverter = Xceed.Wpf.DataGrid.Converters.ThicknessConverter;
-
+    /// <summary>
+    ///     The platform.
+    /// </summary>
     public enum Platform
     {
-        UniData,
+        /// <summary>
+        ///     The uni data.
+        /// </summary>
+        UniData, 
+
+        /// <summary>
+        ///     The uni verse.
+        /// </summary>
         UniVerse
     }
 
@@ -31,6 +38,8 @@ namespace SBXAThemeSupport
         #region Static Fields
 
         private static bool lastCanSendValue; // To hold the last value of CanSend, so I can only raise the event when it changes.
+
+        private static Platform platform;
 
         #endregion
 
@@ -61,29 +70,9 @@ namespace SBXAThemeSupport
         /// </summary>
         public static event CanSendCommandChangedEventHandler CanSendCommandChanged;
 
-        private static Platform platform;
-
         #endregion
 
         #region Public Properties
-
-        /// <summary>
-        /// Gets the platform.
-        /// </summary>
-        /// <value>
-        /// The platform.
-        /// </value>
-        public static Platform Platform
-        {
-            get
-            {
-                return platform;
-            }
-            set
-            {
-                platform = value;
-            }
-        }
 
         /// <summary>
         ///     Gets the current account name.
@@ -186,6 +175,25 @@ namespace SBXAThemeSupport
                 }
 
                 return SBPlus.Current.CurrentSystemId == "YS" && CanSendServerCommands(false);
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the platform.
+        /// </summary>
+        /// <value>
+        ///     The platform.
+        /// </value>
+        public static Platform Platform
+        {
+            get
+            {
+                return platform;
+            }
+
+            set
+            {
+                platform = value;
             }
         }
 
@@ -367,12 +375,6 @@ namespace SBXAThemeSupport
             InvokeCanSendCommandChanged(new CanSendCommandChangedEventArgs(checkCanSend));
         }
 
-        private static void SBPlusClientOnConnected(object sender, EventArgs eventArgs)
-        {
-            SBPlus.Current.InputStateChanged += HandleInputStateChanged;
-            JobManager.RunInUIThread(DispatcherPriority.Input, ()=> SBFile.Read("DMCONT", "SB.CONTROL", ReadControlRecordCompleted, new object()));
-        }
-
         private static void ReadControlRecordCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             try
@@ -382,6 +384,7 @@ namespace SBXAThemeSupport
                 {
                     return;
                 }
+
                 var controlRec = parameters[3];
                 switch (controlRec.Extract(9).Value)
                 {
@@ -399,6 +402,13 @@ namespace SBXAThemeSupport
             }
         }
 
+        private static void SBPlusClientOnConnected(object sender, EventArgs eventArgs)
+        {
+            SBPlus.Current.InputStateChanged += HandleInputStateChanged;
+            JobManager.RunInUIThread(
+                DispatcherPriority.Input, 
+                () => SBFile.Read("DMCONT", "SB.CONTROL", ReadControlRecordCompleted, new object()));
+        }
 
         private static void SBPlusDisconnected(object sender, EventArgs args)
         {

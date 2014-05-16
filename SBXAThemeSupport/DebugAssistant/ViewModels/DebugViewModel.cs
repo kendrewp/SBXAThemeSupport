@@ -42,11 +42,11 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         #region Static Fields
 
+        private static DebugViewModel debugViewModel;
+
         private static bool disposing;
 
         private static bool initializing;
-
-        private static DebugViewModel debugViewModel;
 
         #endregion
 
@@ -218,10 +218,10 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         #region Public Properties
 
         /// <summary>
-        /// Gets or sets a value indicating whether [disposing].
+        ///     Gets or sets a value indicating whether [disposing].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [disposing]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [disposing]; otherwise, <c>false</c>.
         /// </value>
         public static bool Disposing
         {
@@ -237,10 +237,10 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [initializing].
+        ///     Gets or sets a value indicating whether [initializing].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [initializing]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [initializing]; otherwise, <c>false</c>.
         /// </value>
         public static bool Initializing
         {
@@ -778,23 +778,33 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// <param name="processName">
         /// The definition name.
         /// </param>
-        /// <param name="procName">
+        /// <param name="paramaters">
         /// The proc name.
         /// </param>
-        public static void UpdateProcessStack(bool add, string processName, SBString procName)
+        public static void UpdateProcessStack(bool add, string processName, SBString paramaters)
         {
+            var actionTime = DateTime.Now;
+            var serverActionTime = Convert.ToInt32(paramaters.Extract(1, 1, 1).Value);
+
+            CustomLogger.LogDebug(() => string.Format("Add {0} {1} at {3}.", add, processName, actionTime.ToLongTimeString()));
             try
             {
-                if (DebugWindowManager.DebugConsoleWindow != null)
+                if (DebugWindowManager.DebugConsoleWindow == null)
+                {
+                    // no debug windows.
+                    return;
+                }
+
+                if (Thread.CurrentThread.ManagedThreadId != DebugWindowManager.DebugConsoleWindow.Dispatcher.Thread.ManagedThreadId)
                 {
                     JobManager.RunInDispatcherThread(
                         DebugWindowManager.DebugConsoleWindow.Dispatcher, 
                         DispatcherPriority.Normal, 
-                        () => DoUpdateProcessStack(add, processName));
+                        () => DoUpdateProcessStack(add, processName, actionTime, serverActionTime));
                 }
                 else
                 {
-                    DoUpdateProcessStack(add, processName);
+                    DoUpdateProcessStack(add, processName, actionTime, serverActionTime);
                 }
             }
             catch (Exception exception)
@@ -884,7 +894,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     });
         }
 
-        private static void DoUpdateProcessStack(bool add, string processName)
+        private static void DoUpdateProcessStack(bool add, string processName, DateTime actionTime, int serverActionTime)
         {
             try
             {
@@ -893,12 +903,22 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 {
                     if (add)
                     {
-                        var historyProcess = new DefinitionDescription(string.Empty, processName);
+                        var historyProcess = new DefinitionDescription(string.Empty, processName)
+                                                 {
+                                                     StartTime = actionTime, 
+                                                     ServerStartMilliseconds =
+                                                         serverActionTime
+                                                 };
                         try
                         {
                             PushProcess(
                                 Instance.ProcessStack, 
-                                new DefinitionDescription(string.Empty, processName) { HistoryProcessDescription = historyProcess });
+                                new DefinitionDescription(string.Empty, processName)
+                                    {
+                                        HistoryProcessDescription = historyProcess, 
+                                        StartTime = actionTime, 
+                                        ServerStartMilliseconds = serverActionTime
+                                    });
                         }
                         catch (Exception exception)
                         {
@@ -909,11 +929,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         {
                             try
                             {
-                                // Instance.ProcessHistoryStack.Push(processName); // only push it to the history never pop it.
                                 if (Instance.CurrentProcess == null)
                                 {
                                     Instance.ProcessHistoryStack.Push(historyProcess);
-                                    // PushProcess(Instance.ProcessHistoryStack, historyProcess);
                                 }
                                 else
                                 {
@@ -932,16 +950,12 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     {
                         try
                         {
-                            Debug.WriteLine(
-                                "[DebugViewModel.DoUpdateProcessStack(882)] Instance.ProcessStack.Count = " + Instance.ProcessStack.Count);
                             if (Instance.ProcessStack.Count == 0)
                             {
                                 return;
                             }
 
-                            PopProcess(Instance.ProcessStack);
-                            Debug.WriteLine(
-                                "[DebugViewModel.DoUpdateProcessStack(889)] Instance.ProcessStack.Count = " + Instance.ProcessStack.Count);
+                            PopProcess(Instance.ProcessStack, actionTime, serverActionTime);
                         }
                         catch (Exception exception)
                         {
@@ -1009,7 +1023,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
-        private static void PopProcess(ProcessStack stack)
+        private static void PopProcess(ProcessStack stack, DateTime endTime, int serverEndTime)
         {
             // Check to see if the definition on top of the stack has children, if so pop from the child, otherwise pop the top of the stack - recursively.
             if (stack.Count == 0)
@@ -1023,6 +1037,14 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             if (processStack.Count > 0)
             {
                 var processDescription = processStack.Pop();
+                processDescription.EndTime = endTime;
+                if (processDescription.HistoryProcessDescription != null)
+                {
+                    // set the end time on the process description in the history stack.
+                    processDescription.HistoryProcessDescription.EndTime = endTime;
+                    processDescription.HistoryProcessDescription.ServerEndMilliseconds = serverEndTime;
+                }
+
                 processDescription.HistoryProcessDescription = null;
                 Instance.CurrentProcess = parentProcess.HistoryProcessDescription;
             }
@@ -1030,6 +1052,16 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             {
                 // all the nested children have been removed so remove the top of the stack now.
                 var processDescription = stack.Pop();
+                processDescription.EndTime = endTime;
+                processDescription.ServerEndMilliseconds = serverEndTime;
+
+                if (processDescription.HistoryProcessDescription != null)
+                {
+                    // set the end time on the process description in the history stack.
+                    processDescription.HistoryProcessDescription.EndTime = endTime;
+                    processDescription.HistoryProcessDescription.ServerEndMilliseconds = serverEndTime;
+                }
+
                 processDescription.HistoryProcessDescription = null;
                 Instance.CurrentProcess = null;
             }
@@ -1215,9 +1247,10 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 {
                     this.ApplicationInsightState = new ApplicationInsightState();
                 }
-                if (ApplicationInsightState.MruProcessList == null)
+
+                if (this.ApplicationInsightState.MruProcessList == null)
                 {
-                    ApplicationInsightState.MruProcessList = new StringCollection();
+                    this.ApplicationInsightState.MruProcessList = new StringCollection();
                 }
             }
         }
