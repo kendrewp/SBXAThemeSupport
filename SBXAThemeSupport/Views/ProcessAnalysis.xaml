@@ -31,8 +31,10 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*"/>
+            <RowDefinition Height="3" />
+            <RowDefinition Height="100" />
         </Grid.RowDefinitions>
-        <Grid>
+        <Grid Grid.Row="0"> 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto"/>
@@ -93,6 +95,34 @@
             </TreeView.Resources>
             
         </TreeView>
+        
+        <GridSplitter Grid.Row="2" ResizeDirection="Rows" 
+                      ShowsPreview="True" 
+                      ToolTip="Move the splitter to change the side of the pannels" 
+                      Height="3"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"/>
+        
+        <DataGrid Grid.Row="3" 
+                  Height="Auto"
+                  VerticalAlignment="Stretch"
+                  ItemsSource="{Binding ErrorCollection}"
+                  AutoGenerateColumns="False"
+                  >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
+                <DataGridTextColumn Header="File Name" Binding="{Binding FileName}" Width="Auto"/>
+                <DataGridTextColumn Header="Field Name" Binding="{Binding FieldName}" Width="Auto"/>
+                <DataGridTextColumn Header="Process" Binding="{Binding ProcessName}" Width="Auto"/>
+            </DataGrid.Columns>
+        </DataGrid>
+<!--
+        <ListBox Grid.Row="2" 
+                 HorizontalAlignment="Stretch" 
+                 ItemTemplate="{DynamicResource ErrorTemplate}"
+                 Grid.IsSharedSizeScope="True"
+                 Height="100" Margin="0" VerticalAlignment="Bottom" ItemsSource="{Binding ErrorCollection}"/>
+-->
 
     </Grid>
 </UserControl>

@@ -3,6 +3,7 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+// #define SHOW_DEBUG
 namespace SBXAThemeSupport
 {
     using System;
@@ -215,8 +216,9 @@ namespace SBXAThemeSupport
         /// </returns>
         public static bool CanSendServerCommands(bool commandCouldCauseUiAction = true, bool doSendEventsBeforeCheck = false)
         {
+#if SHOW_DEBUG
             CustomLogger.LogDebug(() => string.Format("commandCouldCauseUiAction {0}", commandCouldCauseUiAction));
-
+#endif
             if (Application.Current == null || Application.Current.Dispatcher == null || SBPlus.Current == null
                 || SBPlusRuntime.Current == null)
             {
@@ -241,8 +243,10 @@ namespace SBXAThemeSupport
             {
                 if (SBPlus.Current != null)
                 {
+#if SHOW_DEBUG
                     CustomLogger.LogDebug(
                         () => string.Format("IsServerWaiting {0}", SBPlusRuntime.Current.CommandProcessor.IsServerWaiting));
+#endif
                 }
 
                 if (SBPlusRuntime.Current != null && SBPlusRuntime.Current.CommandProcessor.IsServerWaiting)
@@ -251,9 +255,10 @@ namespace SBXAThemeSupport
                 }
             }
 
+#if SHOW_DEBUG
             CustomLogger.LogDebug(
                 () => string.Format("commandCouldCauseUiAction:{0}, canSend result: {1} ", commandCouldCauseUiAction, canSend));
-
+#endif
             return canSend;
         }
 
@@ -306,26 +311,33 @@ namespace SBXAThemeSupport
                 // Check I am connected and that there is a system selected.
                 if (SBPlusClient.Current.IsConnected && SBPlusClient.Current.IsSystemSelected)
                 {
+#if SHOW_DEBUG
                     CustomLogger.LogDebug(() => "SBPlus is connected and the system is selected");
-
+#endif
                     // now check if the server is ready
                     if (SBPlusRuntime.Current.CommandProcessor.IsServerWaiting)
                     {
+#if SHOW_DEBUG
                         CustomLogger.LogDebug(() => "Server is waiting :-) for commands");
 
                         CustomLogger.LogDebug(() => string.Format("SBPlus.Current.InputState is {0}", SBPlus.Current.InputState));
+#endif
 
                         // make sure the UI is waiting for input.
                         if (SBPlus.Current.InputState == SBInputState.WaitingForInput)
                         {
+#if SHOW_DEBUG
                             CustomLogger.LogDebug(() => "State is on WaitingForInput");
+#endif
 
                             // now I need to check if the command waiting is an SBGuiCommand.
                             SBPlusServerMessage sbPlusServerMessage = SBPlusRuntime.Current.CommandProcessor.GetLastMessage(false);
                             if (sbPlusServerMessage != null && sbPlusServerMessage.Command != null
                                 && sbPlusServerMessage.Command is GuiInputCommand)
                             {
+#if SHOW_DEBUG
                                 CustomLogger.LogDebug(() => "Client can send commands, because the server is ready");
+#endif
                                 canSend = true;
                             }
                         }
@@ -338,7 +350,9 @@ namespace SBXAThemeSupport
                 throw;
             }
 
+#if SHOW_DEBUG
             CustomLogger.LogDebug(() => string.Format("CheckCanSendServerCommands result is {0}", canSend));
+#endif
             return canSend;
         }
 

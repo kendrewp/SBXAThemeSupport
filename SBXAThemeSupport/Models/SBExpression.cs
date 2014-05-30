@@ -6,6 +6,7 @@
 namespace SBXAThemeSupport.Models
 {
     using System;
+    using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.Diagnostics;
     using System.Windows.Threading;
@@ -43,11 +44,15 @@ namespace SBXAThemeSupport.Models
                                                                                "TOGGLE"
                                                                            };
 
-        #endregion
+        private readonly ObservableCollection<FieldDefinition> fieldDescriptions = new ObservableCollection<FieldDefinition>();
 
-        #region Fields
-
-        private string expression;
+        public ObservableCollection<FieldDefinition> FieldDescriptions
+        {
+            get
+            {
+                return this.fieldDescriptions;
+            }
+        }
 
         #endregion
 
@@ -92,11 +97,9 @@ namespace SBXAThemeSupport.Models
         /// The name.
         /// </param>
         public SBExpression(string fileName, string expression, SourceDefinition hookType, string sysid, string name)
-            : base(fileName, name)
+            : base(fileName, name, hookType, expression)
         {
             this.SystemId = sysid;
-            this.HookType = hookType;
-            this.Expression = expression;
         }
 
         #endregion
@@ -114,22 +117,17 @@ namespace SBXAThemeSupport.Models
         /// <value>
         ///     The definition description.
         /// </value>
-        public string Expression
+        public override string SourceExpression
         {
-            get
+            protected set
             {
-                return this.expression;
-            }
-
-            set
-            {
-                if (this.expression != null && this.expression.Equals(value))
+                if (this.SourceExpression != null && this.SourceExpression.Equals(value))
                 {
                     return;
                 }
 
-                this.expression = value;
-                if (!string.IsNullOrEmpty(this.Expression) && !IsStandardSBExpression(this.expression))
+                base.SourceExpression = value;
+                if (!string.IsNullOrEmpty(this.SourceExpression) && !IsStandardSBExpression(this.SourceExpression) && !IsConstantValueExpression(value))
                 {
                     // now I have to parse it out in order to find process calls. I will do this by calling SB.EVAL.EXP (I think)
                     try
@@ -138,25 +136,25 @@ namespace SBXAThemeSupport.Models
                         if (this.HookType == SourceDefinition.Expression)
                         {
                             DebugViewModel.Instance.ProcessAnalysisViewModel.SetIsLoading(1);
-                            XuiDebug.StackExpression(this.ExpressionStackCompleted, this.expression, this.FileName);
+                            XuiDebug.StackExpression(this.ExpressionStackCompleted, this.SourceExpression, this.FileName);
                         }
                         else
                         {
                             string callType;
-                            var processName = ProcessAnalysisViewModel.GetProcessName(this.expression, out callType);
+                            var processName = ProcessAnalysisViewModel.GetProcessName(this.SourceExpression, out callType);
                             switch (callType)
                             {
                                 case "C":
                                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcess(
                                         processName, 
-                                        this, 
-                                        this.expression, 
+                                        this,
+                                        this.SourceExpression, 
                                         string.Empty, 
                                         this.SystemId);
                                     break;
                                 case "B":
                                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadBasicProgramFromExpression(
-                                        this.expression, 
+                                        this.SourceExpression, 
                                         this, 
                                         string.Empty);
                                     break;
@@ -167,8 +165,8 @@ namespace SBXAThemeSupport.Models
                                     // TODO
                                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadMenu(
                                         processName, 
-                                        this, 
-                                        this.expression, 
+                                        this,
+                                        this.SourceExpression, 
                                         string.Empty, 
                                         this.SystemId);
                                     break;
@@ -199,8 +197,8 @@ namespace SBXAThemeSupport.Models
                                     {
                                         DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcess(
                                             processName, 
-                                            this, 
-                                            this.expression, 
+                                            this,
+                                            this.SourceExpression, 
                                             string.Empty, 
                                             this.SystemId);
                                     }
@@ -210,8 +208,8 @@ namespace SBXAThemeSupport.Models
                                     // It is not a call or executed so do not add a sub-node.
                                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcess(
                                         processName, 
-                                        this, 
-                                        this.expression, 
+                                        this,
+                                        this.SourceExpression, 
                                         string.Empty, 
                                         this.SystemId);
                                     break;
@@ -225,11 +223,6 @@ namespace SBXAThemeSupport.Models
                 }
             }
         }
-
-        /// <summary>
-        ///     Gets or sets the hook type.
-        /// </summary>
-        public SourceDefinition HookType { get; set; }
 
         /// <summary>
         ///     Gets or sets the system id.
@@ -264,11 +257,23 @@ namespace SBXAThemeSupport.Models
         public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
         {
             base.AddChildrenToCollection(collection);
+            foreach (var fieldDescription in FieldDescriptions)
+            {
+                fieldDescription.AddChildrenToCollection(collection);
+            }
         }
 
         #endregion
 
         #region Methods
+
+
+        public static bool IsConstantValueExpression(string val)
+        {
+            return ((val.StartsWith("\"") && val.EndsWith("\""))
+                    || (val.StartsWith("\"") && val.EndsWith("\"[M]"))
+                    || Utilities.IsNumber(val));
+        }
 
         /// <summary>
         /// The add self.
@@ -321,34 +326,43 @@ namespace SBXAThemeSupport.Models
             switch (parameters[4].Value)
             {
                 case "2":
-                    if (parameters[1].Value.StartsWith("C:"))
+                    switch (parameters[1].Value.Substring(0, 2))
                     {
-                        var processName = this.expression.Substring(2);
-                        var commaPos = processName.IndexOf(",", StringComparison.Ordinal);
-                        // Process call.
-                        if (commaPos > 0)
-                        {
-                            // strip parameters
-                            processName = processName.Substring(0, commaPos);
-                        }
+                        case "C:":
+                            var processName = this.SourceExpression.Substring(2);
+                            var commaPos = processName.IndexOf(",", StringComparison.Ordinal);
+                            // Process call.
+                            if (commaPos > 0)
+                            {
+                                // strip parameters
+                                processName = processName.Substring(0, commaPos);
+                            }
 
-                        if (!string.IsNullOrEmpty(processName))
-                        {
-                            // now load the definition.
-                            DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcess(
-                                processName, 
-                                this, 
-                                this.expression, 
-                                string.Empty, 
-                                this.SystemId);
-                        }
+                            if (!string.IsNullOrEmpty(processName))
+                            {
+                                // now load the definition.
+                                DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcess(
+                                    processName,
+                                    this,
+                                    this.SourceExpression,
+                                    string.Empty,
+                                    this.SystemId);
+                            }
+                            break;
+                        case "F:":
+                            var parts = parameters[1].Value.Substring(2).Split(GenericConstants.CHAR_ARRAY_COMMA);
+                            var fieldDefinition = new FieldDefinition(parts[0], parts[1]);
+                            this.FieldDescriptions.Add(fieldDefinition);
+                            break;
+                        default:
+                            DebugViewModel.Instance.ProcessAnalysisViewModel.SetIsLoading(1);
+                            XuiDebug.StackExpression(this.ExpressionStackCompleted, parameters[4].GetStandardString(), this.FileName);
+                            break;
                     }
-                    else
-                    {
-                        DebugViewModel.Instance.ProcessAnalysisViewModel.SetIsLoading(1);
-                        XuiDebug.StackExpression(this.ExpressionStackCompleted, parameters[4].GetStandardString(), this.FileName);
-                    }
-
+                    break;
+                case "1":
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.SetIsLoading(1);
+                    XuiDebug.StackExpression(this.ExpressionStackCompleted, parameters[4].GetStandardString(), this.FileName);
                     break;
                 case "0":
                     // look for a code table

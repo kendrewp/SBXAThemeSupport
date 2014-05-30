@@ -784,11 +784,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         public static void UpdateProcessStack(bool add, string processName, SBString paramaters)
         {
             var actionTime = DateTime.Now;
-            var serverActionTime = Convert.ToInt32(paramaters.Extract(1, 1, 1).Value);
-
-            CustomLogger.LogDebug(() => string.Format("Add {0} {1} at {3}.", add, processName, actionTime.ToLongTimeString()));
             try
             {
+                int serverActionTime = 0;
+                if (paramaters.Extract(1, 1).Dcount() > 1)
+                {
+                    int.TryParse(paramaters.Extract(1, 1, 1).Value, out serverActionTime);
+                    CustomLogger.LogDebug(() => string.Format("Add {0} {1} at {2}.", add, processName, serverActionTime));
+                }
+                else
+                {
+                    CustomLogger.LogDebug(() => string.Format("Add {0} {1}.", add, processName));
+                }
                 if (DebugWindowManager.DebugConsoleWindow == null)
                 {
                     // no debug windows.

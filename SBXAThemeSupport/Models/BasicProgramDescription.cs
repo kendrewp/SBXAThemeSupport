@@ -47,6 +47,14 @@ namespace SBXAThemeSupport.Models
         /// </summary>
         public bool Parsed { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is include.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is include; otherwise, <c>false</c>.
+        /// </value>
+        public static bool IsInclude { get; set; }
+
         #endregion
 
         #region Methods
@@ -62,18 +70,38 @@ namespace SBXAThemeSupport.Models
             if (!this.IsError)
             {
                 RevisionDefinitionViewModel.AddItemToDefinition(
-                    collection, 
+                    collection,
+                    new RevisionDefinitionItem()
+                    {
+                        Action = "IO",
+                        FileName = this.FileName,
+                        Item = this.Name,
+                        Parameters = RevisionDefinitionViewModel.Data
+                    });
+
+                var parameters = RevisionDefinitionViewModel.SourceAndObject;
+                if (IsInclude)
+                {
+                    parameters += ",1,1";
+                }
+
+
+                RevisionDefinitionViewModel.AddItemToDefinition(
+                    collection,
                     new RevisionDefinitionItem()
                         {
-                            Action = "IO", 
-                            FileName = this.FileName, 
-                            Item = this.Name, 
-                            Parameters = RevisionDefinitionViewModel.Data
+                            Action = "FC",
+                            FileName = this.FileName,
+                            Item = string.Empty,
+                            Parameters = parameters
                         });
-                RevisionDefinitionViewModel.AddItemToDefinition(
-                    collection, 
+
+                if (!IsInclude)
+                {
+                    RevisionDefinitionViewModel.AddItemToDefinition(collection, 
                     new RevisionDefinitionItem() { Action = "FB", FileName = this.FileName, Item = string.Empty, Parameters = string.Empty });
             }
+        }
         }
 
         #endregion

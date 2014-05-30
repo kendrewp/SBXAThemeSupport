@@ -129,6 +129,28 @@
         </Style.Triggers>
     </Style>
     
+    <Style x:Key="TreeItemDescriptionStyle" >
+        <Setter Property="wpfControls:SBUISupport.StyleName" Value="TreeItemDescriptionStyle" />
+        <Setter Property="FrameworkElement.Margin" Value="4,0,0,0"/>
+        <Setter Property="FrameworkElement.MaxWidth" Value="100" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsError}" Value="true">
+                <Setter Property="Control.Foreground" Value="Red"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TreeItemNameStyle">
+        <Setter Property="FrameworkElement.Margin" Value="4,0,0,0"/>
+        <Setter Property="wpfControls:SBUISupport.StyleName" Value="TreeItemNameStyle" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsError}" Value="true">
+                <Setter Property="Control.Foreground" Value="Red"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+
     <Style x:Key="ApplicationInsightTreeViewStyle" TargetType="TreeView">
         <Setter Property="wpfControls:SBUISupport.StyleName" Value="ApplicationInsightTreeViewStyle" />
         <Setter Property="BorderBrush" Value="Gray" />

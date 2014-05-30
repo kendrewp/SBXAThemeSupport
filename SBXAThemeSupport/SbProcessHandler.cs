@@ -6,6 +6,7 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+// #define SHOW_DEBUG
 namespace SBXAThemeSupport
 {
     using System;
@@ -19,6 +20,7 @@ namespace SBXAThemeSupport
     using SBXA.Shared.Definitions;
     using SBXA.UI.Client;
     using SBXA.UI.WPFControls;
+
 
     /// <summary>
     ///     The sb process handler.
@@ -176,7 +178,7 @@ namespace SBXAThemeSupport
             {
                 Array.Resize(ref parameter, parCount);
             }
-
+#if SHOW_DEBUG
             CustomLogger.LogDebug(
                 () => string.Format("Die Subroutine : {0} wird aufgerufen.", string.Format("{0},{1}", subroutineName, parameter)));
             CustomLogger.LogDebug(
@@ -185,7 +187,7 @@ namespace SBXAThemeSupport
                     "IsServerReady {0} commandCouldCauseUiAction {1}", 
                     ApplicationHelper.CanSendServerCommands(false), 
                     commandCouldCauseUiAction));
-
+#endif
             SBString[] retunSbStrings = null;
             if (Application.Current.Dispatcher.CheckAccess())
             {
@@ -384,9 +386,10 @@ namespace SBXAThemeSupport
         {
             string param = parameter.GetRawString();
 
+#if SHOW_DEBUG
             CustomLogger.LogDebug(
                 () => string.Format("Check Application.IsServerReady: {0}", ApplicationHelper.CanSendServerCommands(false)));
-
+#endif
             string procIncludingParam = processName;
             if (!string.IsNullOrEmpty(param))
             {
@@ -436,10 +439,11 @@ namespace SBXAThemeSupport
                 isInContext = formObjectDefinition != null && formObjectDefinition.ProcessType == ProcessTypes.I;
             }
 
+#if SHOW_DEBUG
             CustomLogger.LogDebug(() => string.Format("CallProcessInternal isInContext: {0} Parameter: {1}", isInContext, myLogParameter));
 
             CustomLogger.LogDebug(() => string.Format("Der Process : {0} wird aufgerufen.", myLogParameter));
-
+#endif
             if (isInContext)
             {
                 SBCommands.ExecuteSBPlusProcessInContextCommand.Execute(parameter, target);
@@ -449,7 +453,9 @@ namespace SBXAThemeSupport
                 SBCommands.ExecuteSBPlusProcessCommand.Execute(parameter, target);
             }
 
+#if SHOW_DEBUG
             CustomLogger.LogDebug(() => string.Format("Der Process : {0} wurde aufgerufen.", myLogParameter));
+#endif
         }
 
         private static void ExecuteSubroutine(
@@ -468,6 +474,7 @@ namespace SBXAThemeSupport
                 new ServerNotReadyException(
                     string.Format("The server is not able to accept requests at this time. Subroutine name is {0}", subroutineName));
 
+#if SHOW_DEBUG
             CustomLogger.LogDebug(
                 () =>
                 string.Format(
@@ -475,6 +482,7 @@ namespace SBXAThemeSupport
                     ApplicationHelper.CanSendServerCommands(false), 
                     ApplicationHelper.CanSendServerCommands(), 
                     commandCouldCauseUiAction));
+#endif
 
             if (ApplicationHelper.CanSendServerCommands(commandCouldCauseUiAction))
             {

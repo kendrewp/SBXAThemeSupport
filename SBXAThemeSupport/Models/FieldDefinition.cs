@@ -44,8 +44,6 @@ namespace SBXAThemeSupport.Models
 
         private string fieldDefault;
 
-        private bool hasDictionary;
-
         private string inputConversion;
 
         private string intuitiveHelp;
@@ -104,7 +102,7 @@ namespace SBXAThemeSupport.Models
                 }
 
                 this.conversionCode = value;
-                if (!string.IsNullOrEmpty(this.conversionCode))
+                if (!string.IsNullOrEmpty(this.conversionCode) && this.conversionCode.StartsWith("(") && this.conversionCode.EndsWith(")"))
                 {
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
                         SourceDefinition.Screen, 
@@ -136,12 +134,12 @@ namespace SBXAThemeSupport.Models
                 this.derived = value;
                 if (!string.IsNullOrEmpty(this.derived))
                 {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                        SourceDefinition.Screen, 
-                        SourceDefinition.Expression, 
-                        this.derived, 
-                        this, 
-                        "Derived Expression");
+                        DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
+                            SourceDefinition.Screen,
+                            SourceDefinition.Expression,
+                            this.derived,
+                            this,
+                            "Derived Expression");
                 }
             }
         }
@@ -194,8 +192,9 @@ namespace SBXAThemeSupport.Models
                 }
 
                 this.dictionaryConversionCode = value;
-                if (!string.IsNullOrEmpty(this.dictionaryConversionCode))
+                if (!string.IsNullOrEmpty(this.dictionaryConversionCode) && this.dictionaryConversionCode.StartsWith("(") && this.dictionaryConversionCode.EndsWith(")"))
                 {
+                    // we have an expression, so parse it out.
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
                         SourceDefinition.Field, 
                         SourceDefinition.Expression, 
@@ -224,14 +223,14 @@ namespace SBXAThemeSupport.Models
                 }
 
                 this.dictionaryDefault = value;
-                if (!string.IsNullOrEmpty(this.dictionaryDefault))
+                if (!string.IsNullOrEmpty(this.dictionaryDefault) && !SBExpression.IsConstantValueExpression(this.dictionaryDefault))
                 {
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                        SourceDefinition.Field, 
-                        SourceDefinition.Expression, 
-                        this.dictionaryDefault, 
-                        this, 
-                        "fieldDefault");
+                            SourceDefinition.Field,
+                            SourceDefinition.Expression,
+                            this.dictionaryDefault,
+                            this,
+                            "fieldDefault");
                 }
             }
         }
@@ -254,7 +253,7 @@ namespace SBXAThemeSupport.Models
                 }
 
                 this.dictionaryDerived = value;
-                if (!string.IsNullOrEmpty(this.dictionaryDerived))
+                if (!string.IsNullOrEmpty(this.dictionaryDerived) && !SBExpression.IsConstantValueExpression(this.dictionaryDerived))
                 {
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
                         SourceDefinition.Field, 
@@ -436,12 +435,10 @@ namespace SBXAThemeSupport.Models
                 this.dictionaryValidation = value;
                 if (!string.IsNullOrEmpty(this.dictionaryValidation))
                 {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                        SourceDefinition.Field, 
-                        SourceDefinition.Expression, 
-                        this.dictionaryValidation, 
-                        this, 
-                        "Validation");
+                    if (this.DictionaryValidation.StartsWith("E:"))
+                    {
+                        DebugViewModel.Instance.ProcessAnalysisViewModel.AddExpressionToCollection(this, "Validation", this.dictionaryValidation.Substring(2));
+                    }
                 }
             }
         }
@@ -467,11 +464,11 @@ namespace SBXAThemeSupport.Models
                 if (!string.IsNullOrEmpty(this.fieldDefault))
                 {
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                        SourceDefinition.Screen, 
-                        SourceDefinition.Expression, 
-                        this.fieldDefault, 
-                        this, 
-                        "fieldDefault");
+                            SourceDefinition.Screen,
+                            SourceDefinition.Expression,
+                            this.fieldDefault,
+                            this,
+                            "fieldDefault");
                 }
             }
         }
@@ -482,18 +479,7 @@ namespace SBXAThemeSupport.Models
         /// <value>
         ///     <c>true</c> if this instance has dictionary; otherwise, <c>false</c>.
         /// </value>
-        public bool HasDictionary
-        {
-            get
-            {
-                return this.hasDictionary;
-            }
-
-            set
-            {
-                this.hasDictionary = value;
-            }
-        }
+        public bool HasDictionary { get; set; }
 
         /// <summary>
         ///     Gets or sets the input conversion.
@@ -633,15 +619,6 @@ namespace SBXAThemeSupport.Models
                 }
 
                 this.styleName = value;
-                if (!string.IsNullOrEmpty(this.styleName))
-                {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                        SourceDefinition.Screen, 
-                        SourceDefinition.Expression, 
-                        this.inputConversion, 
-                        this, 
-                        "Style Name");
-                }
             }
         }
 
@@ -665,12 +642,19 @@ namespace SBXAThemeSupport.Models
                 this.validation = value;
                 if (!string.IsNullOrEmpty(this.validation))
                 {
-                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                        SourceDefinition.Screen, 
-                        SourceDefinition.Expression, 
-                        this.validation, 
-                        this, 
-                        "Validation");
+                    if (this.Validation.StartsWith("E:"))
+                    {
+                        DebugViewModel.Instance.ProcessAnalysisViewModel.AddExpressionToCollection(this, "Validation", this.validation.Substring(2));
+
+/*
+                        DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
+                            SourceDefinition.Screen,
+                            SourceDefinition.Expression,
+                            this.validation.Substring(2),
+                            this,
+                            "Validation");
+*/
+                    }
                 }
             }
         }
@@ -698,6 +682,16 @@ namespace SBXAThemeSupport.Models
                             Item = this.Name, 
                             Parameters = RevisionDefinitionViewModel.Dict
                         });
+                // make sure the file is added.
+                RevisionDefinitionViewModel.AddItemToDefinition(
+                    collection,
+                    new RevisionDefinitionItem()
+                    {
+                        Action = "FC",
+                        FileName = this.FileName,
+                        Item = string.Empty,
+                        Parameters = RevisionDefinitionViewModel.DictAndData
+                    });
             }
         }
 

@@ -76,6 +76,8 @@ namespace SBXAThemeSupport.Models
 
         private IEnumerable children;
 
+        private bool isError;
+
         #endregion
 
         #region Constructors and Destructors
@@ -112,6 +114,25 @@ namespace SBXAThemeSupport.Models
         #endregion
 
         #region Public Properties
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is error.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is error; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsError
+        {
+            get
+            {
+                return this.isError;
+            }
+            set
+            {
+                this.isError = value;
+                this.RaisePropertyChanged("IsError");
+            }
+        }
 
         /// <summary>
         ///     Gets the children.

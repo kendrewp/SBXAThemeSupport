@@ -180,6 +180,7 @@
     <Compile Include="Models\ObservableEntity.cs" />
     <Compile Include="Models\RevisionDefinitionItemCollection.cs" />
     <Compile Include="Models\ScreenDefintion.cs" />
+    <Compile Include="Models\ScreenFieldDefinition.cs" />
     <Compile Include="Models\ScreenProcessDescription.cs" />
     <Compile Include="Models\SelectionProcessDescription.cs" />
     <Compile Include="Models\TreeItem.cs" />

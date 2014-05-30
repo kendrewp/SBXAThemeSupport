@@ -7,6 +7,7 @@ namespace SBXAThemeSupport.Models
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
     using System.Windows;
     using System.Windows.Threading;
 
@@ -39,10 +40,12 @@ namespace SBXAThemeSupport.Models
         /// The definition.
         /// </param>
         public ScreenDefintion(string fileName, string name, string expression, SBString definition)
-            : base(fileName, name, expression)
+            : base(fileName, name, SourceDefinition.Definition, expression)
         {
             this.FieldDescriptions = new ObservableCollection<FieldDefinition>();
             this.ParseScreenDefinition(definition);
+            // I need to read the .GUI definition to get the processes associated with buttons that do not have a FK assignment.
+            SBFile.ReadDictionaryItem(fileName, name + ".GUI", new object(), GuiItemReadCompleted);
         }
 
         #endregion
@@ -58,39 +61,33 @@ namespace SBXAThemeSupport.Models
 
         #region Public Methods and Operators
 
-        /// <summary>
-        /// The add children to collection.
-        /// </summary>
-        /// <param name="collection">
-        /// The collection.
-        /// </param>
-        public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
+        protected override void AddSelf(RevisionDefinitionItemCollection collection)
         {
             // Add all the screen items, if they exist.
 
             // Primary screen definition
             SBFile.ReadDictionaryItem(
-                this.FileName, 
-                this.Name, 
-                new object[] { this.FileName, this.Name, collection }, 
+                this.FileName,
+                this.Name,
+                new object[] { this.FileName, this.Name, collection },
                 ReadDictItemCompleted);
             // .TXT
             SBFile.ReadDictionaryItem(
-                this.FileName, 
-                this.Name + ".TXT", 
-                new object[] { this.FileName, this.Name + ".TXT", collection }, 
+                this.FileName,
+                this.Name + ".TXT",
+                new object[] { this.FileName, this.Name + ".TXT", collection },
                 ReadDictItemCompleted);
             // .GUI
             SBFile.ReadDictionaryItem(
-                this.FileName, 
-                this.Name + ".GUI", 
-                new object[] { this.FileName, this.Name + ".GUI", collection }, 
+                this.FileName,
+                this.Name + ".GUI",
+                new object[] { this.FileName, this.Name + ".GUI", collection },
                 ReadDictItemCompleted);
             // .XUI
             SBFile.ReadDictionaryItem(
-                this.FileName, 
-                this.Name + ".XUI", 
-                new object[] { this.FileName, this.Name + ".XUI", collection }, 
+                this.FileName,
+                this.Name + ".XUI",
+                new object[] { this.FileName, this.Name + ".XUI", collection },
                 ReadDictItemCompleted);
 
             foreach (var fieldDescription in this.FieldDescriptions)
@@ -98,12 +95,84 @@ namespace SBXAThemeSupport.Models
                 fieldDescription.AddChildrenToCollection(collection);
             }
 
-            base.AddChildrenToCollection(collection);
+            // add the dictionary and data, if the process definition has the same data file, other wise add the dict and the different data file.
+            if (DebugWindowManager.DebugConsoleWindow != null)
+            {
+                // Adding screen definition item from dictionary.
+                JobManager.RunInDispatcherThread(
+                    DebugWindowManager.DebugConsoleWindow.Dispatcher,
+                    DispatcherPriority.Normal,
+                    () =>
+                    RevisionDefinitionViewModel.AddItemToDefinition(
+                        collection,
+                        new RevisionDefinitionItem
+                        {
+                            Action = "FC",
+                            FileName = FileName.StartsWith("DICT ") ? FileName.Substring(5) : FileName,
+                            Item = string.Empty,
+                            Parameters = RevisionDefinitionViewModel.DictAndData
+                        }));
+            }
         }
 
         #endregion
 
         #region Methods
+
+        private void GuiItemReadCompleted(string subroutineName, SBString[] parameters, object userState)
+        {
+            try
+            {
+
+            if (parameters[5].Count != 1 || !parameters[5].Value.Equals("0") || parameters[3].IsNullOrEmpty() || !parameters[3].Extract(1).Value.Equals("SCREEN.GUIDEFS"))
+            {
+                // item not found.
+                return;
+            }
+
+            const int AttributeList = 10;
+            const int ObjectIndex = 12; // off set by 15, 0 based
+
+            // Loop through the objects and look for a button. I know it is a button because it has a pbclass in the third attribute of the object.
+            var record = parameters[3];
+            var attributeList = record.Extract(AttributeList).CopyToStringCollection();
+            var indexOfPbClass = Convert.ToString(attributeList.IndexOf("pbclass") + 2);
+            var indexOfUserData = Convert.ToString(attributeList.IndexOf("user_data") + 1);
+            var indexOfString = Convert.ToString(attributeList.IndexOf("string") + 1);
+            var noAttributes = record.Dcount();
+            for (int aNo = 15; aNo < noAttributes - 4; aNo += 4)
+            {
+                var attributes = record.Extract(aNo + 2).CopyToStringCollection();
+                if (attributes.Contains(indexOfPbClass))
+                {
+                    ProcessButton(indexOfUserData, indexOfString, attributes, record.Extract(aNo + 3).CopyToStringCollection());
+                }
+            }
+            }
+            catch (Exception exception)
+            {
+                CustomLogger.LogException(exception, "There was a problem processing the .GUI item for " + this.Name);
+            }
+        }
+
+        private void ProcessButton(string indexOfUserData, string indexOfString, StringCollection attributes, StringCollection values)
+        {
+            if (attributes.Contains(indexOfUserData))
+            {
+                var processName = values[attributes.IndexOf(indexOfUserData)];
+                var content = attributes.Contains(indexOfString) ? "Button " + values[attributes.IndexOf(indexOfString)] : "Button ??";
+                if (!Utilities.IsNumber(processName))
+                {
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
+                        SourceDefinition.Screen,
+                        SourceDefinition.Process,
+                        processName,
+                        this,
+                        content);
+                }
+
+            }
+        }
 
         private static void ReadDictItemCompleted(string subroutineName, SBString[] parameters, object userState)
         {
@@ -184,64 +253,34 @@ namespace SBXAThemeSupport.Models
                 var noFields = definition.Dcount(Fields);
                 for (int fno = 1; fno <= noFields; fno++)
                 {
+                    var processBefore = (definition.Dcount() >= ProcessesBefore && definition.Extract(ProcessesBefore).Dcount() >= fno) ? definition.Extract(ProcessesBefore, fno).Value : string.Empty; 
+                    var processAfter = (definition.Dcount() >= ProcessesAfter && definition.Extract(ProcessesAfter).Dcount() >= fno) ? definition.Extract(ProcessesAfter, fno).Value : string.Empty; 
+                    var intuitiveHelp = (definition.Dcount() >= IntHelp && definition.Extract(IntHelp).Dcount() >= fno) ? definition.Extract(IntHelp, fno).Value : string.Empty; 
+                    var conversionCode = (definition.Dcount() >= ConversionCode && definition.Extract(ConversionCode).Dcount() >= fno) ? definition.Extract(ConversionCode, fno).Value : string.Empty;
+                    var fieldDefault = string.Empty;
+                    if (definition.Dcount() >= FieldPos && definition.Extract(FieldPos).Dcount() >= fno)
+                    {
+                        fieldDefault = (!string.IsNullOrEmpty(definition.Extract(FieldPos, fno).Value) && definition.Extract(FieldPos, fno).Value.Substring(0, 1).Equals("0")) ? string.Empty : definition.Extract(DefaultDerived, fno).Value;
+                    }
+                    var derived = string.Empty;
+                    if (definition.Dcount() >= FieldPos && definition.Extract(FieldPos).Dcount() >= fno)
+                    {
+                        derived = (!string.IsNullOrEmpty(definition.Extract(FieldPos, fno).Value) && definition.Extract(FieldPos, fno).Value.Substring(0, 1).Equals("0")) ? string.Empty : definition.Extract(DefaultDerived, fno).Value;
+                    }
+                    var validation = (definition.Dcount() >= Validation && definition.Extract(Validation).Dcount() >= fno) ? definition.Extract(Validation, fno).Value : string.Empty;
+                    var styleName = (definition.Dcount() >= StyleName && definition.Extract(StyleName).Dcount() >= fno) ? definition.Extract(StyleName, fno).Value : string.Empty;
+
                     this.FieldDescriptions.Add(
-                        new FieldDefinition(this.FileName, definition.Extract(Fields, fno).Value)
+                        new ScreenFieldDefinition(this.FileName, definition.Extract(Fields, fno).Value)
                             {
-                                ProcessBefore =
-                                    definition.Extract(
-                                        ProcessesBefore, 
-                                        fno).Value, 
-                                ProcessAfter =
-                                    definition.Extract(
-                                        ProcessesAfter, 
-                                        fno).Value, 
-                                IntuitiveHelp =
-                                    definition.Extract(IntHelp, fno)
-                                    .Value, 
-                                ConversionCode =
-                                    definition.Extract(
-                                        ConversionCode, 
-                                        fno).Value, 
-                                FieldDefault =
-                                    (!string.IsNullOrEmpty(
-                                        definition.Extract(
-                                            FieldPos, 
-                                            fno).Value)
-                                     && definition.Extract(
-                                         FieldPos, 
-                                         fno)
-                                            .Value.Substring(0, 1)
-                                            .Equals("0"))
-                                        ? string.Empty
-                                        : definition.Extract(
-                                            DefaultDerived, 
-                                            fno).Value, 
-                                Derived =
-                                    (!string.IsNullOrEmpty(
-                                        definition.Extract(
-                                            FieldPos, 
-                                            fno).Value)
-                                     && !definition.Extract(
-                                         FieldPos, 
-                                         fno)
-                                             .Value.Substring(0, 1)
-                                             .Equals("0"))
-                                        ? string.Empty
-                                        : definition.Extract(
-                                            DefaultDerived, 
-                                            fno).Value, 
-                                Validation =
-                                    definition.Extract(
-                                        Validation, 
-                                        fno).Value, 
-                                StyleName =
-                                    (definition.Dcount() >= StyleName
-                                     && definition.Dcount(StyleName)
-                                     >= fno)
-                                        ? definition.Extract(
-                                            StyleName, 
-                                            fno).Value
-                                        : string.Empty
+                                ProcessBefore = processBefore,
+                                ProcessAfter = processAfter,
+                                IntuitiveHelp = intuitiveHelp,
+                                ConversionCode = conversionCode,
+                                FieldDefault = fieldDefault,
+                                Derived = derived,
+                                Validation = validation,
+                                StyleName = styleName
                             });
                 }
 
@@ -325,7 +364,8 @@ namespace SBXAThemeSupport.Models
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Exception parsing screen definition (" + exception.Message + ")");
+                CustomLogger.LogException(exception, "Exception parsing screen definition");
+                // MessageBox.Show("Exception parsing screen definition (" + exception.Message + ")");
             }
         }
 

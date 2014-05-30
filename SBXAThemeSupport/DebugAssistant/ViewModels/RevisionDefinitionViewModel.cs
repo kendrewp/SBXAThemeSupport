@@ -39,6 +39,11 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// </summary>
         public const string DictAndData = "2";
 
+        /// <summary>
+        /// The source and object
+        /// </summary>
+        public const string SourceAndObject = "5";
+
         #endregion
 
         #region Fields

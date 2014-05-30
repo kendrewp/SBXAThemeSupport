@@ -46,7 +46,7 @@ namespace SBXAThemeSupport.Models
         /// The definition.
         /// </param>
         public MenuDefinitionDescription(string fileName, string name, string expression, SBString definition)
-            : base(fileName, name, expression)
+            : base(fileName, name, SourceDefinition.Definition, expression)
         {
             this.ParseDefinition(definition);
         }

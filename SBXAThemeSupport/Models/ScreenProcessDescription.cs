@@ -48,7 +48,7 @@ namespace SBXAThemeSupport.Models
         /// The expression.
         /// </param>
         public ScreenProcessDescription(string fileName, string name, string expression)
-            : base(fileName, name, expression)
+            : base(fileName, name, SourceDefinition.Process, expression)
         {
         }
 

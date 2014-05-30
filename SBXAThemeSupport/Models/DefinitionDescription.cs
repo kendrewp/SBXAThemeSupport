@@ -28,9 +28,15 @@ namespace SBXAThemeSupport.Models
 
         private DateTime startTime;
 
+        private readonly ObservableCollection<SBExpression> screenExpressions = new ObservableCollection<SBExpression>();
+
         #endregion
 
         #region Constructors and Destructors
+
+        public DefinitionDescription()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefinitionDescription"/> class.
@@ -48,7 +54,6 @@ namespace SBXAThemeSupport.Models
             this.ProcessCollection = new ObservableCollection<ProcessCall>();
             this.DictionaryExpressions = new ObservableCollection<SBExpression>();
             this.Expressions = new ObservableCollection<SBExpression>();
-            this.ScreenExpressions = new ObservableCollection<SBExpression>();
 
             this.FileName = fileName;
         }
@@ -62,12 +67,15 @@ namespace SBXAThemeSupport.Models
         /// <param name="name">
         /// The name.
         /// </param>
+        /// <param name="hookType">The type of description, process or expression</param>
         /// <param name="expression">
         /// The expression.
         /// </param>
-        public DefinitionDescription(string fileName, string name, string expression)
+        public DefinitionDescription(string fileName, string name, SourceDefinition hookType, string expression)
             : this(fileName, name)
         {
+            this.HookType = hookType;
+
             if (!expression.Equals(name))
             {
                 this.SourceExpression = expression;
@@ -77,6 +85,12 @@ namespace SBXAThemeSupport.Models
         #endregion
 
         #region Public Properties
+        
+        /// <summary>
+        ///     Gets or sets the hook type.
+        /// </summary>
+        public SourceDefinition HookType { get; set; }
+
 
         /// <summary>
         ///     Gets the child processes.
@@ -153,7 +167,13 @@ namespace SBXAThemeSupport.Models
         /// <summary>
         ///     Gets or sets the screen expressions.
         /// </summary>
-        public virtual ObservableCollection<SBExpression> ScreenExpressions { get; set; }
+        public virtual ObservableCollection<SBExpression> ScreenExpressions
+        {
+            get
+            {
+                return this.screenExpressions;
+            }
+        }
 
         /// <summary>
         ///     Gets or sets the server end milliseconds.
@@ -198,7 +218,7 @@ namespace SBXAThemeSupport.Models
         /// <summary>
         ///     Gets the source expression.
         /// </summary>
-        public string SourceExpression { get; private set; }
+        public virtual string SourceExpression { get; protected set; }
 
         /// <summary>
         ///     Gets or sets the start time.
@@ -380,6 +400,15 @@ namespace SBXAThemeSupport.Models
             get
             {
                 return this.FirstOrDefault(processDescription => processDescription.Name.Equals(key));
+            }
+        }
+
+        public DefinitionDescription this[string fileName, string itemName, Type type]
+        {
+            get
+            {
+                return this.FirstOrDefault(processDescription => (processDescription.Name.Equals(itemName) && processDescription.FileName.Equals(fileName)
+                     && processDescription.GetType() == type));
             }
         }
 

@@ -98,6 +98,14 @@ namespace SBXAThemeSupport.Views
         /// </value>
         public DataTemplate TreeItemTemplate { get; set; }
 
+        /// <summary>
+        /// Gets or sets the screen field definition template.
+        /// </summary>
+        /// <value>
+        /// The screen field definition template.
+        /// </value>
+        public DataTemplate ScreenFieldDefinitionTemplate { get; set; }
+
         #endregion
 
         #region Public Methods and Operators
@@ -136,10 +144,16 @@ namespace SBXAThemeSupport.Views
                 return this.SBExpressionTemplate;
             }
 
+            if (dataUnit is ScreenFieldDefinition)
+            {
+                return this.ScreenFieldDefinitionTemplate;
+            }
+
             if (dataUnit is FieldDefinition)
             {
                 return this.FieldDefinitionTemplate;
             }
+
 
             if (dataUnit is ProcessCall)
             {
@@ -179,6 +193,11 @@ namespace SBXAThemeSupport.Views
                 if (processDescription is SelectionProcessDescription)
                 {
                     return this.SelectionProcessTemplate;
+                }
+
+                if (processDescription is ScreenFieldDefinition)
+                {
+                    return this.ScreenFieldDefinitionTemplate;
                 }
 
                 return this.DefaultTemplate;

@@ -3,6 +3,7 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+// #define SHOW_DEBUG
 namespace SBXAThemeSupport
 {
     using System;
@@ -136,7 +137,10 @@ namespace SBXAThemeSupport
             bool isRetryWhenServerNotAccept = true, 
             bool isRunOnUiThread = false)
         {
+
+#if SHOW_DEBUG
             CustomLogger.LogDebug(() => string.Format("Adding new Action to the Queue. Name: {0}", name));
+#endif
             var actionDefinition = new ActionDefinition(
                 canCauseUnexpectedResponsesToServer, 
                 myAction, 
@@ -184,11 +188,14 @@ namespace SBXAThemeSupport
 
             if (this.Count(name) > 0)
             {
+#if SHOW_DEBUG
                 CustomLogger.LogDebug(() => string.Format("Job with the name {0} is already in queue. So ignore the job.", name));
+#endif
                 return;
             }
-
+#if SHOW_DEBUG
             CustomLogger.LogDebug(() => "No jobs found using the name " + name + " so run the method.");
+#endif
 
             this.ExecuteMethod(myAction, canCauseUnexpectedResponsesToServer, name, isRetryWhenServerNotAccept, isRunOnUiThread);
         }
@@ -224,26 +231,34 @@ namespace SBXAThemeSupport
 
             if (Application.Current != null)
             {
+#if SHOW_DEBUG
                 CustomLogger.LogDebug(
                     () =>
                     string.Format(
                         "Ui Thread Id: {0} Actual Thread Id: {1}", 
                         Application.Current.Dispatcher.Thread.ManagedThreadId, 
                         Thread.CurrentThread.ManagedThreadId));
+#endif
             }
 
             // get the next item
+#if SHOW_DEBUG
             CustomLogger.LogDebug(() => string.Format("Jobs to process {0}", this.processes.Count));
+#endif
             ActionDefinition targetAction = this.processes.Peek();
 
             // check if there are failed job because those should be executed as first
             if (this.failedProcesses.Count > 0)
             {
+#if SHOW_DEBUG
                 CustomLogger.LogDebug(() => string.Format("Failed jobs found {0}", this.failedProcesses.Count));
+#endif
                 var failedAction = this.failedProcesses.OrderByDescending(a => a.FailedCount).FirstOrDefault();
                 if (failedAction != null)
                 {
+#if SHOW_DEBUG
                     CustomLogger.LogDebug(() => string.Format("Failed job will be executed. FailedCount {0}", failedAction.FailedCount));
+#endif
                     targetAction = failedAction;
                 }
             }
@@ -270,6 +285,7 @@ namespace SBXAThemeSupport
             {
                 try
                 {
+#if SHOW_DEBUG
                     CustomLogger.LogDebug(
                         () =>
                         string.Format(
@@ -277,7 +293,7 @@ namespace SBXAThemeSupport
                             targetAction.Name, 
                             targetAction.Action.Method.Name, 
                             targetAction.FailedCount));
-
+#endif
                     //dequeue the actiondefinition
                     if (targetAction.FailedCount == 0)
                     {
@@ -287,7 +303,9 @@ namespace SBXAThemeSupport
                             // and removed the targetAction
                             if (this.processes.IsEmpty)
                             {
+#if SHOW_DEBUG
                                 CustomLogger.LogDebug(() => "Processes list is empty, so go out.");
+#endif
                                 return;
                             }
 
@@ -318,7 +336,8 @@ namespace SBXAThemeSupport
                         // if it fails will be added to the failedProcesses with higher priority
                         this.failedProcesses.TakeWhile(a => a == targetAction);
                     }
-
+                    
+#if SHOW_DEBUG
                     CustomLogger.LogDebug(
                         () =>
                         string.Format(
@@ -327,18 +346,25 @@ namespace SBXAThemeSupport
                             targetAction.Name, 
                             Thread.CurrentThread.ManagedThreadId, 
                             targetAction.IsRunOnUiThread));
+#endif
                     if (targetAction.IsRunOnUiThread && Application.Current != null)
                     {
+#if SHOW_DEBUG
                         CustomLogger.LogDebug(() => "Run on Ui thread");
+#endif
                         Application.Current.Dispatcher.Invoke(targetAction.Action);
                     }
                     else
                     {
+#if SHOW_DEBUG
                         CustomLogger.LogDebug(() => string.Format("run on the actual thread {0}", Thread.CurrentThread.ManagedThreadId));
+#endif
                         targetAction.Action.Invoke();
                     }
 
+#if SHOW_DEBUG
                     CustomLogger.LogDebug(() => "Executed action");
+#endif
                 }
                 catch (SBPlusApplicationException exception)
                 {
