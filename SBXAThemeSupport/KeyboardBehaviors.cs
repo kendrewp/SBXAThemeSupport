@@ -192,12 +192,30 @@ namespace SBXAThemeSupport
             }
         }
 
+        /// <summary>
+        /// The handle main window key up.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void HandleMainWindowKeyUp(object sender, KeyEventArgs e)
         {
             this.HandleAssociatedObjectKeyUp(sender, e);
             e.Handled = true;
         }
 
+        /// <summary>
+        /// The handle sb window closed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void HandleSBWindowClosed(object sender, EventArgs e)
         {
             try
@@ -220,6 +238,9 @@ namespace SBXAThemeSupport
             }
         }
 
+        /// <summary>
+        /// The listen to window close.
+        /// </summary>
         private void ListenToWindowClose()
         {
             var sbWindow = this.AssociatedObject.FindAncestor<SBWindow>();

@@ -113,6 +113,9 @@ namespace SBXAThemeSupport
 
         #endregion
 
+        /// <summary>
+        /// The non client region api.
+        /// </summary>
         private static class NonClientRegionApi
         {
             #region Public Methods and Operators
@@ -140,12 +143,24 @@ namespace SBXAThemeSupport
             [StructLayout(LayoutKind.Sequential)]
             public struct Margins
             {
+                /// <summary>
+                /// The cx left width.
+                /// </summary>
                 public int CxLeftWidth; // width of left border that retains its size
 
+                /// <summary>
+                /// The cx right width.
+                /// </summary>
                 public int CxRightWidth; // width of right border that retains its size
 
+                /// <summary>
+                /// The cy top height.
+                /// </summary>
                 public int CyTopHeight; // height of top border that retains its size
 
+                /// <summary>
+                /// The cy bottom height.
+                /// </summary>
                 public int CyBottomHeight; // height of bottom border that retains its size
             }
         }

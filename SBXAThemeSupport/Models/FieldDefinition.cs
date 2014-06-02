@@ -18,42 +18,99 @@ namespace SBXAThemeSupport.Models
     {
         #region Fields
 
+        /// <summary>
+        /// The conversion code.
+        /// </summary>
         private string conversionCode;
 
+        /// <summary>
+        /// The derived.
+        /// </summary>
         private string derived;
 
+        /// <summary>
+        /// The dictionary combo population process.
+        /// </summary>
         private string dictionaryComboPopulationProcess;
 
+        /// <summary>
+        /// The dictionary conversion code.
+        /// </summary>
         private string dictionaryConversionCode;
 
+        /// <summary>
+        /// The dictionary default.
+        /// </summary>
         private string dictionaryDefault;
 
+        /// <summary>
+        /// The dictionary derived.
+        /// </summary>
         private string dictionaryDerived;
 
+        /// <summary>
+        /// The dictionary double click process.
+        /// </summary>
         private string dictionaryDoubleClickProcess;
 
+        /// <summary>
+        /// The dictionary html process.
+        /// </summary>
         private string dictionaryHtmlProcess;
 
+        /// <summary>
+        /// The dictionary input conversion.
+        /// </summary>
         private string dictionaryInputConversion;
 
+        /// <summary>
+        /// The dictionary intuitive help.
+        /// </summary>
         private string dictionaryIntuitiveHelp;
 
+        /// <summary>
+        /// The dictionary right click menu.
+        /// </summary>
         private string dictionaryRightClickMenu;
 
+        /// <summary>
+        /// The dictionary validation.
+        /// </summary>
         private string dictionaryValidation;
 
+        /// <summary>
+        /// The field default.
+        /// </summary>
         private string fieldDefault;
 
+        /// <summary>
+        /// The input conversion.
+        /// </summary>
         private string inputConversion;
 
+        /// <summary>
+        /// The intuitive help.
+        /// </summary>
         private string intuitiveHelp;
 
+        /// <summary>
+        /// The process after.
+        /// </summary>
         private string processAfter;
 
+        /// <summary>
+        /// The process before.
+        /// </summary>
         private string processBefore;
 
+        /// <summary>
+        /// The style name.
+        /// </summary>
         private string styleName;
 
+        /// <summary>
+        /// The validation.
+        /// </summary>
         private string validation;
 
         #endregion
@@ -134,12 +191,12 @@ namespace SBXAThemeSupport.Models
                 this.derived = value;
                 if (!string.IsNullOrEmpty(this.derived))
                 {
-                        DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                            SourceDefinition.Screen,
-                            SourceDefinition.Expression,
-                            this.derived,
-                            this,
-                            "Derived Expression");
+                    DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
+                        SourceDefinition.Screen, 
+                        SourceDefinition.Expression, 
+                        this.derived, 
+                        this, 
+                        "Derived Expression");
                 }
             }
         }
@@ -192,7 +249,8 @@ namespace SBXAThemeSupport.Models
                 }
 
                 this.dictionaryConversionCode = value;
-                if (!string.IsNullOrEmpty(this.dictionaryConversionCode) && this.dictionaryConversionCode.StartsWith("(") && this.dictionaryConversionCode.EndsWith(")"))
+                if (!string.IsNullOrEmpty(this.dictionaryConversionCode) && this.dictionaryConversionCode.StartsWith("(")
+                    && this.dictionaryConversionCode.EndsWith(")"))
                 {
                     // we have an expression, so parse it out.
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
@@ -226,11 +284,11 @@ namespace SBXAThemeSupport.Models
                 if (!string.IsNullOrEmpty(this.dictionaryDefault) && !SBExpression.IsConstantValueExpression(this.dictionaryDefault))
                 {
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                            SourceDefinition.Field,
-                            SourceDefinition.Expression,
-                            this.dictionaryDefault,
-                            this,
-                            "fieldDefault");
+                        SourceDefinition.Field, 
+                        SourceDefinition.Expression, 
+                        this.dictionaryDefault, 
+                        this, 
+                        "fieldDefault");
                 }
             }
         }
@@ -437,7 +495,10 @@ namespace SBXAThemeSupport.Models
                 {
                     if (this.DictionaryValidation.StartsWith("E:"))
                     {
-                        DebugViewModel.Instance.ProcessAnalysisViewModel.AddExpressionToCollection(this, "Validation", this.dictionaryValidation.Substring(2));
+                        DebugViewModel.Instance.ProcessAnalysisViewModel.AddExpressionToCollection(
+                            this, 
+                            "Validation", 
+                            this.dictionaryValidation.Substring(2));
                     }
                 }
             }
@@ -464,11 +525,11 @@ namespace SBXAThemeSupport.Models
                 if (!string.IsNullOrEmpty(this.fieldDefault))
                 {
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                            SourceDefinition.Screen,
-                            SourceDefinition.Expression,
-                            this.fieldDefault,
-                            this,
-                            "fieldDefault");
+                        SourceDefinition.Screen, 
+                        SourceDefinition.Expression, 
+                        this.fieldDefault, 
+                        this, 
+                        "fieldDefault");
                 }
             }
         }
@@ -644,9 +705,12 @@ namespace SBXAThemeSupport.Models
                 {
                     if (this.Validation.StartsWith("E:"))
                     {
-                        DebugViewModel.Instance.ProcessAnalysisViewModel.AddExpressionToCollection(this, "Validation", this.validation.Substring(2));
+                        DebugViewModel.Instance.ProcessAnalysisViewModel.AddExpressionToCollection(
+                            this, 
+                            "Validation", 
+                            this.validation.Substring(2));
 
-/*
+                        /*
                         DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
                             SourceDefinition.Screen,
                             SourceDefinition.Expression,
@@ -684,17 +748,29 @@ namespace SBXAThemeSupport.Models
                         });
                 // make sure the file is added.
                 RevisionDefinitionViewModel.AddItemToDefinition(
-                    collection,
+                    collection, 
                     new RevisionDefinitionItem()
-                    {
-                        Action = "FC",
-                        FileName = this.FileName,
-                        Item = string.Empty,
-                        Parameters = RevisionDefinitionViewModel.DictAndData
-                    });
+                        {
+                            Action = "FC", 
+                            FileName = this.FileName, 
+                            Item = string.Empty, 
+                            Parameters = RevisionDefinitionViewModel.DictAndData
+                        });
             }
         }
 
+        /// <summary>
+        /// The read field definition completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private void ReadFieldDefinitionCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             const int DefaultExpression = 5;

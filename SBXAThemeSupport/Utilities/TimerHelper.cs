@@ -17,8 +17,14 @@ namespace SBXAThemeSupport.Utilities
     {
         #region Fields
 
+        /// <summary>
+        /// The data.
+        /// </summary>
         private volatile object data;
 
+        /// <summary>
+        /// The tag.
+        /// </summary>
         private volatile object tag;
 
         #endregion

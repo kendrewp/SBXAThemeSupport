@@ -83,6 +83,14 @@ namespace SBXAThemeSupport.Views
         public DataTemplate ScreenDefinitionTemplate { get; set; }
 
         /// <summary>
+        ///     Gets or sets the screen field definition template.
+        /// </summary>
+        /// <value>
+        ///     The screen field definition template.
+        /// </value>
+        public DataTemplate ScreenFieldDefinitionTemplate { get; set; }
+
+        /// <summary>
         ///     Gets or sets the selection process template.
         /// </summary>
         /// <value>
@@ -97,14 +105,6 @@ namespace SBXAThemeSupport.Views
         ///     The tree item template.
         /// </value>
         public DataTemplate TreeItemTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the screen field definition template.
-        /// </summary>
-        /// <value>
-        /// The screen field definition template.
-        /// </value>
-        public DataTemplate ScreenFieldDefinitionTemplate { get; set; }
 
         #endregion
 
@@ -153,7 +153,6 @@ namespace SBXAThemeSupport.Views
             {
                 return this.FieldDefinitionTemplate;
             }
-
 
             if (dataUnit is ProcessCall)
             {

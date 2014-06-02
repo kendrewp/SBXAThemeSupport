@@ -24,24 +24,51 @@ namespace SBXAThemeSupport.Utilities
     {
         #region Static Fields
 
+        /// <summary>
+        /// The instance.
+        /// </summary>
         private static KeepAliveTimer instance;
 
         #endregion
 
         #region Fields
 
+        /// <summary>
+        /// The timeout.
+        /// </summary>
         private readonly int timeout;
 
+        /// <summary>
+        /// The last message.
+        /// </summary>
         private DateTime lastMessage;
 
+        /// <summary>
+        /// The logout timer helper.
+        /// </summary>
         private TimerHelper logoutTimerHelper;
 
+        /// <summary>
+        /// The timer helper.
+        /// </summary>
         private TimerHelper timerHelper;
 
         #endregion
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeepAliveTimer"/> class.
+        /// </summary>
+        /// <param name="interval">
+        /// The interval.
+        /// </param>
+        /// <param name="processName">
+        /// The process name.
+        /// </param>
+        /// <param name="timeout">
+        /// The timeout.
+        /// </param>
         private KeepAliveTimer(double interval, string processName, int timeout)
         {
             this.Interval = interval;
@@ -135,6 +162,15 @@ namespace SBXAThemeSupport.Utilities
 
         #region Methods
 
+        /// <summary>
+        /// The on execute logout timer tick.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void OnExecuteLogoutTimerTick(object sender, ElapsedEventArgs e)
         {
             var timer = sender as TimerHelper;
@@ -167,6 +203,15 @@ namespace SBXAThemeSupport.Utilities
             SbProcessHandler.CallProcess(processName, false);
         }
 
+        /// <summary>
+        /// The on execute sb process timer tick.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void OnExecuteSBProcessTimerTick(object sender, ElapsedEventArgs e)
         {
             var timer = sender as TimerHelper;
@@ -186,6 +231,15 @@ namespace SBXAThemeSupport.Utilities
             SbProcessHandler.CallProcess(processName, false);
         }
 
+        /// <summary>
+        /// The handle input manager post process input.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void HandleInputManagerPostProcessInput(object sender, ProcessInputEventArgs e)
         {
             if (((e.StagingItem == null) || (e.StagingItem.Input == null)) || (!(e.StagingItem.Input.Device is KeyboardDevice)))

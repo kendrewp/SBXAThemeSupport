@@ -24,6 +24,9 @@ namespace SBXAThemeSupport
     {
         #region Static Fields
 
+        /// <summary>
+        /// The logger.
+        /// </summary>
         private static ICustomLogger logger;
 
         #endregion

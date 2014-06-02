@@ -36,20 +36,32 @@ namespace SBXAThemeSupport.DebugAssistant
     {
         #region Static Fields
 
+        /// <summary>
+        /// The window table.
+        /// </summary>
         private static readonly Hashtable WindowTable = new Hashtable();
 
+        /// <summary>
+        /// The debug window manager.
+        /// </summary>
         private static DebugWindowManager debugWindowManager;
 
         #endregion
 
         #region Fields
 
+        /// <summary>
+        /// The syncobj.
+        /// </summary>
         private readonly object syncobj = new object();
 
         #endregion
 
         #region Properties
 
+        /// <summary>
+        /// Gets the debug console window.
+        /// </summary>
         internal static DebugConsoleWindow DebugConsoleWindow { get; private set; }
 
         #endregion
@@ -278,6 +290,17 @@ namespace SBXAThemeSupport.DebugAssistant
 
         #region Methods
 
+        /// <summary>
+        /// The show sb string.
+        /// </summary>
+        /// <param name="which">
+        /// The which.
+        /// </param>
+        /// <param name="data">
+        /// The data.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// </exception>
         internal static void ShowSBString(string which, SBString data)
         {
             if (data == null)
@@ -303,6 +326,9 @@ namespace SBXAThemeSupport.DebugAssistant
             }
         }
 
+        /// <summary>
+        /// The create debug console.
+        /// </summary>
         private static void CreateDebugConsole()
         {
             lock (Instance().syncobj)
@@ -334,11 +360,29 @@ namespace SBXAThemeSupport.DebugAssistant
             }
         }
 
+        /// <summary>
+        /// The current on exit.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="exitEventArgs">
+        /// The exit event args.
+        /// </param>
         private static void CurrentOnExit(object sender, ExitEventArgs exitEventArgs)
         {
             CloseDebugConsole();
         }
 
+        /// <summary>
+        /// The debug console is closed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void DebugConsoleIsClosed(object sender, EventArgs e)
         {
             if ((DebugConsoleWindow != null) && (DebugConsoleWindow.Dispatcher != null))
@@ -349,6 +393,9 @@ namespace SBXAThemeSupport.DebugAssistant
             DebugConsoleWindow = null;
         }
 
+        /// <summary>
+        /// The open debug console.
+        /// </summary>
         private static void OpenDebugConsole()
         {
             var thread = new Thread(CreateDebugConsole);

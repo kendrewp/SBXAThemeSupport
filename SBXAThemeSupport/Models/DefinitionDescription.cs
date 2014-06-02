@@ -18,22 +18,43 @@ namespace SBXAThemeSupport.Models
     {
         #region Fields
 
+        /// <summary>
+        /// The screen expressions.
+        /// </summary>
+        private readonly ObservableCollection<SBExpression> screenExpressions = new ObservableCollection<SBExpression>();
+
+        /// <summary>
+        /// The end time.
+        /// </summary>
         private DateTime endTime;
 
+        /// <summary>
+        /// The is current.
+        /// </summary>
         private bool isCurrent;
 
+        /// <summary>
+        /// The server end milliseconds.
+        /// </summary>
         private int serverEndMilliseconds;
 
+        /// <summary>
+        /// The server start milliseconds.
+        /// </summary>
         private int serverStartMilliseconds;
 
+        /// <summary>
+        /// The start time.
+        /// </summary>
         private DateTime startTime;
-
-        private readonly ObservableCollection<SBExpression> screenExpressions = new ObservableCollection<SBExpression>();
 
         #endregion
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefinitionDescription"/> class.
+        /// </summary>
         public DefinitionDescription()
         {
         }
@@ -67,7 +88,9 @@ namespace SBXAThemeSupport.Models
         /// <param name="name">
         /// The name.
         /// </param>
-        /// <param name="hookType">The type of description, process or expression</param>
+        /// <param name="hookType">
+        /// The type of description, process or expression
+        /// </param>
         /// <param name="expression">
         /// The expression.
         /// </param>
@@ -85,12 +108,6 @@ namespace SBXAThemeSupport.Models
         #endregion
 
         #region Public Properties
-        
-        /// <summary>
-        ///     Gets or sets the hook type.
-        /// </summary>
-        public SourceDefinition HookType { get; set; }
-
 
         /// <summary>
         ///     Gets the child processes.
@@ -136,6 +153,11 @@ namespace SBXAThemeSupport.Models
         ///     Gets or sets the history process description.
         /// </summary>
         public DefinitionDescription HistoryProcessDescription { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the hook type.
+        /// </summary>
+        public SourceDefinition HookType { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether is current.
@@ -403,12 +425,30 @@ namespace SBXAThemeSupport.Models
             }
         }
 
+        /// <summary>
+        /// The this.
+        /// </summary>
+        /// <param name="fileName">
+        /// The file name.
+        /// </param>
+        /// <param name="itemName">
+        /// The item name.
+        /// </param>
+        /// <param name="type">
+        /// The type.
+        /// </param>
+        /// <returns>
+        /// The <see cref="DefinitionDescription"/>.
+        /// </returns>
         public DefinitionDescription this[string fileName, string itemName, Type type]
         {
             get
             {
-                return this.FirstOrDefault(processDescription => (processDescription.Name.Equals(itemName) && processDescription.FileName.Equals(fileName)
-                     && processDescription.GetType() == type));
+                return
+                    this.FirstOrDefault(
+                        processDescription =>
+                        (processDescription.Name.Equals(itemName) && processDescription.FileName.Equals(fileName)
+                         && processDescription.GetType() == type));
             }
         }
 

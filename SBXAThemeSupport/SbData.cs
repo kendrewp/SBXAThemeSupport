@@ -21,14 +21,29 @@ namespace SBXAThemeSupport
     {
         #region Fields
 
+        /// <summary>
+        /// The data line values.
+        /// </summary>
         private readonly List<string[]> dataLineValues = new List<string[]>();
 
+        /// <summary>
+        /// The sub value mark.
+        /// </summary>
         private readonly char subValueMark;
 
+        /// <summary>
+        /// The value mark.
+        /// </summary>
         private readonly char valueMark;
 
+        /// <summary>
+        /// The attribute mark.
+        /// </summary>
         private char attributeMark;
 
+        /// <summary>
+        /// The max line length.
+        /// </summary>
         private int maxLineLength;
 
         #endregion
@@ -783,6 +798,18 @@ namespace SBXAThemeSupport
 
         #region Methods
 
+        /// <summary>
+        /// The insert new line.
+        /// </summary>
+        /// <param name="attr">
+        /// The attr.
+        /// </param>
+        /// <param name="val">
+        /// The val.
+        /// </param>
+        /// <param name="newValue">
+        /// The new value.
+        /// </param>
         private void InsertNewLine(int attr, int val, string newValue)
         {
             if (this.maxLineLength <= val)

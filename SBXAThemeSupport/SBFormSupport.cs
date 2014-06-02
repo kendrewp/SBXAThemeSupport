@@ -86,6 +86,15 @@ namespace SBXAThemeSupport
 
         #region Methods
 
+        /// <summary>
+        /// The handle sb plus client sb form created.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void HandleSBPlusClientSBFormCreated(object sender, SBFormCreatedEventArgs e)
         {
             var sbForm = e.Form as SBForm;
@@ -95,6 +104,9 @@ namespace SBXAThemeSupport
             }
         }
 
+        /// <summary>
+        /// The send control x.
+        /// </summary>
         private static void SendControlX()
         {
             var field2 = SBFocusManager.FocusedControl as ISBField;

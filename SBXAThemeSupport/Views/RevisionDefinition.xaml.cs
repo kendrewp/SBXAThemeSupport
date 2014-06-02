@@ -18,6 +18,9 @@ namespace SBXAThemeSupport.Views
     {
         #region Static Fields
 
+        /// <summary>
+        /// The start item property.
+        /// </summary>
         public static readonly DependencyProperty StartItemProperty = DependencyProperty.Register(
             "StartItem", 
             typeof(TreeItem), 
@@ -60,6 +63,15 @@ namespace SBXAThemeSupport.Views
 
         #region Methods
 
+        /// <summary>
+        /// The on start item changed.
+        /// </summary>
+        /// <param name="target">
+        /// The target.
+        /// </param>
+        /// <param name="args">
+        /// The args.
+        /// </param>
         private static void OnStartItemChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
         {
             var revisionDefinition = target as RevisionDefinition;

@@ -27,6 +27,9 @@ namespace SBXAThemeSupport
     {
         #region Static Fields
 
+        /// <summary>
+        /// The loaded assemblies.
+        /// </summary>
         private static readonly StringCollection LoadedAssemblies = new StringCollection();
 
         #endregion
@@ -172,6 +175,21 @@ namespace SBXAThemeSupport
 
         #region Methods
 
+        /// <summary>
+        /// The load assembly.
+        /// </summary>
+        /// <param name="resourceAssembly">
+        /// The resource assembly.
+        /// </param>
+        /// <param name="assemblyName">
+        /// The assembly name.
+        /// </param>
+        /// <param name="resourceNameSpace">
+        /// The resource name space.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Assembly"/>.
+        /// </returns>
         private static Assembly LoadAssembly(Assembly resourceAssembly, string assemblyName, string resourceNameSpace)
         {
             SBPlusClient.LogInformation("Assembly requested " + assemblyName);

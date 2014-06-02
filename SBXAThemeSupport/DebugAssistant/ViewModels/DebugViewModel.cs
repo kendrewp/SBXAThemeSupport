@@ -36,26 +36,47 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
     {
         #region Constants
 
+        /// <summary>
+        ///     The state identifier
+        /// </summary>
         private const string StateId = "ApplicationInsightState";
 
         #endregion
 
         #region Static Fields
 
+        /// <summary>
+        ///     The debug view model
+        /// </summary>
         private static DebugViewModel debugViewModel;
 
+        /// <summary>
+        ///     The disposing
+        /// </summary>
         private static bool disposing;
 
+        /// <summary>
+        ///     The initializing
+        /// </summary>
         private static bool initializing;
 
         #endregion
 
         #region Fields
 
+        /// <summary>
+        ///     The process history stack
+        /// </summary>
         private readonly ProcessStack processHistoryStack = new ProcessStack();
 
+        /// <summary>
+        ///     The process stack
+        /// </summary>
         private readonly ProcessStack processStack = new ProcessStack();
 
+        /// <summary>
+        ///     The section1
+        /// </summary>
         private readonly StringCollection section1 = new StringCollection
                                                          {
                                                              "RECORD", 
@@ -86,6 +107,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                                                              "XUI"
                                                          };
 
+        /// <summary>
+        /// The section 2.
+        /// </summary>
         private readonly StringCollection section2 = new StringCollection
                                                          {
                                                              "VALUE", 
@@ -138,6 +162,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                                                              "SBPARM(20)"
                                                          };
 
+        /// <summary>
+        /// The section 3.
+        /// </summary>
         private readonly StringCollection section3 = new StringCollection
                                                          {
                                                              "SB.CONT", 
@@ -166,36 +193,78 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                                                              "BT.POS"
                                                          };
 
+        /// <summary>
+        /// The current process.
+        /// </summary>
         private DefinitionDescription currentProcess;
 
+        /// <summary>
+        /// The debug console window height.
+        /// </summary>
         private double debugConsoleWindowHeight = 600d;
 
+        /// <summary>
+        /// The debug console window width.
+        /// </summary>
         private double debugConsoleWindowWidth = 600d;
 
+        /// <summary>
+        /// The is connected.
+        /// </summary>
         private bool isConnected;
 
+        /// <summary>
+        /// The is debug enabled.
+        /// </summary>
         private bool isDebugEnabled;
 
+        /// <summary>
+        /// The is sbxa debug window open.
+        /// </summary>
         private bool isSbxaDebugWindowOpen;
 
+        /// <summary>
+        /// The orig record.
+        /// </summary>
         private NestedAttributeCollection origRecord;
 
+        /// <summary>
+        /// The parms.
+        /// </summary>
         private NestedAttributeCollection parms;
 
+        /// <summary>
+        /// The process analysis view model.
+        /// </summary>
         private ProcessAnalysisViewModel processAnalysisViewModel;
 
+        /// <summary>
+        /// The record.
+        /// </summary>
         private NestedAttributeCollection record;
 
+        /// <summary>
+        /// The section 1 collection.
+        /// </summary>
         private NestedAttributeCollection section1Collection;
 
+        /// <summary>
+        /// The section 2 collection.
+        /// </summary>
         private NestedAttributeCollection section2Collection;
 
+        /// <summary>
+        /// The section 3 collection.
+        /// </summary>
         private NestedAttributeCollection section3Collection;
 
         #endregion
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="DebugViewModel"/> class from being created.
+        /// </summary>
         private DebugViewModel()
         {
             Initializing = true;
@@ -796,6 +865,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 {
                     CustomLogger.LogDebug(() => string.Format("Add {0} {1}.", add, processName));
                 }
+
                 if (DebugWindowManager.DebugConsoleWindow == null)
                 {
                     // no debug windows.
@@ -865,6 +935,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         #region Methods
 
+        /// <summary>
+        /// The build title.
+        /// </summary>
+        /// <param name="parent">
+        /// The parent.
+        /// </param>
+        /// <param name="newIndex">
+        /// The new index.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
         internal static string BuildTitle(string parent, string newIndex)
         {
             string variable;
@@ -885,6 +967,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             return variable;
         }
 
+        /// <summary>
+        /// The check is connected.
+        /// </summary>
         internal void CheckIsConnected()
         {
             JobManager.RunInUIThread(
@@ -901,6 +986,21 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     });
         }
 
+        /// <summary>
+        /// The do update process stack.
+        /// </summary>
+        /// <param name="add">
+        /// The add.
+        /// </param>
+        /// <param name="processName">
+        /// The process name.
+        /// </param>
+        /// <param name="actionTime">
+        /// The action time.
+        /// </param>
+        /// <param name="serverActionTime">
+        /// The server action time.
+        /// </param>
         private static void DoUpdateProcessStack(bool add, string processName, DateTime actionTime, int serverActionTime)
         {
             try
@@ -977,6 +1077,15 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The find lowest process.
+        /// </summary>
+        /// <param name="definition">
+        /// The definition.
+        /// </param>
+        /// <returns>
+        /// The <see cref="DefinitionDescription"/>.
+        /// </returns>
         private static DefinitionDescription FindLowestProcess(DefinitionDescription definition)
         {
             if (definition.ChildProcesses.Count == 0)
@@ -987,6 +1096,15 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             return FindLowestProcess(definition.ChildProcesses.Peek());
         }
 
+        /// <summary>
+        /// The find lowest process parent.
+        /// </summary>
+        /// <param name="definition">
+        /// The definition.
+        /// </param>
+        /// <returns>
+        /// The <see cref="DefinitionDescription"/>.
+        /// </returns>
         private static DefinitionDescription FindLowestProcessParent(DefinitionDescription definition)
         {
             // The zero is to prevent an infinite loop - it should never happen.
@@ -1008,6 +1126,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             return FindLowestProcessParent(definition.ChildProcesses.Peek());
         }
 
+        /// <summary>
+        /// The get common variable completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private static void GetCommonVariableCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             try
@@ -1030,6 +1160,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The pop process.
+        /// </summary>
+        /// <param name="stack">
+        /// The stack.
+        /// </param>
+        /// <param name="endTime">
+        /// The end time.
+        /// </param>
+        /// <param name="serverEndTime">
+        /// The server end time.
+        /// </param>
         private static void PopProcess(ProcessStack stack, DateTime endTime, int serverEndTime)
         {
             // Check to see if the definition on top of the stack has children, if so pop from the child, otherwise pop the top of the stack - recursively.
@@ -1074,6 +1216,15 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The push process.
+        /// </summary>
+        /// <param name="stack">
+        /// The stack.
+        /// </param>
+        /// <param name="definition">
+        /// The definition.
+        /// </param>
         private static void PushProcess(ProcessStack stack, DefinitionDescription definition)
         {
             // check if there is a definition on the stack, if there is add it to the list of children, not just push it.
@@ -1091,6 +1242,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The set item data.
+        /// </summary>
+        /// <param name="value">
+        /// The value.
+        /// </param>
+        /// <param name="which">
+        /// The which.
+        /// </param>
+        /// <param name="collection">
+        /// The collection.
+        /// </param>
         private static void SetItemData(SBString value, string which, NestedAttributeCollection collection)
         {
             if (collection.ContainsIndex(which))
@@ -1116,6 +1279,12 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The update properties.
+        /// </summary>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
         private static void UpdateProperties(IList<SBString> parameters)
         {
             switch (parameters[1].Value)
@@ -1129,12 +1298,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The clear stacks.
+        /// </summary>
         private void ClearStacks()
         {
             this.ProcessHistoryStack.Clear();
             this.ProcessStack.Clear();
         }
 
+        /// <summary>
+        /// The create parms collection.
+        /// </summary>
         private void CreateParmsCollection()
         {
             if (this.Parms != null)
@@ -1149,6 +1324,15 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The create section.
+        /// </summary>
+        /// <param name="varCollection">
+        /// The var collection.
+        /// </param>
+        /// <returns>
+        /// The <see cref="NestedAttributeCollection"/>.
+        /// </returns>
         private NestedAttributeCollection CreateSection(StringCollection varCollection)
         {
             var collection = new NestedAttributeCollection();
@@ -1161,6 +1345,15 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             return collection;
         }
 
+        /// <summary>
+        /// The get collection.
+        /// </summary>
+        /// <param name="which">
+        /// The which.
+        /// </param>
+        /// <returns>
+        /// The <see cref="NestedAttributeCollection"/>.
+        /// </returns>
         private NestedAttributeCollection GetCollection(string which)
         {
             if (this.section1.Contains(which))
@@ -1186,6 +1379,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             return null;
         }
 
+        /// <summary>
+        /// The get is debug enabled.
+        /// </summary>
         private void GetIsDebugEnabled()
         {
             if (!SBPlusClient.Current.CanSendServerCommands)
@@ -1201,6 +1397,15 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             XuiDebug.IsXuiDebugThere(this.ReadXuiDebugCompleted);
         }
 
+        /// <summary>
+        /// The handle connected.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void HandleConnected(object sender, ConnectedEventArgs e)
         {
             this.SetIsConnected(e.Connected);
@@ -1217,11 +1422,32 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The handle ready to send commands.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void HandleReadyToSendCommands(object sender, ReadyToSendCommandsEventArgs e)
         {
             this.GetIsDebugEnabled();
         }
 
+        /// <summary>
+        /// The read for set xui debug completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private void ReadForSetXuiDebugCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             var status = parameters[5];
@@ -1240,6 +1466,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 () => XuiDebug.EnableDebug(this.SetIsDebugEnabledCompleted, this.IsDebugEnabled));
         }
 
+        /// <summary>
+        /// The read state.
+        /// </summary>
         private void ReadState()
         {
             if (this.ApplicationInsightState == null)
@@ -1262,6 +1491,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The read xui debug completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private void ReadXuiDebugCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             var status = parameters[5];
@@ -1278,6 +1519,12 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             XuiDebug.IsDebugEnabled(this.SetIsDebugEnabledCompleted);
         }
 
+        /// <summary>
+        /// The set is connected.
+        /// </summary>
+        /// <param name="connected">
+        /// The connected.
+        /// </param>
         private void SetIsConnected(bool connected)
         {
             // Set the IsConnected property on the correct thread.
@@ -1292,6 +1539,12 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 delegate { this.IsConnected = connected; });
         }
 
+        /// <summary>
+        /// The set is debug enabled.
+        /// </summary>
+        /// <param name="newValue">
+        /// The new value.
+        /// </param>
         private void SetIsDebugEnabled(bool newValue)
         {
             try
@@ -1319,6 +1572,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The set is debug enabled completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private void SetIsDebugEnabledCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             try
@@ -1334,6 +1599,15 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The update collection.
+        /// </summary>
+        /// <param name="which">
+        /// The which.
+        /// </param>
+        /// <param name="value">
+        /// The value.
+        /// </param>
         private void UpdateCollection(string which, SBString value)
         {
             try

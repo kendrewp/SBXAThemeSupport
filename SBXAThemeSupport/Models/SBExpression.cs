@@ -25,6 +25,9 @@ namespace SBXAThemeSupport.Models
     {
         #region Static Fields
 
+        /// <summary>
+        /// The standard expressions.
+        /// </summary>
         private static readonly StringCollection StandardExpressions = new StringCollection
                                                                            {
                                                                                "QUIT", 
@@ -44,15 +47,14 @@ namespace SBXAThemeSupport.Models
                                                                                "TOGGLE"
                                                                            };
 
-        private readonly ObservableCollection<FieldDefinition> fieldDescriptions = new ObservableCollection<FieldDefinition>();
+        #endregion
 
-        public ObservableCollection<FieldDefinition> FieldDescriptions
-        {
-            get
-            {
-                return this.fieldDescriptions;
-            }
-        }
+        #region Fields
+
+        /// <summary>
+        /// The field descriptions.
+        /// </summary>
+        private readonly ObservableCollection<FieldDefinition> fieldDescriptions = new ObservableCollection<FieldDefinition>();
 
         #endregion
 
@@ -112,6 +114,17 @@ namespace SBXAThemeSupport.Models
         public string CodeTable { get; set; }
 
         /// <summary>
+        /// Gets the field descriptions.
+        /// </summary>
+        public ObservableCollection<FieldDefinition> FieldDescriptions
+        {
+            get
+            {
+                return this.fieldDescriptions;
+            }
+        }
+
+        /// <summary>
         ///     Gets or sets the definition description.
         /// </summary>
         /// <value>
@@ -127,7 +140,8 @@ namespace SBXAThemeSupport.Models
                 }
 
                 base.SourceExpression = value;
-                if (!string.IsNullOrEmpty(this.SourceExpression) && !IsStandardSBExpression(this.SourceExpression) && !IsConstantValueExpression(value))
+                if (!string.IsNullOrEmpty(this.SourceExpression) && !IsStandardSBExpression(this.SourceExpression)
+                    && !IsConstantValueExpression(value))
                 {
                     // now I have to parse it out in order to find process calls. I will do this by calling SB.EVAL.EXP (I think)
                     try
@@ -147,7 +161,7 @@ namespace SBXAThemeSupport.Models
                                 case "C":
                                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcess(
                                         processName, 
-                                        this,
+                                        this, 
                                         this.SourceExpression, 
                                         string.Empty, 
                                         this.SystemId);
@@ -165,7 +179,7 @@ namespace SBXAThemeSupport.Models
                                     // TODO
                                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadMenu(
                                         processName, 
-                                        this,
+                                        this, 
                                         this.SourceExpression, 
                                         string.Empty, 
                                         this.SystemId);
@@ -197,7 +211,7 @@ namespace SBXAThemeSupport.Models
                                     {
                                         DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcess(
                                             processName, 
-                                            this,
+                                            this, 
                                             this.SourceExpression, 
                                             string.Empty, 
                                             this.SystemId);
@@ -208,7 +222,7 @@ namespace SBXAThemeSupport.Models
                                     // It is not a call or executed so do not add a sub-node.
                                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcess(
                                         processName, 
-                                        this,
+                                        this, 
                                         this.SourceExpression, 
                                         string.Empty, 
                                         this.SystemId);
@@ -234,6 +248,21 @@ namespace SBXAThemeSupport.Models
         #region Public Methods and Operators
 
         /// <summary>
+        /// The is constant value expression.
+        /// </summary>
+        /// <param name="val">
+        /// The val.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        public static bool IsConstantValueExpression(string val)
+        {
+            return (val.StartsWith("\"") && val.EndsWith("\"")) || (val.StartsWith("\"") && val.EndsWith("\"[M]"))
+                    || Utilities.IsNumber(val);
+        }
+
+        /// <summary>
         /// The is standard sb expression.
         /// </summary>
         /// <param name="expression">
@@ -257,7 +286,7 @@ namespace SBXAThemeSupport.Models
         public override void AddChildrenToCollection(RevisionDefinitionItemCollection collection)
         {
             base.AddChildrenToCollection(collection);
-            foreach (var fieldDescription in FieldDescriptions)
+            foreach (var fieldDescription in this.FieldDescriptions)
             {
                 fieldDescription.AddChildrenToCollection(collection);
             }
@@ -266,14 +295,6 @@ namespace SBXAThemeSupport.Models
         #endregion
 
         #region Methods
-
-
-        public static bool IsConstantValueExpression(string val)
-        {
-            return ((val.StartsWith("\"") && val.EndsWith("\""))
-                    || (val.StartsWith("\"") && val.EndsWith("\"[M]"))
-                    || Utilities.IsNumber(val));
-        }
 
         /// <summary>
         /// The add self.
@@ -316,6 +337,18 @@ namespace SBXAThemeSupport.Models
             }
         }
 
+        /// <summary>
+        /// The expression stack completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private void ExpressionStackCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             DebugViewModel.Instance.ProcessAnalysisViewModel.SetIsLoading(-1);
@@ -342,12 +375,13 @@ namespace SBXAThemeSupport.Models
                             {
                                 // now load the definition.
                                 DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcess(
-                                    processName,
-                                    this,
-                                    this.SourceExpression,
-                                    string.Empty,
+                                    processName, 
+                                    this, 
+                                    this.SourceExpression, 
+                                    string.Empty, 
                                     this.SystemId);
                             }
+
                             break;
                         case "F:":
                             var parts = parameters[1].Value.Substring(2).Split(GenericConstants.CHAR_ARRAY_COMMA);
@@ -359,6 +393,7 @@ namespace SBXAThemeSupport.Models
                             XuiDebug.StackExpression(this.ExpressionStackCompleted, parameters[4].GetStandardString(), this.FileName);
                             break;
                     }
+
                     break;
                 case "1":
                     DebugViewModel.Instance.ProcessAnalysisViewModel.SetIsLoading(1);

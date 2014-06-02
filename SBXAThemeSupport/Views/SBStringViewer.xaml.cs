@@ -27,13 +27,22 @@ namespace SBXAThemeSupport.Views
     {
         #region Static Fields
 
+        /// <summary>
+        /// The drill down command.
+        /// </summary>
         public static readonly RoutedUICommand DrillDownCommand = new RoutedUICommand(
             "DrillDownCommand", 
             "DrillDownCommand", 
             typeof(SBStringViewer));
 
+        /// <summary>
+        /// The drill down command binding.
+        /// </summary>
         private static readonly CommandBinding DrillDownCommandBinding = new CommandBinding(DrillDownCommand);
 
+        /// <summary>
+        /// The refresh common command binding.
+        /// </summary>
         private static readonly CommandBinding RefreshCommonCommandBinding = new CommandBinding(CommonViewer.RefreshCommonCommand);
 
         #endregion
@@ -64,11 +73,29 @@ namespace SBXAThemeSupport.Views
 
         #region Methods
 
+        /// <summary>
+        /// The can execute refresh common command.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void CanExecuteRefreshCommonCommand(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = DebugViewModel.Instance.IsDebugEnabled;
         }
 
+        /// <summary>
+        /// The executed drill down command.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void ExecutedDrillDownCommand(object sender, ExecutedRoutedEventArgs e)
         {
             try
@@ -93,6 +120,15 @@ namespace SBXAThemeSupport.Views
             }
         }
 
+        /// <summary>
+        /// The executed refresh common command.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void ExecutedRefreshCommonCommand(object sender, ExecutedRoutedEventArgs e)
         {
             var which = e.Parameter as string;

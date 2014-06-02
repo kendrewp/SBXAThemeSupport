@@ -19,12 +19,18 @@ namespace SBXAThemeSupport.ViewModels
     {
         #region Static Fields
 
+        /// <summary>
+        /// The instance.
+        /// </summary>
         private static readonly UiViewModel Instance = new UiViewModel();
 
         #endregion
 
         #region Fields
 
+        /// <summary>
+        /// The disabled keys.
+        /// </summary>
         private readonly Hashtable disabledKeys = new Hashtable();
 
         #endregion

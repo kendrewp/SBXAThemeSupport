@@ -40,7 +40,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         public const string DictAndData = "2";
 
         /// <summary>
-        /// The source and object
+        ///     The source and object
         /// </summary>
         public const string SourceAndObject = "5";
 
@@ -48,12 +48,24 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         #region Fields
 
+        /// <summary>
+        /// The revision definition item collection.
+        /// </summary>
         private readonly RevisionDefinitionItemCollection revisionDefinitionItemCollection = new RevisionDefinitionItemCollection();
 
+        /// <summary>
+        /// The current action.
+        /// </summary>
         private string currentAction;
 
+        /// <summary>
+        /// The definition name.
+        /// </summary>
         private string definitionName;
 
+        /// <summary>
+        /// The is all selected.
+        /// </summary>
         private bool isAllSelected;
 
         #endregion
@@ -206,6 +218,15 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         #region Methods
 
+        /// <summary>
+        /// The add item to definition.
+        /// </summary>
+        /// <param name="collection">
+        /// The collection.
+        /// </param>
+        /// <param name="item">
+        /// The item.
+        /// </param>
         internal static void AddItemToDefinition(RevisionDefinitionItemCollection collection, RevisionDefinitionItem item)
         {
             if (string.IsNullOrEmpty(item.FileName))
@@ -232,32 +253,83 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The definition write completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private static void DefinitionWriteCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             MessageBox.Show("Definition Saved.");
         }
 
+        /// <summary>
+        /// The can execute create definition command.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private bool CanExecuteCreateDefinitionCommand(object parameter)
         {
             return !string.IsNullOrEmpty(this.DefinitionName) && !string.IsNullOrWhiteSpace(this.DefinitionName);
         }
 
+        /// <summary>
+        /// The can execute create file command command.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private bool CanExecuteCreateFileCommandCommand(object parameter)
         {
             return !string.IsNullOrEmpty(this.DefinitionName) && !string.IsNullOrWhiteSpace(this.DefinitionName);
         }
 
+        /// <summary>
+        /// The can execute maintain definition command command.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private bool CanExecuteMaintainDefinitionCommandCommand(object parameter)
         {
             return !string.IsNullOrEmpty(this.DefinitionName) && !string.IsNullOrWhiteSpace(this.DefinitionName)
                    && ApplicationHelper.CanSendServerCommands();
         }
 
+        /// <summary>
+        /// The can execute save definition command.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private bool CanExecuteSaveDefinitionCommand(object parameter)
         {
             return !string.IsNullOrEmpty(this.DefinitionName) && !string.IsNullOrWhiteSpace(this.DefinitionName);
         }
 
+        /// <summary>
+        /// The create definition.
+        /// </summary>
         private void CreateDefinition()
         {
             var defn = new SBString();
@@ -293,6 +365,12 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     });
         }
 
+        /// <summary>
+        /// The create definition command executed.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
         private void CreateDefinitionCommandExecuted(object parameter)
         {
             JobManager.RunInUIThread(DispatcherPriority.Normal, () => SbProcessHandler.CallProcess("REV.MAKE.MEDIA", false));
@@ -302,12 +380,30 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 */
         }
 
+        /// <summary>
+        /// The create file command executed.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
         private void CreateFileCommandExecuted(object parameter)
         {
             this.CurrentAction = "Checking if " + this.DefinitionName + " exists.";
             SBFile.Read("VOC", "REV_" + this.DefinitionName, this.CreateRevFileFile, this.DefinitionName);
         }
 
+        /// <summary>
+        /// The create file completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private void CreateFileCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             var fileName = ((object[])userState)[0] as string;
@@ -315,6 +411,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             SBFile.Read("VOC", fileName, this.FinisedCreateRevFileCompleted, fileName);
         }
 
+        /// <summary>
+        /// The create rev file file.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private void CreateRevFileFile(string subroutineName, SBString[] parameters, object userState)
         {
             var status = parameters[5];
@@ -352,6 +460,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             MessageBox.Show(this.CurrentAction);
         }
 
+        /// <summary>
+        /// The finised create rev file completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private void FinisedCreateRevFileCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             var fileName = userState as string;
@@ -367,17 +487,35 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             MessageBox.Show("Created file " + (fileName ?? "NULL!"));
         }
 
+        /// <summary>
+        /// The maintain definition command executed.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
         private void MaintainDefinitionCommandExecuted(object parameter)
         {
             var cmd = string.Format("P:(DATA '{0}';EXEC 'REV.DEFN')", this.DefinitionName);
             JobManager.RunInUIThread(DispatcherPriority.Normal, () => SbProcessHandler.CallProcess(cmd, false));
         }
 
+        /// <summary>
+        /// The save definition command executed.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
         private void SaveDefinitionCommandExecuted(object parameter)
         {
             this.CreateDefinition();
         }
 
+        /// <summary>
+        /// The select all.
+        /// </summary>
+        /// <param name="select">
+        /// The select.
+        /// </param>
         private void SelectAll(bool select)
         {
             foreach (var item in this.RevisionDefinitionItemCollection)

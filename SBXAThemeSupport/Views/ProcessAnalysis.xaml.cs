@@ -46,11 +46,26 @@ namespace SBXAThemeSupport.Views
 
         #region Methods
 
+        /// <summary>
+        /// The can execute create revision definition command.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private bool CanExecuteCreateRevisionDefinitionCommand(object parameter)
         {
             return DebugViewModel.Instance.IsConnected;
         }
 
+        /// <summary>
+        /// The executed create revision definition command.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
         private void ExecutedCreateRevisionDefinitionCommand(object parameter)
         {
             var createRevisionWindow = new CreateRevisionWindow();
@@ -59,6 +74,15 @@ namespace SBXAThemeSupport.Views
             createRevisionWindow.Show();
         }
 
+        /// <summary>
+        /// The handle loading text on loaded.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void HandleLoadingTextOnLoaded(object sender, RoutedEventArgs e)
         {
             try

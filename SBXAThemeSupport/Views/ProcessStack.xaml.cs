@@ -25,18 +25,30 @@ namespace SBXAThemeSupport.Views
     {
         #region Static Fields
 
+        /// <summary>
+        /// The clear stack command.
+        /// </summary>
         public static readonly RoutedUICommand ClearStackCommand = new RoutedUICommand(
             "ClearStackCommand", 
             "ClearStackCommand", 
             typeof(ProcessStack));
 
+        /// <summary>
+        /// The copy node text command.
+        /// </summary>
         public static readonly RoutedUICommand CopyNodeTextCommand = new RoutedUICommand(
             "CopyNodeTextCommand", 
             "CopyNodeTextCommand", 
             typeof(ProcessStack));
 
+        /// <summary>
+        /// The clear stack command binding.
+        /// </summary>
         private static readonly CommandBinding ClearStackCommandBinding = new CommandBinding(ClearStackCommand);
 
+        /// <summary>
+        /// The copy node text command binding.
+        /// </summary>
         private static readonly CommandBinding CopyNodeTextCommandBinding = new CommandBinding(CopyNodeTextCommand);
 
         #endregion
@@ -68,16 +80,43 @@ namespace SBXAThemeSupport.Views
 
         #region Methods
 
+        /// <summary>
+        /// The can execute copy node text command.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void CanExecuteCopyNodeTextCommand(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
         }
 
+        /// <summary>
+        /// The executed clear stack command.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void ExecutedClearStackCommand(object sender, ExecutedRoutedEventArgs e)
         {
             DebugViewModel.Instance.ClearHistoryStack();
         }
 
+        /// <summary>
+        /// The executed copy node text command.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void ExecutedCopyNodeTextCommand(object sender, ExecutedRoutedEventArgs e)
         {
             try

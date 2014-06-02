@@ -24,11 +24,17 @@ namespace SBXAThemeSupport.Views
     {
         #region Static Fields
 
+        /// <summary>
+        /// The refresh common command.
+        /// </summary>
         public static readonly RoutedUICommand RefreshCommonCommand = new RoutedUICommand(
             "RefreshCommonCommand", 
             "RefreshCommonCommand", 
             typeof(CommonViewer));
 
+        /// <summary>
+        /// The refresh common command binding.
+        /// </summary>
         private static readonly CommandBinding RefreshCommonCommandBinding = new CommandBinding(RefreshCommonCommand);
 
         #endregion
@@ -58,11 +64,29 @@ namespace SBXAThemeSupport.Views
 
         #region Methods
 
+        /// <summary>
+        /// The can execute refresh common command.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void CanExecuteRefreshCommonCommand(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = DebugViewModel.Instance.IsDebugEnabled;
         }
 
+        /// <summary>
+        /// The executed refresh common command.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void ExecutedRefreshCommonCommand(object sender, ExecutedRoutedEventArgs e)
         {
             var which = e.Parameter as string;

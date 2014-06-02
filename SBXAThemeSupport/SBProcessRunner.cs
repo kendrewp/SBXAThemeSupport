@@ -3,7 +3,6 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-// #define SHOW_DEBUG
 namespace SBXAThemeSupport
 {
     using System;
@@ -35,22 +34,37 @@ namespace SBXAThemeSupport
     {
         #region Static Fields
 
+        /// <summary>
+        /// The process runner.
+        /// </summary>
         private static readonly SbProcessRunner ProcessRunner = new SbProcessRunner();
 
         #endregion
 
         #region Fields
 
+        /// <summary>
+        /// The failed processes.
+        /// </summary>
         private readonly BlockingCollection<ActionDefinition> failedProcesses = new BlockingCollection<ActionDefinition>();
 
+        /// <summary>
+        /// The processes.
+        /// </summary>
         private readonly ConcurrentQueue<ActionDefinition> processes = new ConcurrentQueue<ActionDefinition>();
 
+        /// <summary>
+        /// The sync object.
+        /// </summary>
         private readonly object syncObject = new object();
 
         #endregion
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="SbProcessRunner"/> class from being created.
+        /// </summary>
         private SbProcessRunner()
         {
             // We need to attach and un-attach the handlers in order to prevent a memory leak when the client disconnects from the server.
@@ -137,7 +151,6 @@ namespace SBXAThemeSupport
             bool isRetryWhenServerNotAccept = true, 
             bool isRunOnUiThread = false)
         {
-
 #if SHOW_DEBUG
             CustomLogger.LogDebug(() => string.Format("Adding new Action to the Queue. Name: {0}", name));
 #endif
@@ -193,6 +206,7 @@ namespace SBXAThemeSupport
 #endif
                 return;
             }
+
 #if SHOW_DEBUG
             CustomLogger.LogDebug(() => "No jobs found using the name " + name + " so run the method.");
 #endif
@@ -204,11 +218,29 @@ namespace SBXAThemeSupport
 
         #region Methods
 
+        /// <summary>
+        /// The count.
+        /// </summary>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
         internal int Count(string name)
         {
             return this.processes.ToArray().Count(a => a.Name == name);
         }
 
+        /// <summary>
+        /// The handle can send command changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void HandleCanSendCommandChanged(object sender, CanSendCommandChangedEventArgs e)
         {
             if (e.NewValue)
@@ -217,11 +249,23 @@ namespace SBXAThemeSupport
             }
         }
 
+        /// <summary>
+        /// The is server waiting changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="args">
+        /// The args.
+        /// </param>
         private void IsServerWaitingChanged(object sender, EventArgs args)
         {
             this.RunProcess();
         }
 
+        /// <summary>
+        /// The run process.
+        /// </summary>
         private void RunProcess()
         {
             if (this.processes.Count == 0 || !ApplicationHelper.CanSendServerCommands(false, true))
@@ -336,7 +380,7 @@ namespace SBXAThemeSupport
                         // if it fails will be added to the failedProcesses with higher priority
                         this.failedProcesses.TakeWhile(a => a == targetAction);
                     }
-                    
+
 #if SHOW_DEBUG
                     CustomLogger.LogDebug(
                         () =>
@@ -404,12 +448,30 @@ namespace SBXAThemeSupport
             }
         }
 
+        /// <summary>
+        /// The sb plus client on connected.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="eventArgs">
+        /// The event args.
+        /// </param>
         private void SBPlusClientOnConnected(object sender, EventArgs eventArgs)
         {
             SBPlusRuntime.Current.CommandProcessor.IsServerWaitingChanged += this.IsServerWaitingChanged;
             ApplicationHelper.CanSendCommandChanged += this.HandleCanSendCommandChanged;
         }
 
+        /// <summary>
+        /// The sb plus disconnected.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="args">
+        /// The args.
+        /// </param>
         private void SBPlusDisconnected(object sender, EventArgs args)
         {
             SBPlusRuntime.Current.CommandProcessor.IsServerWaitingChanged -= this.IsServerWaitingChanged;
@@ -420,6 +482,9 @@ namespace SBXAThemeSupport
 
         #endregion
 
+        /// <summary>
+        /// The action definition.
+        /// </summary>
         private class ActionDefinition
         {
             #region Constructors and Destructors

@@ -47,55 +47,91 @@ namespace SBXAThemeSupport
                 typeof(UiAssistant), 
                 new PropertyMetadata(Visibility.Visible));
 
+        /// <summary>
+        /// The custom sb plus theme version property.
+        /// </summary>
         public static readonly DependencyProperty CustomSBPlusThemeVersionProperty =
             DependencyProperty.RegisterAttached("CustomSBPlusThemeVersion", typeof(string), typeof(UiAssistant));
 
+        /// <summary>
+        /// The default background property.
+        /// </summary>
         public static readonly DependencyProperty DefaultBackgroundProperty = DependencyProperty.RegisterAttached(
             "DefaultBackground", 
             typeof(Brush), 
             typeof(UiAssistant));
 
+        /// <summary>
+        /// The development account name property.
+        /// </summary>
         public static readonly DependencyProperty DevelopmentAccountNameProperty =
             DependencyProperty.RegisterAttached("DevelopmentAccountName", typeof(string), typeof(UiAssistant));
 
+        /// <summary>
+        /// The development background property.
+        /// </summary>
         public static readonly DependencyProperty DevelopmentBackgroundProperty =
             DependencyProperty.RegisterAttached("DevelopmentBackground", typeof(Brush), typeof(UiAssistant));
 
+        /// <summary>
+        /// The execute process in context command.
+        /// </summary>
         public static readonly RoutedUICommand ExecuteProcessInContextCommand = new RoutedUICommand(
             "ExecuteProcessInContextCommand", 
             "ExecuteProcessInContextCommand", 
             typeof(UiAssistant));
 
+        /// <summary>
+        /// The hyperlink parameter property.
+        /// </summary>
         public static readonly DependencyProperty HyperlinkParameterProperty = DependencyProperty.RegisterAttached(
             "HyperlinkParameter", 
             typeof(string), 
             typeof(UiAssistant));
 
+        /// <summary>
+        /// The hyperlink process name property.
+        /// </summary>
         public static readonly DependencyProperty HyperlinkProcessNameProperty = DependencyProperty.RegisterAttached(
             "HyperlinkProcessName", 
             typeof(string), 
             typeof(UiAssistant));
 
+        /// <summary>
+        /// The hyperlink text property.
+        /// </summary>
         public static readonly DependencyProperty HyperlinkTextProperty = DependencyProperty.RegisterAttached(
             "HyperlinkText", 
             typeof(string), 
             typeof(UiAssistant));
 
+        /// <summary>
+        /// The is connected property.
+        /// </summary>
         public static readonly DependencyProperty IsConnectedProperty = DependencyProperty.Register(
             "IsConnected", 
             typeof(bool), 
             typeof(UiAssistant));
 
+        /// <summary>
+        /// The live account name property.
+        /// </summary>
         public static readonly DependencyProperty LiveAccountNameProperty = DependencyProperty.RegisterAttached(
             "LiveAccountName", 
             typeof(string), 
             typeof(UiAssistant));
 
+        /// <summary>
+        /// The live background property.
+        /// </summary>
         public static readonly DependencyProperty LiveBackgroundProperty = DependencyProperty.RegisterAttached(
             "LiveBackground", 
             typeof(Brush), 
             typeof(UiAssistant));
 
+        /// <summary>
+        /// The main window border background property.
+        /// </summary>
         public static readonly DependencyProperty MainWindowBorderBackgroundProperty =
             DependencyProperty.RegisterAttached("MainWindowBorderBackground", typeof(Brush), typeof(UiAssistant));
 
@@ -114,6 +150,9 @@ namespace SBXAThemeSupport
         public static readonly DependencyProperty MainWindowMinimizedTitleProperty =
             DependencyProperty.RegisterAttached("MainWindowMinimizedTitle", typeof(string), typeof(UiAssistant));
 
+        /// <summary>
+        /// The main window title property.
+        /// </summary>
         public static readonly DependencyProperty MainWindowTitleProperty = DependencyProperty.RegisterAttached(
             "MainWindowTitle", 
             typeof(string), 
@@ -128,28 +167,43 @@ namespace SBXAThemeSupport
             typeof(UiAssistant), 
             new PropertyMetadata(Visibility.Collapsed));
 
+        /// <summary>
+        /// The qa account name property.
+        /// </summary>
         public static readonly DependencyProperty QaAccountNameProperty = DependencyProperty.RegisterAttached(
             "QaAccountName", 
             typeof(string), 
             typeof(UiAssistant));
 
+        /// <summary>
+        /// The qa background property.
+        /// </summary>
         public static readonly DependencyProperty QaBackgroundProperty = DependencyProperty.RegisterAttached(
             "QaBackground", 
             typeof(Brush), 
             typeof(UiAssistant));
 
+        /// <summary>
+        /// The recognizes access key property.
+        /// </summary>
         public static readonly DependencyProperty RecognizesAccessKeyProperty = DependencyProperty.RegisterAttached(
             "RecognizesAccessKey", 
             typeof(bool), 
             typeof(UiAssistant), 
             new PropertyMetadata(true));
 
+        /// <summary>
+        /// The resize grip visiblity property.
+        /// </summary>
         public static readonly DependencyProperty ResizeGripVisiblityProperty = DependencyProperty.RegisterAttached(
             "ResizeGripVisiblity", 
             typeof(Visibility), 
             typeof(UiAssistant), 
             new PropertyMetadata(Visibility.Visible, OnResizeGripVisiblityChanged));
 
+        /// <summary>
+        /// The set drawable property.
+        /// </summary>
         public static readonly DependencyProperty SetDrawableProperty = DependencyProperty.RegisterAttached(
             "SetDrawable", 
             typeof(bool), 
@@ -157,10 +211,19 @@ namespace SBXAThemeSupport
             new PropertyMetadata(true, OnSetDrawableChanged));
 
         // Using a DependencyProperty as the backing store for IsConnected.  This enables animation, styling, binding, etc...
+        /// <summary>
+        /// The execute process in context command binding.
+        /// </summary>
         private static readonly CommandBinding ExecuteProcessInContextCommandBinding = new CommandBinding(ExecuteProcessInContextCommand);
 
+        /// <summary>
+        /// The assembly loader.
+        /// </summary>
         private static AssemblyLoader assemblyLoader;
 
+        /// <summary>
+        /// The current.
+        /// </summary>
         private static UiAssistant current;
 
         #endregion
@@ -854,6 +917,12 @@ namespace SBXAThemeSupport
 
         #region Methods
 
+        /// <summary>
+        /// The bring current form top most command executed.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
         private static void BringCurrentFormTopMostCommandExecuted(object parameter)
         {
             var keyEventArgs = parameter as KeyEventArgs;
@@ -866,22 +935,61 @@ namespace SBXAThemeSupport
             keyEventArgs.Handled = true;
         }
 
+        /// <summary>
+        /// The can execute execute process in context command.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void CanExecuteExecuteProcessInContextCommand(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = ApplicationHelper.CanSendServerCommands();
         }
 
+        /// <summary>
+        /// The executed execute process in context command.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void ExecutedExecuteProcessInContextCommand(object sender, ExecutedRoutedEventArgs e)
         {
             SbProcessHandler.CallProcess(e.Parameter as string, true);
         }
 
+        /// <summary>
+        /// The handle application shutdown.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void HandleApplicationShutdown(object sender, ApplicationShutdownEventArgs e)
         {
             // Close the debug window is it is there.
             DebugWindowManager.Dispose();
         }
 
+        /// <summary>
+        /// The handle assembly resolve.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="args">
+        /// The args.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Assembly"/>.
+        /// </returns>
         private static Assembly HandleAssemblyResolve(object sender, ResolveEventArgs args)
         {
             Assembly assembly = null;
@@ -904,6 +1012,15 @@ namespace SBXAThemeSupport
             return assembly;
         }
 
+        /// <summary>
+        /// The handle main window state changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void HandleMainWindowStateChanged(object sender, EventArgs e)
         {
             var sbMainWindow = sender as SBMainWindow;
@@ -928,6 +1045,15 @@ namespace SBXAThemeSupport
             }
         }
 
+        /// <summary>
+        /// The handle sb plus client account changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void HandleSBPlusClientAccountChanged(object sender, SBAccountChangedEventArgs e)
         {
             if (e.AccountName.Equals(GetDevelopmentAccountName(SBPlus.Current)))
@@ -996,6 +1122,15 @@ namespace SBXAThemeSupport
             }
         }
 
+        /// <summary>
+        /// The on set drawable changed.
+        /// </summary>
+        /// <param name="target">
+        /// The target.
+        /// </param>
+        /// <param name="args">
+        /// The args.
+        /// </param>
         private static void OnSetDrawableChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
         {
             // if (SBPlus.Current.CommandLineArguments.ContainsKey(GenericConstants.CL_START_APPLICATION))
@@ -1009,6 +1144,9 @@ namespace SBXAThemeSupport
             }
         }
 
+        /// <summary>
+        /// The send control x.
+        /// </summary>
         private static void SendControlX()
         {
             var field2 = SBFocusManager.FocusedControl as ISBField;
@@ -1032,6 +1170,12 @@ namespace SBXAThemeSupport
             // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
         }
 
+        /// <summary>
+        /// The send control x command executed.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
         private static void SendControlXCommandExecuted(object parameter)
         {
             var keyEventArgs = parameter as KeyEventArgs;
@@ -1044,6 +1188,12 @@ namespace SBXAThemeSupport
             keyEventArgs.Handled = true;
         }
 
+        /// <summary>
+        /// The show hide application insight command executed.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
         private static void ShowHideApplicationInsightCommandExecuted(object parameter)
         {
             var keyEventArgs = parameter as KeyEventArgs;
@@ -1056,6 +1206,12 @@ namespace SBXAThemeSupport
             keyEventArgs.Handled = true;
         }
 
+        /// <summary>
+        /// The show hide options command executed.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
         private static void ShowHideOptionsCommandExecuted(object parameter)
         {
             var keyEventArgs = parameter as KeyEventArgs;
@@ -1078,11 +1234,26 @@ namespace SBXAThemeSupport
             keyEventArgs.Handled = true;
         }
 
+        /// <summary>
+        /// The handle connected.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void HandleConnected(object sender, ConnectedEventArgs e)
         {
             this.SetIsConnected(e.Connected);
         }
 
+        /// <summary>
+        /// The set is connected.
+        /// </summary>
+        /// <param name="newValue">
+        /// The new value.
+        /// </param>
         private void SetIsConnected(bool newValue)
         {
             JobManager.RunInUIThread(DispatcherPriority.Input, () => this.IsConnected = newValue);
@@ -1098,8 +1269,14 @@ namespace SBXAThemeSupport
     {
         #region Fields
 
+        /// <summary>
+        /// The can execute.
+        /// </summary>
         private readonly Predicate<object> canExecute;
 
+        /// <summary>
+        /// The execute.
+        /// </summary>
         private readonly Action<object> execute;
 
         #endregion

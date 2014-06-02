@@ -25,8 +25,14 @@ namespace SBXAThemeSupport.Models
     {
         #region Fields
 
+        /// <summary>
+        /// The source.
+        /// </summary>
         private SBString source;
 
+        /// <summary>
+        /// The variable.
+        /// </summary>
         private string variable;
 
         #endregion
@@ -131,6 +137,12 @@ namespace SBXAThemeSupport.Models
 
         #region Methods
 
+        /// <summary>
+        /// The update collection.
+        /// </summary>
+        /// <param name="sbString">
+        /// The sb string.
+        /// </param>
         private void UpdateCollection(SBString sbString)
         {
             this.Clear();
@@ -169,14 +181,29 @@ namespace SBXAThemeSupport.Models
     {
         #region Fields
 
+        /// <summary>
+        /// The data.
+        /// </summary>
         private string data;
 
+        /// <summary>
+        /// The index.
+        /// </summary>
         private string index;
 
+        /// <summary>
+        /// The is nested.
+        /// </summary>
         private bool isNested;
 
+        /// <summary>
+        /// The source.
+        /// </summary>
         private SBString source;
 
+        /// <summary>
+        /// The variable.
+        /// </summary>
         private string variable;
 
         #endregion

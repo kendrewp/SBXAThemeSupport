@@ -127,6 +127,15 @@ namespace SBXAThemeSupport.Controls
             base.OnPreviewMouseDown(e);
         }
 
+        /// <summary>
+        /// The handle sb window preview mouse down.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void HandleSBWindowPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             // Find SBMvEditControl

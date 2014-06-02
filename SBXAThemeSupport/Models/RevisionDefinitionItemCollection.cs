@@ -16,6 +16,9 @@ namespace SBXAThemeSupport.Models
     {
         #region Fields
 
+        /// <summary>
+        /// The include.
+        /// </summary>
         private bool include;
 
         #endregion

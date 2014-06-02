@@ -6,7 +6,6 @@
 //   Copyright © Ascension Technologies, Inc. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-// #define SHOW_DEBUG
 namespace SBXAThemeSupport
 {
     using System;
@@ -21,7 +20,6 @@ namespace SBXAThemeSupport
     using SBXA.UI.Client;
     using SBXA.UI.WPFControls;
 
-
     /// <summary>
     ///     The sb process handler.
     /// </summary>
@@ -29,8 +27,14 @@ namespace SBXAThemeSupport
     {
         #region Static Fields
 
+        /// <summary>
+        /// The callbacks rtn flag.
+        /// </summary>
         private static readonly List<CallbackRuntime<string, string>> CallbacksRtnFlag = new List<CallbackRuntime<string, string>>();
 
+        /// <summary>
+        /// The callbacks subroutine.
+        /// </summary>
         private static readonly List<CallbackRuntime<bool, string>> CallbacksSubroutine = new List<CallbackRuntime<bool, string>>();
 
         #endregion
@@ -178,6 +182,7 @@ namespace SBXAThemeSupport
             {
                 Array.Resize(ref parameter, parCount);
             }
+
 #if SHOW_DEBUG
             CustomLogger.LogDebug(
                 () => string.Format("Die Subroutine : {0} wird aufgerufen.", string.Format("{0},{1}", subroutineName, parameter)));
@@ -382,6 +387,21 @@ namespace SBXAThemeSupport
 
         #region Methods
 
+        /// <summary>
+        /// The call process.
+        /// </summary>
+        /// <param name="processName">
+        /// The process name.
+        /// </param>
+        /// <param name="isInContext">
+        /// The is in context.
+        /// </param>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <param name="name">
+        /// The name.
+        /// </param>
         private static void CallProcess(string processName, bool isInContext, SBString parameter, string name = null)
         {
             string param = parameter.GetRawString();
@@ -403,6 +423,21 @@ namespace SBXAThemeSupport
                 name: name);
         }
 
+        /// <summary>
+        /// The call process internal.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <param name="currentFormHandle">
+        /// The current form handle.
+        /// </param>
+        /// <param name="target">
+        /// The target.
+        /// </param>
+        /// <param name="isInContext">
+        /// The is in context.
+        /// </param>
         private static void CallProcessInternal(object parameter, string currentFormHandle, IInputElement target, bool isInContext)
         {
             if (parameter == null)
@@ -458,6 +493,21 @@ namespace SBXAThemeSupport
 #endif
         }
 
+        /// <summary>
+        /// The execute subroutine.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
+        /// <param name="subroutineCallCompleted">
+        /// The subroutine call completed.
+        /// </param>
         private static void ExecuteSubroutine(
             string subroutineName, 
             SBString[] parameters, 
@@ -467,6 +517,23 @@ namespace SBXAThemeSupport
             SBPlusClient.Current.ExecuteSubroutine(subroutineName, parameters, userState, subroutineCallCompleted);
         }
 
+        /// <summary>
+        /// The execute subroutine.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="arguments">
+        /// The arguments.
+        /// </param>
+        /// <param name="commandCouldCauseUiAction">
+        /// The command could cause ui action.
+        /// </param>
+        /// <returns>
+        /// The <see cref="SBString[]"/>.
+        /// </returns>
+        /// <exception cref="ServerNotReadyException">
+        /// </exception>
         private static SBString[] ExecuteSubroutine(string subroutineName, SBString[] arguments, bool commandCouldCauseUiAction = false)
         {
             SBString[] retunSbStrings = null;
@@ -515,6 +582,18 @@ namespace SBXAThemeSupport
             return retunSbStrings;
         }
 
+        /// <summary>
+        /// The execute subroutine callback.
+        /// </summary>
+        /// <param name="isOk">
+        /// The is ok.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userstate">
+        /// The userstate.
+        /// </param>
         private static void ExecuteSubroutineCallback(bool isOk, SBString[] parameters, object userstate)
         {
             var callbackRuntime = userstate as CallbackRuntime<bool, SBString[]>;
@@ -556,6 +635,18 @@ namespace SBXAThemeSupport
             }
         }
 
+        /// <summary>
+        /// The prepare subroutine param.
+        /// </summary>
+        /// <param name="parCount">
+        /// The par count.
+        /// </param>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <returns>
+        /// The <see cref="SBString[]"/>.
+        /// </returns>
         private static SBString[] PrepareSubroutineParam(int parCount, string[] parameter)
         {
             var sbString = new SBString[parCount];
@@ -574,6 +665,18 @@ namespace SBXAThemeSupport
             return sbString;
         }
 
+        /// <summary>
+        /// The subroutine callback.
+        /// </summary>
+        /// <param name="subroutinename">
+        /// The subroutinename.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="callback">
+        /// The callback.
+        /// </param>
         private static void SubroutineCallback(string subroutinename, SBString[] parameters, Action<bool, SBString[]> callback)
         {
             var callbackRuntime = new CallbackRuntime<bool, SBString[]>();
@@ -586,6 +689,24 @@ namespace SBXAThemeSupport
                 SubroutineFailedCallback);
         }
 
+        /// <summary>
+        /// The subroutine callback.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="callbackRuntime">
+        /// The callback runtime.
+        /// </param>
+        /// <param name="subroutineCallCompleted">
+        /// The subroutine call completed.
+        /// </param>
+        /// <param name="subroutineCallFailed">
+        /// The subroutine call failed.
+        /// </param>
         private static void SubroutineCallback(
             string subroutineName, 
             SBString[] parameters, 
@@ -601,11 +722,38 @@ namespace SBXAThemeSupport
                 subroutineCallFailed);
         }
 
+        /// <summary>
+        /// The subroutine failed callback.
+        /// </summary>
+        /// <param name="subroutinename">
+        /// The subroutinename.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userstate">
+        /// The userstate.
+        /// </param>
+        /// <param name="exception">
+        /// The exception.
+        /// </param>
         private static void SubroutineFailedCallback(string subroutinename, SBString[] parameters, object userstate, Exception exception)
         {
             ExecuteSubroutineCallback(false, parameters, userstate);
         }
 
+        /// <summary>
+        /// The subroutine ok callback.
+        /// </summary>
+        /// <param name="subroutinename">
+        /// The subroutinename.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userstate">
+        /// The userstate.
+        /// </param>
         private static void SubroutineOkCallback(string subroutinename, SBString[] parameters, object userstate)
         {
             ExecuteSubroutineCallback(true, parameters, userstate);
@@ -613,6 +761,13 @@ namespace SBXAThemeSupport
 
         #endregion
 
+        /// <summary>
+        /// The callback runtime.
+        /// </summary>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <typeparam name="T2">
+        /// </typeparam>
         private class CallbackRuntime<T, T2>
         {
             #region Constructors and Destructors
@@ -629,10 +784,19 @@ namespace SBXAThemeSupport
 
             #region Properties
 
+            /// <summary>
+            /// Gets or sets the callback.
+            /// </summary>
             internal Action<T, T2> Callback { get; set; }
 
+            /// <summary>
+            /// Gets or sets the data.
+            /// </summary>
             internal SbData Data { get; set; }
 
+            /// <summary>
+            /// Gets the identification.
+            /// </summary>
             internal Guid Identification { get; private set; }
 
             #endregion

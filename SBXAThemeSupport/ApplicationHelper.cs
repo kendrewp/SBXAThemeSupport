@@ -3,7 +3,6 @@
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-// #define SHOW_DEBUG
 namespace SBXAThemeSupport
 {
     using System;
@@ -38,8 +37,14 @@ namespace SBXAThemeSupport
     {
         #region Static Fields
 
+        /// <summary>
+        /// The last can send value.
+        /// </summary>
         private static bool lastCanSendValue; // To hold the last value of CanSend, so I can only raise the event when it changes.
 
+        /// <summary>
+        /// The platform.
+        /// </summary>
         private static Platform platform;
 
         #endregion
@@ -297,6 +302,15 @@ namespace SBXAThemeSupport
 
         #region Methods
 
+        /// <summary>
+        /// The check can send server commands.
+        /// </summary>
+        /// <param name="doSendEventsBeforeCheck">
+        /// The do send events before check.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private static bool CheckCanSendServerCommands(bool doSendEventsBeforeCheck)
         {
             // let the client process the responses before we check the state of the server
@@ -356,6 +370,12 @@ namespace SBXAThemeSupport
             return canSend;
         }
 
+        /// <summary>
+        /// The get current account name.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
         private static string GetCurrentAccountName()
         {
             if (SBPlus.Current == null)
@@ -377,6 +397,15 @@ namespace SBXAThemeSupport
             return SBPlus.Current.CurrentAccountName;
         }
 
+        /// <summary>
+        /// The handle input state changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void HandleInputStateChanged(object sender, InputStateChangedEventArgs e)
         {
             bool checkCanSend = CanSendServerCommands();
@@ -389,6 +418,18 @@ namespace SBXAThemeSupport
             InvokeCanSendCommandChanged(new CanSendCommandChangedEventArgs(checkCanSend));
         }
 
+        /// <summary>
+        /// The read control record completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private static void ReadControlRecordCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             try
@@ -416,6 +457,15 @@ namespace SBXAThemeSupport
             }
         }
 
+        /// <summary>
+        /// The sb plus client on connected.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="eventArgs">
+        /// The event args.
+        /// </param>
         private static void SBPlusClientOnConnected(object sender, EventArgs eventArgs)
         {
             SBPlus.Current.InputStateChanged += HandleInputStateChanged;
@@ -424,6 +474,15 @@ namespace SBXAThemeSupport
                 () => SBFile.Read("DMCONT", "SB.CONTROL", ReadControlRecordCompleted, new object()));
         }
 
+        /// <summary>
+        /// The sb plus disconnected.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="args">
+        /// The args.
+        /// </param>
         private static void SBPlusDisconnected(object sender, EventArgs args)
         {
             SBPlus.Current.InputStateChanged -= HandleInputStateChanged;

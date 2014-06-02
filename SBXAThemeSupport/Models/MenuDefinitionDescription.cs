@@ -18,12 +18,24 @@ namespace SBXAThemeSupport.Models
     {
         #region Constants
 
+        /// <summary>
+        /// The menu option type.
+        /// </summary>
         private const int MenuOptionType = 8;
 
+        /// <summary>
+        /// The menu type.
+        /// </summary>
         private const int MenuType = 2;
 
+        /// <summary>
+        /// The options.
+        /// </summary>
         private const int Options = 6;
 
+        /// <summary>
+        /// The process name.
+        /// </summary>
         private const int ProcessName = 7;
 
         #endregion
@@ -83,6 +95,12 @@ namespace SBXAThemeSupport.Models
 
         #region Methods
 
+        /// <summary>
+        /// The parse definition.
+        /// </summary>
+        /// <param name="definition">
+        /// The definition.
+        /// </param>
         private void ParseDefinition(SBString definition)
         {
             /*
@@ -125,6 +143,12 @@ namespace SBXAThemeSupport.Models
             }
         }
 
+        /// <summary>
+        /// The process menu options.
+        /// </summary>
+        /// <param name="definition">
+        /// The definition.
+        /// </param>
         private void ProcessMenuOptions(SBString definition)
         {
             try

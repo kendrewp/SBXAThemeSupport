@@ -67,13 +67,34 @@ namespace SBXAThemeSupport.ViewModels
     {
         #region Constants
 
+        /// <summary>
+        /// The active application list id.
+        /// </summary>
         private const string ActiveApplicationListId = "ActiveApplicationList";
 
+        /// <summary>
+        /// The enable troubleshooting.
+        /// </summary>
         private const bool EnableTroubleshooting = true;
 
+        /// <summary>
+        /// The log rec description.
+        /// </summary>
         private const int LogRecDescription = 2;
 
+        /// <summary>
+        /// The log rec type.
+        /// </summary>
         private const int LogRecType = 1;
+
+        #endregion
+
+        #region Static Fields
+
+        /// <summary>
+        /// The organization.
+        /// </summary>
+        private static string organization;
 
         #endregion
 
@@ -116,6 +137,37 @@ namespace SBXAThemeSupport.ViewModels
         /// </value>
         public static string ServerFileName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the organization.
+        /// </summary>
+        /// <value>
+        /// The organization.
+        /// </value>
+        public static string Organization
+        {
+            get
+            {
+                return organization;
+            }
+
+            set
+            {
+                organization = value;
+                // now I need to add it to the application start item so it can be used later if need be.
+                ActiveApplicationList activeApplicationList;
+                int currentProcessId;
+                string currentProcessName;
+
+                var activeApplicationLog = ReadActiveApplicationLog(out activeApplicationList, out currentProcessId, out currentProcessName);
+                if (activeApplicationLog != null)
+                {
+                    activeApplicationLog.Organization = organization;
+                }
+                // commit the updated collection.
+                SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), true);
+            }
+        }
+
         #endregion
 
         #region Properties
@@ -155,20 +207,14 @@ namespace SBXAThemeSupport.ViewModels
                     SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, new ActiveApplicationList()), true);
                 }
 
-                // first get the collection, if it does not exist create a new one.
-                var activeApplicationList = SBPlus.Current.GlobalStateFile.GetItem(ActiveApplicationListId).Object as ActiveApplicationList
-                                            ?? new ActiveApplicationList();
-                // get the process id and name
-                var currentProcess = Process.GetCurrentProcess();
-                var currentProcessId = currentProcess.Id;
-                var currentProcessName = currentProcess.ProcessName;
-                if (currentProcessName.EndsWith("vshost"))
-                {
-                    currentProcessName = currentProcessName.Substring(0, currentProcessName.Length - 7);
-                }
+                ActiveApplicationList activeApplicationList;
+                int currentProcessId;
+                string currentProcessName;
+
+                var activeApplicationLog = ReadActiveApplicationLog(out activeApplicationList, out currentProcessId, out currentProcessName);
 
                 // create a new log entry with the process id
-                if (activeApplicationList.ContainsProcessId(currentProcessId))
+                if (activeApplicationLog != null && activeApplicationList.ContainsProcessId(currentProcessId))
                 {
                     // this is an error condition - there should not be a process with the same id already.
                     activeApplicationList.RemoveProcessId(currentProcessId);
@@ -176,7 +222,13 @@ namespace SBXAThemeSupport.ViewModels
 
                 // write it out.
                 activeApplicationList.Add(
-                    new ApplicationStartStopLog { ProcessId = currentProcessId, Start = DateTime.Now, CleanExit = false });
+                    new ApplicationStartStopLog
+                        {
+                            ProcessId = currentProcessId, 
+                            Start = DateTime.Now, 
+                            CleanExit = false, 
+                            Organization = Organization
+                        });
                 SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), true);
 
                 // check for left over entries, but getting the list of active process ids, then going through the list of entries in the log collection
@@ -197,7 +249,7 @@ namespace SBXAThemeSupport.ViewModels
                     }
 
                     // and finally a bad entry, so do the required notifications.
-                    LogBadClose(); // only log an exception if this is the only process running.
+                    LogBadClose(appLog.Organization); // only log an exception if this is the only process running.
 
                     // log the error so remove the entry from the logs.
                     toRemove.Add(appLog); // cannot remove it while I am processing it.
@@ -333,6 +385,8 @@ namespace SBXAThemeSupport.ViewModels
                                  ? windowsIdentity.Split(@"\".ToCharArray())[1]
                                  : windowsIdentity.Split(@"\".ToCharArray())[0];
 
+                // get the actual sbxa client version
+                var sbxa = typeof(SBString).Assembly.GetName();
                 var fileName = Path.GetRandomFileName();
                 var logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
 
@@ -351,6 +405,14 @@ namespace SBXAThemeSupport.ViewModels
                 logText.AppendLine(string.Format("User Id : {0} ", userId));
                 logText.AppendLine(string.Format("Machine Name {0}", SystemInformation.ComputerName));
                 logText.AppendLine(string.Format("Session Id {0}", sessionId));
+                logText.AppendLine(
+                    string.Format(
+                        "SB/XA Version {0}.{1}.{2}.{3}",
+                        sbxa.Version.Major,
+                        sbxa.Version.Minor,
+                        sbxa.Version.Build,
+                        sbxa.Version.Revision));
+                logText.AppendLine(string.Format("Customer {0}", orgId));
 
                 File.WriteAllText(fileName, logText.ToString());
                 SendAbnormalClose(message, fileName, null, deleteFiles, orgId);
@@ -565,6 +627,35 @@ namespace SBXAThemeSupport.ViewModels
         #region Methods
 
         /// <summary>
+        /// Reads the active application log.
+        /// </summary>
+        /// <param name="activeApplicationList">The active application list.</param>
+        /// <param name="currentProcessId">The current process identifier.</param>
+        /// <param name="currentProcessName">Name of the current process.</param>
+        /// <returns>An intance of <see cref="ApplicationStartStopLog"/> or null.</returns>
+        private static ApplicationStartStopLog ReadActiveApplicationLog(out ActiveApplicationList activeApplicationList, out int currentProcessId, out string currentProcessName)
+        {
+            // first get the collection, if it does not exist create a new one.
+            activeApplicationList = SBPlus.Current.GlobalStateFile.GetItem(ActiveApplicationListId).Object as ActiveApplicationList
+                                    ?? new ActiveApplicationList();
+            // get the process id and name
+            var currentProcess = Process.GetCurrentProcess();
+            currentProcessId = currentProcess.Id;
+            currentProcessName = currentProcess.ProcessName;
+            if (currentProcessName.EndsWith("vshost"))
+            {
+                currentProcessName = currentProcessName.Substring(0, currentProcessName.Length - 7);
+            }
+
+            if (activeApplicationList.ContainsProcessId(currentProcessId))
+            {
+                return activeApplicationList[currentProcessId];
+            }
+
+            return null;
+        }
+
+        /// <summary>
         ///     This method will check to see if there are any files in the upload folder.
         /// </summary>
         /// <returns>True or false depending on if there are files that need to be uploaded.</returns>
@@ -578,6 +669,18 @@ namespace SBXAThemeSupport.ViewModels
             return Directory.GetFiles(UploadFolder).Count() != 0 || Directory.GetDirectories(UploadFolder).Count() != 0;
         }
 
+        /// <summary>
+        /// The check for trouble shooter file completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private static void CheckForTroubleShooterFileCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             try
@@ -608,7 +711,12 @@ namespace SBXAThemeSupport.ViewModels
 
                 if (!string.IsNullOrEmpty(additionalText))
                 {
-                    logRecord.SBInsert(LogRecDescription, additionalText);
+                    var tmp = additionalText.Replace(
+                        "\r\n",
+                        Convert.ToString(GenericConstants.DEFAULT_AM_CHAR));
+
+                    var addText = new SBString(tmp, new char[] { GenericConstants.DEFAULT_AM_CHAR, GenericConstants.DEFAULT_VM_CHAR, GenericConstants.DEFAULT_SVM_CHAR });
+                    logRecord.SBInsert(LogRecDescription, addText);
                 }
                 else
                 {
@@ -669,6 +777,18 @@ namespace SBXAThemeSupport.ViewModels
             }
         }
 
+        /// <summary>
+        /// The execute exception reporter.
+        /// </summary>
+        /// <param name="fileName">
+        /// The file name.
+        /// </param>
+        /// <param name="uniqueId">
+        /// The unique id.
+        /// </param>
+        /// <param name="logFolder">
+        /// The log folder.
+        /// </param>
         private static void ExecuteExceptionReporter(string fileName, string uniqueId, string logFolder)
         {
             // string processInfo = "ExceptionReporter.exe "+fileName;
@@ -680,22 +800,53 @@ namespace SBXAThemeSupport.ViewModels
             Process.Start(processInfo);
         }
 
-        private static void LogBadClose()
+        /// <summary>
+        /// The log bad close.
+        /// </summary>
+        /// <param name="org">
+        /// The org.
+        /// </param>
+        private static void LogBadClose(string org)
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (EnableTroubleshooting)
             {
-                SendAbnormalClose("Application was not closed correctly.", true);
+                SendAbnormalClose("Application was not closed correctly.", true, org);
             }
         }
 
+        /// <summary>
+        /// The log problem in server.
+        /// </summary>
+        /// <param name="problemType">
+        /// The problem type.
+        /// </param>
+        /// <param name="fileName">
+        /// The file name.
+        /// </param>
+        /// <param name="additionalFiles">
+        /// The additional files.
+        /// </param>
+        /// <param name="userId">
+        /// The user id.
+        /// </param>
+        /// <param name="logFolder">
+        /// The log folder.
+        /// </param>
+        /// <param name="deleteFiles">
+        /// The delete files.
+        /// </param>
+        /// <param name="org">
+        /// The org.
+        /// </param>
         private static void LogProblemInServer(
             string problemType, 
             string fileName, 
             string[] additionalFiles, 
             string userId, 
             string logFolder, 
-            bool deleteFiles)
+            bool deleteFiles,
+            string org = null)
         {
             // check if the file exists, if not ignore the call so we do not crash.
             // string id = "date" + "TIME" + "machine name";
@@ -705,6 +856,7 @@ namespace SBXAThemeSupport.ViewModels
                      + "*";
             id += Convert.ToString(SBXA.Shared.SBConv.IConvTime(now.Hour + ":" + now.Minute + "/" + now.Second, "MTS")) + "*";
             id += SystemInformation.ComputerName;
+            id += "*" + (string.IsNullOrEmpty(org) ? organization : org);
 
             var text = string.Empty;
             if (!string.IsNullOrEmpty(fileName) && File.Exists(fileName))
@@ -738,6 +890,27 @@ namespace SBXAThemeSupport.ViewModels
                 new object[] { id, problemType, fileName, additionalFiles, userId, logFolder, text });
         }
 
+        /// <summary>
+        /// The move files to upload.
+        /// </summary>
+        /// <param name="uniqueId">
+        /// The unique id.
+        /// </param>
+        /// <param name="sourceFolder">
+        /// The source folder.
+        /// </param>
+        /// <param name="additionalFiles">
+        /// The additional files.
+        /// </param>
+        /// <param name="zipFolder">
+        /// The zip folder.
+        /// </param>
+        /// <param name="deleteOriginal">
+        /// The delete original.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private static bool MoveFilesToUpload(
             string uniqueId, 
             string sourceFolder, 
@@ -789,16 +962,21 @@ namespace SBXAThemeSupport.ViewModels
                 {
                     foreach (var file in additionalFiles)
                     {
-                        // if file not exists, take the next
-                        if (!File.Exists(file))
+                        try
                         {
-                            continue;
-                        }
+                            // if file not exists, take the next
+                            if (!File.Exists(file))
+                            {
+                                continue;
+                            }
 
-                        var parent = Directory.GetParent(file);
-                        var fileName = file.Substring(parent.FullName.Length + 1, file.Length - parent.FullName.Length - 1);
-                        if (File.Exists(file))
-                        {
+                            var parent = Directory.GetParent(file);
+                            var fileName = file.Substring(parent.FullName.Length + 1, file.Length - parent.FullName.Length - 1);
+                            if (!File.Exists(file) || File.Exists(Path.Combine(targetFolder, fileName)))
+                            {
+                                continue;
+                            }
+
                             File.Copy(file, Path.Combine(targetFolder, fileName));
                             // check if I need to delete the original.
                             if (deleteOriginal)
@@ -815,6 +993,13 @@ namespace SBXAThemeSupport.ViewModels
                                 }
                             }
                         }
+                        catch (Exception exception)
+                        {
+                            // log the exception and keep trying to copy files.
+                            CustomLogger.LogException(
+                                exception, 
+                                "An exception while trying to copy " + (string.IsNullOrEmpty(file) ? "empty file Name" : file));
+                        }
                     }
                 }
 
@@ -827,13 +1012,37 @@ namespace SBXAThemeSupport.ViewModels
             }
             catch (Exception exception)
             {
-                SBPlusClient.LogError("A problem occurred moving files to " + targetFolder, exception);
+                CustomLogger.LogException(exception, "A problem occurred moving files to " + targetFolder);
                 return false;
             }
 
             return true;
         }
 
+        /// <summary>
+        /// The register problem.
+        /// </summary>
+        /// <param name="problemType">
+        /// The problem type.
+        /// </param>
+        /// <param name="fileName">
+        /// The file name.
+        /// </param>
+        /// <param name="additionalFiles">
+        /// The additional files.
+        /// </param>
+        /// <param name="userId">
+        /// The user id.
+        /// </param>
+        /// <param name="logFolder">
+        /// The log folder.
+        /// </param>
+        /// <param name="deleteFiles">
+        /// The delete files.
+        /// </param>
+        /// <param name="orgId">
+        /// The org id.
+        /// </param>
         private static void RegisterProblem(
             string problemType, 
             string fileName, 
@@ -855,7 +1064,7 @@ namespace SBXAThemeSupport.ViewModels
                 case ReportProblemsTo.Email:
                     break;
                 case ReportProblemsTo.Server:
-                    LogProblemInServer(problemType, fileName, additionalFiles, userId, logFolder, deleteFiles);
+                    LogProblemInServer(problemType, fileName, additionalFiles, userId, logFolder, deleteFiles, orgId);
                     break;
                 case ReportProblemsTo.LocalFolder:
                     ExecuteExceptionReporter(fileName.Replace(" ", "%20%"), uniqueId.Replace(" ", "%20%"), logFolder.Replace(" ", "%20%"));
@@ -863,6 +1072,18 @@ namespace SBXAThemeSupport.ViewModels
             }
         }
 
+        /// <summary>
+        /// The upload completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private static void UploadCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             try
@@ -884,6 +1105,9 @@ namespace SBXAThemeSupport.ViewModels
             }
         }
 
+        /// <summary>
+        /// The upload files.
+        /// </summary>
         private static void UploadFiles()
         {
             if (!AreFilesToUpload())
@@ -914,6 +1138,18 @@ namespace SBXAThemeSupport.ViewModels
             }
         }
 
+        /// <summary>
+        /// The write completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private static void WriteCompleted(string subroutineName, SBString[] parameters, object userState)
         {
         }
@@ -929,13 +1165,30 @@ namespace SBXAThemeSupport.ViewModels
     {
         #region Fields
 
+        /// <summary>
+        /// The clean exit.
+        /// </summary>
         private bool cleanExit;
 
+        /// <summary>
+        /// The process id.
+        /// </summary>
         private int processId;
 
+        /// <summary>
+        /// The start.
+        /// </summary>
         private DateTime start;
 
         private DateTime stop;
+
+        /// <summary>
+        /// Gets or sets the organization.
+        /// </summary>
+        /// <value>
+        /// The organization.
+        /// </value>
+        public string Organization { get; set; }
 
         #endregion
 

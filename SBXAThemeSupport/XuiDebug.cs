@@ -34,6 +34,15 @@ namespace SBXAThemeSupport
     {
         #region Methods
 
+        /// <summary>
+        /// The enable debug.
+        /// </summary>
+        /// <param name="subroutineCallCompleted">
+        /// The subroutine call completed.
+        /// </param>
+        /// <param name="enable">
+        /// The enable.
+        /// </param>
         internal static void EnableDebug(SubroutineCallCompleted subroutineCallCompleted, bool enable)
         {
             SbProcessHandler.CallSubroutine(
@@ -46,6 +55,15 @@ namespace SBXAThemeSupport
                 new object[0]);
         }
 
+        /// <summary>
+        /// The get common variable.
+        /// </summary>
+        /// <param name="subroutineCallCompleted">
+        /// The subroutine call completed.
+        /// </param>
+        /// <param name="whichVariable">
+        /// The which variable.
+        /// </param>
         internal static void GetCommonVariable(SubroutineCallCompleted subroutineCallCompleted, string whichVariable)
         {
             SbProcessHandler.CallSubroutine(
@@ -55,6 +73,12 @@ namespace SBXAThemeSupport
                 new object[0]);
         }
 
+        /// <summary>
+        /// The is debug enabled.
+        /// </summary>
+        /// <param name="subroutineCallCompleted">
+        /// The subroutine call completed.
+        /// </param>
         internal static void IsDebugEnabled(SubroutineCallCompleted subroutineCallCompleted)
         {
             SbProcessHandler.CallSubroutine(
@@ -64,11 +88,29 @@ namespace SBXAThemeSupport
                 new object[0]);
         }
 
+        /// <summary>
+        /// The is xui debug there.
+        /// </summary>
+        /// <param name="subroutineCallCompleted">
+        /// The subroutine call completed.
+        /// </param>
         internal static void IsXuiDebugThere(SubroutineCallCompleted subroutineCallCompleted)
         {
             SBFile.Read("VOC", "XUI.DEBUG", subroutineCallCompleted);
         }
 
+        /// <summary>
+        /// The stack expression.
+        /// </summary>
+        /// <param name="expressionStackCompleted">
+        /// The expression stack completed.
+        /// </param>
+        /// <param name="expression">
+        /// The expression.
+        /// </param>
+        /// <param name="fileName">
+        /// The file name.
+        /// </param>
         internal static void StackExpression(SubroutineCallCompleted expressionStackCompleted, string expression, string fileName)
         {
             JobManager.RunInUIThread(

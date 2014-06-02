@@ -16,6 +16,9 @@ namespace SBXAThemeSupport.Views
     {
         #region Static Fields
 
+        /// <summary>
+        /// The start item property.
+        /// </summary>
         public static readonly DependencyProperty StartItemProperty = DependencyProperty.Register(
             "StartItem", 
             typeof(TreeItem), 

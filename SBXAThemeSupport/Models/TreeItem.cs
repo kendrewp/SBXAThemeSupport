@@ -74,8 +74,14 @@ namespace SBXAThemeSupport.Models
     {
         #region Fields
 
+        /// <summary>
+        /// The children.
+        /// </summary>
         private IEnumerable children;
 
+        /// <summary>
+        /// The is error.
+        /// </summary>
         private bool isError;
 
         #endregion
@@ -116,25 +122,6 @@ namespace SBXAThemeSupport.Models
         #region Public Properties
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is error.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is error; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsError
-        {
-            get
-            {
-                return this.isError;
-            }
-            set
-            {
-                this.isError = value;
-                this.RaisePropertyChanged("IsError");
-            }
-        }
-
-        /// <summary>
         ///     Gets the children.
         /// </summary>
         public IEnumerable Children
@@ -158,6 +145,26 @@ namespace SBXAThemeSupport.Models
         ///     The description.
         /// </value>
         public string Description { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether this instance is error.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is error; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsError
+        {
+            get
+            {
+                return this.isError;
+            }
+
+            set
+            {
+                this.isError = value;
+                this.RaisePropertyChanged("IsError");
+            }
+        }
 
         /// <summary>
         ///     Gets the name.

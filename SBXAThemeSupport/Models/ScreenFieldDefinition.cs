@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ScreenFieldDefinition.cs" company="">
+//   
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace SBXAThemeSupport.Models
 {
+    /// <summary>
+    /// The screen field definition.
+    /// </summary>
     public class ScreenFieldDefinition : FieldDefinition
     {
+        #region Constructors and Destructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ScreenFieldDefinition"/> class.
         /// </summary>
@@ -21,5 +27,6 @@ namespace SBXAThemeSupport.Models
         {
         }
 
+        #endregion
     }
 }

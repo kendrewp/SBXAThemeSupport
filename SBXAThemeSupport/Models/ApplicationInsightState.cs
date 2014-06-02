@@ -20,8 +20,14 @@ namespace SBXAThemeSupport.Models
     {
         #region Fields
 
+        /// <summary>
+        /// The is debug window open.
+        /// </summary>
         private bool isDebugWindowOpen;
 
+        /// <summary>
+        /// The mru process list.
+        /// </summary>
         private StringCollection mruProcessList;
 
         #endregion

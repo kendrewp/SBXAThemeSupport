@@ -9,9 +9,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
-    using System.Diagnostics;
     using System.IO;
-    using System.Windows;
     using System.Windows.Threading;
 
     using SBXA.Runtime;
@@ -51,12 +49,12 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// <summary>
         ///     The expression.
         /// </summary>
-        Expression,
+        Expression, 
 
         /// <summary>
-        /// The definition
+        ///     The definition
         /// </summary>
-        Definition,
+        Definition, 
 
         /// <summary>
         ///     The menu.
@@ -76,6 +74,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
     {
         #region Static Fields
 
+        /// <summary>
+        /// The exclude file list.
+        /// </summary>
         private static readonly StringCollection ExcludeFileList = new StringCollection
                                                                        {
                                                                            "DM", 
@@ -83,7 +84,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                                                                            "DMSH", 
                                                                            "DMGC", 
                                                                            "DMGD", 
-                                                                           "DMSKELCODE",
+                                                                           "DMSKELCODE", 
                                                                            "TUBP", 
                                                                            "ASCPROGS"
                                                                        };
@@ -92,23 +93,50 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         #region Fields
 
+        /// <summary>
+        /// The error collection.
+        /// </summary>
+        private readonly ObservableCollection<ErrorDescription> errorCollection = new ObservableCollection<ErrorDescription>();
+
+        /// <summary>
+        /// The process collection.
+        /// </summary>
         private readonly ProcessCollection processCollection = new ProcessCollection();
 
+        /// <summary>
+        /// The process stack.
+        /// </summary>
         private readonly ProcessStack processStack = new ProcessStack();
 
+        /// <summary>
+        /// The definition.
+        /// </summary>
         private DefinitionDescription definition;
 
+        /// <summary>
+        /// The global menu file.
+        /// </summary>
         private string globalMenuFile = string.Empty;
 
+        /// <summary>
+        /// The global process file.
+        /// </summary>
         private string globalProcessFile = string.Empty;
 
+        /// <summary>
+        /// The is loading.
+        /// </summary>
         private int isLoading;
 
+        /// <summary>
+        /// The last process read error.
+        /// </summary>
         private string lastProcessReadError;
 
+        /// <summary>
+        /// The process name.
+        /// </summary>
         private string processName;
-
-        private readonly ObservableCollection<ErrorDescription> errorCollection = new ObservableCollection<ErrorDescription>();
 
         #endregion
 
@@ -145,6 +173,17 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             {
                 this.definition = value;
                 this.RaisePropertyChanged("definition");
+            }
+        }
+
+        /// <summary>
+        /// Gets the error collection.
+        /// </summary>
+        public ObservableCollection<ErrorDescription> ErrorCollection
+        {
+            get
+            {
+                return this.errorCollection;
             }
         }
 
@@ -218,14 +257,6 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             get
             {
                 return this.processStack;
-            }
-        }
-
-        public ObservableCollection<ErrorDescription> ErrorCollection
-        {
-            get
-            {
-                return this.errorCollection;
             }
         }
 
@@ -305,6 +336,21 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
 
         #region Methods
 
+        /// <summary>
+        /// The add expression to collection.
+        /// </summary>
+        /// <param name="parent">
+        /// The parent.
+        /// </param>
+        /// <param name="hookPoint">
+        /// The hook point.
+        /// </param>
+        /// <param name="expression">
+        /// The expression.
+        /// </param>
+        /// <param name="sysId">
+        /// The sys id.
+        /// </param>
         internal void AddExpressionToCollection(DefinitionDescription parent, string hookPoint, string expression, string sysId = "")
         {
             // standard SB expression elements and therefore no need to try read the process, just add the element
@@ -314,6 +360,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             this.AddProcessToCollection(hookPoint, parent, sbExpression);
         }
 
+        /// <summary>
+        /// The load basic program from expression.
+        /// </summary>
+        /// <param name="expression">
+        /// The expression.
+        /// </param>
+        /// <param name="parent">
+        /// The parent.
+        /// </param>
+        /// <param name="hookPoint">
+        /// The hook point.
+        /// </param>
         internal void LoadBasicProgramFromExpression(string expression, DefinitionDescription parent = null, string hookPoint = "")
         {
             string callType;
@@ -332,6 +390,24 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             this.LoadBasicProgram(programName, parent, expression, hookPoint);
         }
 
+        /// <summary>
+        /// The load menu.
+        /// </summary>
+        /// <param name="menuName">
+        /// The menu name.
+        /// </param>
+        /// <param name="parent">
+        /// The parent.
+        /// </param>
+        /// <param name="expression">
+        /// The expression.
+        /// </param>
+        /// <param name="hookPoint">
+        /// The hook point.
+        /// </param>
+        /// <param name="sysid">
+        /// The sysid.
+        /// </param>
         internal void LoadMenu(
             string menuName, 
             DefinitionDescription parent = null, 
@@ -488,23 +564,27 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 // there is no expression so no need to try load it.
                 return;
             }
+
             if (expression.StartsWith("P.CALL.PROCESS"))
             {
                 // this is specific to American Auto Shield. The have a process used to call other processes so we can just remove it.
                 expression = expression.Substring(15);
             }
+
             // Check to see if it is a constant, if so just add it to the collection.
             if (SBExpression.IsConstantValueExpression(expression))
             {
                 this.AddExpressionToCollection(source, hookType, hookPoint, parent, expression);
                 return;
             }
+
             var colonPos = expression.IndexOf(":", StringComparison.Ordinal);
             if (colonPos != 1)
             {
                 // SB expression that have an identified, i.e. B: D: all have a single character then a ':'
                 colonPos = 0;
             }
+
             // a field definition has no process hooks they are all expressions, etc. int help.
             if (source != SourceDefinition.Paragraph
                 && (colonPos > 0 || source == SourceDefinition.Field || source == SourceDefinition.Expression))
@@ -540,6 +620,21 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The load screen.
+        /// </summary>
+        /// <param name="screenName">
+        /// The screen name.
+        /// </param>
+        /// <param name="fileName">
+        /// The file name.
+        /// </param>
+        /// <param name="parent">
+        /// The parent.
+        /// </param>
+        /// <param name="hookPoint">
+        /// The hook point.
+        /// </param>
         internal void LoadScreen(string screenName, string fileName, DefinitionDescription parent = null, string hookPoint = "")
         {
             JobManager.RunInUIThread(
@@ -565,6 +660,12 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     });
         }
 
+        /// <summary>
+        /// The add process to mru.
+        /// </summary>
+        /// <param name="process">
+        /// The process.
+        /// </param>
         private static void AddProcessToMru(string process)
         {
             var mru = DebugViewModel.Instance.ApplicationInsightState.MruProcessList;
@@ -586,6 +687,12 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             DebugViewModel.Instance.SaveState();
         }
 
+        /// <summary>
+        /// The remove process from mru.
+        /// </summary>
+        /// <param name="process">
+        /// The process.
+        /// </param>
         private static void RemoveProcessFromMru(string process)
         {
             var mru = DebugViewModel.Instance.ApplicationInsightState.MruProcessList;
@@ -599,6 +706,15 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The add basic program to collection.
+        /// </summary>
+        /// <param name="basicProgramDescription">
+        /// The basic program description.
+        /// </param>
+        /// <param name="processLoadState">
+        /// The process load state.
+        /// </param>
         private void AddBasicProgramToCollection(DefinitionDescription basicProgramDescription, ProcessLoadState processLoadState = null)
         {
             if (DebugWindowManager.DebugConsoleWindow == null)
@@ -651,6 +767,27 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     });
         }
 
+        /// <summary>
+        /// The add expression to collection.
+        /// </summary>
+        /// <param name="source">
+        /// The source.
+        /// </param>
+        /// <param name="hookType">
+        /// The hook type.
+        /// </param>
+        /// <param name="description">
+        /// The description.
+        /// </param>
+        /// <param name="processDescription">
+        /// The process description.
+        /// </param>
+        /// <param name="expression">
+        /// The expression.
+        /// </param>
+        /// <param name="sysid">
+        /// The sysid.
+        /// </param>
         private void AddExpressionToCollection(
             SourceDefinition source, 
             SourceDefinition hookType, 
@@ -744,6 +881,54 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     });
         }
 
+        /// <summary>
+        /// The add include to collection.
+        /// </summary>
+        /// <param name="fileName">
+        /// The file name.
+        /// </param>
+        /// <param name="itemName">
+        /// The item name.
+        /// </param>
+        /// <param name="expression">
+        /// The expression.
+        /// </param>
+        /// <param name="parent">
+        /// The parent.
+        /// </param>
+        private void AddIncludeToCollection(string fileName, string itemName, string expression, DefinitionDescription parent)
+        {
+            // check if I already have the definition in the collection
+            lock (this.processCollection)
+            {
+                DefinitionDescription basicProgramDescription = null;
+                if (this.processCollection.ContainsKey(fileName, itemName, typeof(BasicProgramDescription)))
+                {
+                    basicProgramDescription = this.processCollection[fileName, itemName, typeof(BasicProgramDescription)];
+                }
+
+                if (basicProgramDescription == null)
+                {
+                    basicProgramDescription = new BasicProgramDescription(fileName, itemName);
+                    BasicProgramDescription.IsInclude = true;
+                    this.processCollection.Add(basicProgramDescription);
+                }
+
+                this.AddBasicProgramToCollection(
+                    basicProgramDescription, 
+                    new ProcessLoadState { Expression = expression, HookPoint = "INCLUDE", ParentDefinitionDescription = parent });
+            }
+        }
+
+        /// <summary>
+        /// The add item to collection.
+        /// </summary>
+        /// <param name="collection">
+        /// The collection.
+        /// </param>
+        /// <param name="processCall">
+        /// The process call.
+        /// </param>
         private void AddItemToCollection(ObservableCollection<ProcessCall> collection, ProcessCall processCall)
         {
             try
@@ -781,6 +966,15 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The add item to collection.
+        /// </summary>
+        /// <param name="collection">
+        /// The collection.
+        /// </param>
+        /// <param name="sbExpression">
+        /// The sb expression.
+        /// </param>
         private void AddItemToCollection(ObservableCollection<SBExpression> collection, SBExpression sbExpression)
         {
             lock (collection)
@@ -789,6 +983,24 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The add process to collection.
+        /// </summary>
+        /// <param name="processFileName">
+        /// The process file name.
+        /// </param>
+        /// <param name="pName">
+        /// The p name.
+        /// </param>
+        /// <param name="defn">
+        /// The defn.
+        /// </param>
+        /// <param name="processLoadState">
+        /// The process load state.
+        /// </param>
+        /// <param name="isError">
+        /// The is error.
+        /// </param>
         private void AddProcessToCollection(
             string processFileName, 
             string pName, 
@@ -841,6 +1053,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     });
         }
 
+        /// <summary>
+        /// The add process to collection.
+        /// </summary>
+        /// <param name="description">
+        /// The description.
+        /// </param>
+        /// <param name="parentDefinitionDescription">
+        /// The parent definition description.
+        /// </param>
+        /// <param name="processDescription">
+        /// The process description.
+        /// </param>
         private void AddProcessToCollection(
             string description, 
             DefinitionDescription parentDefinitionDescription, 
@@ -866,11 +1090,38 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     });
         }
 
+        /// <summary>
+        /// The can execute analyse process command.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private bool CanExecuteAnalyseProcessCommand(object parameter)
         {
             return !string.IsNullOrEmpty(this.ProcessName) && !string.IsNullOrWhiteSpace(this.ProcessName) && this.IsLoading == 0;
         }
 
+        /// <summary>
+        /// The create paragraph description.
+        /// </summary>
+        /// <param name="processFileName">
+        /// The process file name.
+        /// </param>
+        /// <param name="pName">
+        /// The p name.
+        /// </param>
+        /// <param name="expression">
+        /// The expression.
+        /// </param>
+        /// <param name="defn">
+        /// The defn.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ParagraphDescription"/>.
+        /// </returns>
         private ParagraphDescription CreateParagraphDescription(string processFileName, string pName, string expression, SBString defn)
         {
             var processDescription = new ParagraphDescription(processFileName, pName, expression, defn);
@@ -933,7 +1184,13 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             DefinitionDescription processDescription;
             if (defn == null)
             {
-                processDescription = new DefinitionDescription(processFileName, pName, SourceDefinition.Process,  processLoadState.Expression) { IsError = true };
+                processDescription = new DefinitionDescription(
+                    processFileName, 
+                    pName, 
+                    SourceDefinition.Process, 
+                    processLoadState.Expression) {
+                                                    IsError = true 
+                                                 };
                 return processDescription;
             }
 
@@ -961,26 +1218,28 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     processDescription = new SelectionProcessDescription(processFileName, pName, defn);
                     break;
                 default:
-                    processDescription = new DefinitionDescription(processFileName, pName, SourceDefinition.Process, processLoadState.Expression);
+                    processDescription = new DefinitionDescription(
+                        processFileName, 
+                        pName, 
+                        SourceDefinition.Process, 
+                        processLoadState.Expression);
                     break;
             }
 
             return processDescription;
         }
 
-        private void ResetAnalysis()
-        {
-            this.processStack.Dispose();
-            this.ProcessStack.Clear();
-            this.processCollection.Dispose();
-            this.processCollection.Clear();
-        }
-
+        /// <summary>
+        /// The executed analyse process command.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
         private void ExecutedAnalyseProcessCommand(object parameter)
         {
             // clean up any collections before starting.
-            ResetAnalysis();
-            ErrorCollection.Clear();
+            this.ResetAnalysis();
+            this.ErrorCollection.Clear();
             this.IsLoading = 0;
             this.ReadControlRecord(); // Make sure I have the latest control record.
             var pName = DebugViewModel.Instance.ProcessAnalysisViewModel.ProcessName;
@@ -990,6 +1249,15 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             this.LoadProcess(DebugViewModel.Instance.ProcessAnalysisViewModel.ProcessName);
         }
 
+        /// <summary>
+        /// The find calls in basic program.
+        /// </summary>
+        /// <param name="basicProgram">
+        /// The basic program.
+        /// </param>
+        /// <param name="basicProgramDescription">
+        /// The basic program description.
+        /// </param>
         private void FindCallsInBasicProgram(IEnumerable<SBString> basicProgram, BasicProgramDescription basicProgramDescription)
         {
             foreach (var line in basicProgram)
@@ -1007,6 +1275,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         this.LoadBasicProgram(progName, basicProgramDescription, line.Value, "CALL");
                         continue;
                     }
+
                     if (line.Value.IndexOf("INCLUDE") >= 0)
                     {
                         var code = line.Value.Trim();
@@ -1023,8 +1292,11 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                                     itemName = parts[elemNo + 2];
                                     if (!IsExcludeFile(fileName))
                                     {
-                                        JobManager.RunInUIThread(DispatcherPriority.Normal, () => AddIncludeToCollection(fileName, itemName, code, basicProgramDescription));
+                                        JobManager.RunInUIThread(
+                                            DispatcherPriority.Normal, 
+                                            () => this.AddIncludeToCollection(fileName, itemName, code, basicProgramDescription));
                                     }
+
                                     break;
                                 }
                             }
@@ -1036,35 +1308,21 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             basicProgramDescription.Parsed = true;
         }
 
-        private void AddIncludeToCollection(string fileName, string itemName, string expression, DefinitionDescription parent)
-        {
-            // check if I already have the definition in the collection
-            lock (this.processCollection)
-            {
-                DefinitionDescription basicProgramDescription = null;
-                if (this.processCollection.ContainsKey(fileName, itemName, typeof(BasicProgramDescription)))
-                {
-                    basicProgramDescription = this.processCollection[fileName, itemName, typeof(BasicProgramDescription)];
-                }
-
-                if (basicProgramDescription == null)
-                {
-                    basicProgramDescription = new BasicProgramDescription(fileName, itemName);
-                    BasicProgramDescription.IsInclude = true;
-                    this.processCollection.Add(basicProgramDescription);
-                }
-
-                this.AddBasicProgramToCollection(
-                    basicProgramDescription,
-                    new ProcessLoadState
-                    {
-                        Expression = expression,
-                        HookPoint = "INCLUDE",
-                        ParentDefinitionDescription = parent
-                    });
-            }
-        }
-
+        /// <summary>
+        /// The load basic program.
+        /// </summary>
+        /// <param name="programName">
+        /// The program name.
+        /// </param>
+        /// <param name="parent">
+        /// The parent.
+        /// </param>
+        /// <param name="expression">
+        /// The expression.
+        /// </param>
+        /// <param name="hookPoint">
+        /// The hook point.
+        /// </param>
         private void LoadBasicProgram(
             string programName, 
             DefinitionDescription parent = null, 
@@ -1107,6 +1365,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     });
         }
 
+        /// <summary>
+        /// The read basic program completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private void ReadBasicProgramCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             this.SetIsLoading(-1);
@@ -1127,6 +1397,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             this.FindCallsInBasicProgram(parameters[3], basicProgramDescription);
         }
 
+        /// <summary>
+        /// The read basic program voc pointer completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private void ReadBasicProgramVocPointerCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             try
@@ -1145,7 +1427,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     if (this.processCollection.ContainsKey(string.Empty, parameters[1].Value, typeof(BasicProgramDescription)))
                     {
                         basicProgramDescription = this.processCollection[parameters[1].Value] as BasicProgramDescription;
-/*
+                        /*
                         Debug.WriteLine(
                             "[ProcessAnalysisViewModel.ReadBasicProgramVocPointerCompleted(355)] Read " + parameters[1].Value
                             + " from cache.");
@@ -1156,7 +1438,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     {
                         basicProgramDescription = new BasicProgramDescription(string.Empty, parameters[1].Value);
                         this.processCollection.Add(basicProgramDescription);
-/*
+                        /*
                         Debug.WriteLine(
                             "[ProcessAnalysisViewModel.ReadBasicProgramVocPointerCompleted(363)] Added " + basicProgramDescription.Name
                             + " to cache.");
@@ -1251,6 +1533,9 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The read control record.
+        /// </summary>
         private void ReadControlRecord()
         {
             // 6.2
@@ -1264,6 +1549,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     });
         }
 
+        /// <summary>
+        /// The read control record completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private void ReadControlRecordCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             this.SetIsLoading(-1);
@@ -1280,6 +1577,18 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             this.globalMenuFile = record.Extract(6, 3).Value;
         }
 
+        /// <summary>
+        /// The read process completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private void ReadProcessCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             try
@@ -1332,32 +1641,50 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                             this.AddProcessToCollection(processFileName, pName, null, processState, true);
                             // Now remove it from the MRU is it is there and display a message.
                             RemoveProcessFromMru(pName);
-                            JobManager.RunInDispatcherThread(DebugWindowManager.DebugConsoleWindow.Dispatcher, DispatcherPriority.Normal,
+                            JobManager.RunInDispatcherThread(
+                                DebugWindowManager.DebugConsoleWindow.Dispatcher, 
+                                DispatcherPriority.Normal, 
                                 () =>
                                     {
                                         if (processState.ParentDefinitionDescription == null)
                                         {
-                                            this.ErrorCollection.Add(new ErrorDescription()
-                                            {
-                                                ProcessName = pName,
-                                                Description = string.Format("Failed to read process '{0}'.", pName)
-                                            });
+                                            this.ErrorCollection.Add(
+                                                new ErrorDescription()
+                                                    {
+                                                        ProcessName = pName, 
+                                                        Description = string.Format("Failed to read process '{0}'.", pName)
+                                                    });
                                         }
                                         else
                                         {
-                                            this.ErrorCollection.Add(new ErrorDescription()
-                                            {
-                                                FileName = !string.IsNullOrEmpty(processState.ParentDefinitionDescription.FileName)
-                                                               ? processState.ParentDefinitionDescription.FileName
-                                                               : string.Empty,
-                                                ProcessName = pName,
-                                                FieldName = !string.IsNullOrEmpty(processState.ParentDefinitionDescription.Name)
+                                            this.ErrorCollection.Add(
+                                                new ErrorDescription()
+                                                    {
+                                                        FileName =
+                                                            !string.IsNullOrEmpty(
+                                                                processState.ParentDefinitionDescription.FileName)
+                                                                ? processState.ParentDefinitionDescription.FileName
+                                                                : string.Empty, 
+                                                        ProcessName = pName, 
+                                                        FieldName =
+                                                            !string.IsNullOrEmpty(
+                                                                processState.ParentDefinitionDescription.Name)
                                                                 ? processState.ParentDefinitionDescription.Name
-                                                                : string.Empty,
-                                                Description = string.Format("Failed to read process '{0}', referenced by '{1}' in the file '{2}'.", pName, !string.IsNullOrEmpty(processState.ParentDefinitionDescription.Name) ? processState.ParentDefinitionDescription.Name : string.Empty, !string.IsNullOrEmpty(processState.ParentDefinitionDescription.FileName) ? processState.ParentDefinitionDescription.FileName : string.Empty)
-                                            });
+                                                                : string.Empty, 
+                                                        Description =
+                                                            string.Format(
+                                                                "Failed to read process '{0}', referenced by '{1}' in the file '{2}'.", 
+                                                                pName, 
+                                                                !string.IsNullOrEmpty(
+                                                                    processState.ParentDefinitionDescription.Name)
+                                                                    ? processState.ParentDefinitionDescription.Name
+                                                                    : string.Empty, 
+                                                                !string.IsNullOrEmpty(
+                                                                    processState.ParentDefinitionDescription.FileName)
+                                                                    ? processState.ParentDefinitionDescription.FileName
+                                                                    : string.Empty)
+                                                    });
                                         }
-
                                     });
                         }
                     }
@@ -1373,36 +1700,87 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             }
         }
 
+        /// <summary>
+        /// The reset analysis.
+        /// </summary>
+        private void ResetAnalysis()
+        {
+            this.processStack.Dispose();
+            this.ProcessStack.Clear();
+            this.processCollection.Dispose();
+            this.processCollection.Clear();
+        }
+
         #endregion
 
+        /// <summary>
+        /// The error description.
+        /// </summary>
+        public class ErrorDescription
+        {
+            #region Public Properties
+
+            /// <summary>
+            /// Gets or sets the description.
+            /// </summary>
+            public string Description { get; set; }
+
+            /// <summary>
+            /// Gets or sets the field name.
+            /// </summary>
+            public string FieldName { get; set; }
+
+            /// <summary>
+            /// Gets or sets the file name.
+            /// </summary>
+            public string FileName { get; set; }
+
+            /// <summary>
+            /// Gets or sets the process name.
+            /// </summary>
+            public string ProcessName { get; set; }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// The process load state.
+        /// </summary>
         internal class ProcessLoadState
         {
             #region Properties
 
+            /// <summary>
+            /// Gets or sets the expression.
+            /// </summary>
             internal string Expression { get; set; }
 
+            /// <summary>
+            /// Gets or sets the hook point.
+            /// </summary>
             internal string HookPoint { get; set; }
 
+            /// <summary>
+            /// Gets or sets the parent definition description.
+            /// </summary>
             internal DefinitionDescription ParentDefinitionDescription { get; set; }
 
             #endregion
         }
 
+        /// <summary>
+        /// The screen definition load state.
+        /// </summary>
         internal class ScreenDefinitionLoadState : ProcessLoadState
         {
             #region Properties
 
+            /// <summary>
+            /// Gets or sets the file name.
+            /// </summary>
             internal string FileName { get; set; }
 
             #endregion
-        }
-
-        public class ErrorDescription
-        {
-            public string FileName { get; set; }
-            public string ProcessName { get; set; }
-            public string FieldName { get; set; }
-            public string Description { get; set; }
         }
     }
 }

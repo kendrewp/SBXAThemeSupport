@@ -216,6 +216,18 @@ namespace SBXAThemeSupport.Models
 
         #region Methods
 
+        /// <summary>
+        /// The read linked screen completed.
+        /// </summary>
+        /// <param name="subroutineName">
+        /// The subroutine name.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters.
+        /// </param>
+        /// <param name="userState">
+        /// The user state.
+        /// </param>
         private void ReadLinkedScreenCompleted(string subroutineName, SBString[] parameters, object userState)
         {
             DebugViewModel.Instance.ProcessAnalysisViewModel.SetIsLoading(-1);
