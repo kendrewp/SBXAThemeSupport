@@ -106,6 +106,15 @@ namespace SBXAThemeSupport.Views
         /// </value>
         public DataTemplate TreeItemTemplate { get; set; }
 
+        /// <summary>
+        /// Gets or sets the button definition template.
+        /// </summary>
+        /// <value>
+        /// The button definition template.
+        /// </value>
+        public DataTemplate ButtonDefinitionTemplate { get; set; }
+
+        
         #endregion
 
         #region Public Methods and Operators
@@ -129,13 +138,24 @@ namespace SBXAThemeSupport.Views
                 return this.DefaultTemplate;
             }
 
-            Debug.WriteLine("[AnalysisTreeItemTemplateSelector.SelectTemplate(68)] " + item.GetType().Name);
+            // Debug.WriteLine("[AnalysisTreeItemTemplateSelector.SelectTemplate(68)] " + item.GetType().Name);
+            
 
             var dataUnit = item as TreeItem;
 
             if (dataUnit == null)
             {
                 return this.DefaultTemplate;
+            }
+
+            if (dataUnit is ButtonDefinitionDescription)
+            {
+                return this.ButtonDefinitionTemplate;
+            }
+
+            if (dataUnit is SelectionProcessDescription)
+            {
+                return this.SelectionProcessTemplate;
             }
 
             // Debug.WriteLine("[AnalysisTreeItemTemplateSelector.SelectTemplate(78)] " + dataUnit.GetType().Name);
@@ -160,6 +180,11 @@ namespace SBXAThemeSupport.Views
                 if (processDescription == null)
                 {
                     return this.DefaultTemplate;
+                }
+
+                if (processDescription is ButtonDefinitionDescription)
+                {
+                    return this.ButtonDefinitionTemplate;
                 }
 
                 // Debug.WriteLine("[AnalysisTreeItemTemplateSelector.SelectTemplate(89)] " + processDescription.GetType().Name);

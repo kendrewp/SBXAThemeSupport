@@ -160,7 +160,9 @@ namespace SBXAThemeSupport.Models
                             {
                                 case "C":
                                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcess(
-                                        processName, 
+                                        processName,
+                                        SourceDefinition.Unknown,
+                                        HookType,
                                         this, 
                                         this.SourceExpression, 
                                         string.Empty, 
@@ -179,6 +181,8 @@ namespace SBXAThemeSupport.Models
                                     // TODO
                                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadMenu(
                                         processName, 
+                                        SourceDefinition.Unknown,
+                                        HookType,
                                         this, 
                                         this.SourceExpression, 
                                         string.Empty, 
@@ -210,7 +214,9 @@ namespace SBXAThemeSupport.Models
                                     else
                                     {
                                         DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcess(
-                                            processName, 
+                                            processName,
+                                            SourceDefinition.Unknown,
+                                            HookType,
                                             this, 
                                             this.SourceExpression, 
                                             string.Empty, 
@@ -221,7 +227,9 @@ namespace SBXAThemeSupport.Models
                                 default:
                                     // It is not a call or executed so do not add a sub-node.
                                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcess(
-                                        processName, 
+                                        processName,
+                                        SourceDefinition.Unknown,
+                                        HookType,
                                         this, 
                                         this.SourceExpression, 
                                         string.Empty, 
@@ -375,7 +383,9 @@ namespace SBXAThemeSupport.Models
                             {
                                 // now load the definition.
                                 DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcess(
-                                    processName, 
+                                    processName,
+                                    SourceDefinition.Unknown,
+                                    HookType,
                                     this, 
                                     this.SourceExpression, 
                                     string.Empty, 

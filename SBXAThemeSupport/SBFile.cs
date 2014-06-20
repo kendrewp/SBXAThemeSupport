@@ -207,6 +207,16 @@ namespace SBXAThemeSupport
             }
         }
 
+        /// <summary>
+        /// Makes the record identifier legal.
+        /// </summary>
+        /// <param name="original">The original.</param>
+        /// <returns></returns>
+        public static string MakeRecordIdLegal(string original)
+        {
+            var legal = original.Replace(GenericConstants.CHAR_ASTERIX, GenericConstants.CHAR_UNDERSCORE);
+            return legal;
+        }
         #endregion
     }
 }

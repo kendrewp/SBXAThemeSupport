@@ -324,7 +324,7 @@ namespace SBXAThemeSupport.Models
                     if (!definition.Extract(Buttons, bNo).IsNullOrEmpty())
                     {
                         DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                            SourceDefinition.Screen, 
+                            SourceDefinition.Button, 
                             SourceDefinition.Process, 
                             definition.Extract(Buttons, bNo).Value, 
                             this, 
@@ -422,11 +422,11 @@ namespace SBXAThemeSupport.Models
             if (attributes.Contains(indexOfUserData))
             {
                 var processName = values[attributes.IndexOf(indexOfUserData)];
-                var content = attributes.Contains(indexOfString) ? "Button " + values[attributes.IndexOf(indexOfString)] : "Button ??";
+                var content = attributes.Contains(indexOfString) ? values[attributes.IndexOf(indexOfString)] : "Button ??";
                 if (!Utilities.IsNumber(processName))
                 {
                     DebugViewModel.Instance.ProcessAnalysisViewModel.LoadProcessFromExpression(
-                        SourceDefinition.Screen, 
+                        SourceDefinition.Button, 
                         SourceDefinition.Process, 
                         processName, 
                         this, 

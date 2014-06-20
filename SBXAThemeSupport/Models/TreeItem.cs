@@ -169,7 +169,7 @@ namespace SBXAThemeSupport.Models
         /// <summary>
         ///     Gets the name.
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; protected set; }
 
         #endregion
 

@@ -7,10 +7,12 @@ namespace SBXAThemeSupport.Models
 {
     using SBXA.Shared;
 
+    using SBXAThemeSupport.DebugAssistant.ViewModels;
+
     /// <summary>
     ///     The selection process description.
     /// </summary>
-    public class SelectionProcessDescription : DefinitionDescription
+    public class SelectionProcessDescription : SBExpression
     {
         #region Constructors and Destructors
 
@@ -26,11 +28,16 @@ namespace SBXAThemeSupport.Models
         /// <param name="definition">
         /// The definition.
         /// </param>
-        public SelectionProcessDescription(string fileName, string name, SBString definition)
-            : base(fileName, name)
+        public SelectionProcessDescription(string fileName, string name, SourceDefinition hookType, string sysId, SBString definition)
+            : base(fileName, name, hookType, sysId)
         {
+            this.Name = name;
         }
 
         #endregion
-    }
+
+        public override string SourceExpression { protected set; get; }
+
+
+        }
 }

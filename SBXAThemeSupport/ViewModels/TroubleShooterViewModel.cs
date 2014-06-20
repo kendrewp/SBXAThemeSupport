@@ -96,6 +96,10 @@ namespace SBXAThemeSupport.ViewModels
         /// </summary>
         private static string organization;
 
+        private static readonly object UploadSyncObj = new object();
+
+        private static int fileUploadingCount;
+
         #endregion
 
         #region Constructors and Destructors
@@ -227,7 +231,8 @@ namespace SBXAThemeSupport.ViewModels
                             ProcessId = currentProcessId, 
                             Start = DateTime.Now, 
                             CleanExit = false, 
-                            Organization = Organization
+                            Organization = Organization,
+                            SessionId = SBPlus.Current.SessionId
                         });
                 SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), true);
 
@@ -249,7 +254,7 @@ namespace SBXAThemeSupport.ViewModels
                     }
 
                     // and finally a bad entry, so do the required notifications.
-                    LogBadClose(appLog.Organization); // only log an exception if this is the only process running.
+                    LogBadClose(appLog); // only log an exception if this is the only process running.
 
                     // log the error so remove the entry from the logs.
                     toRemove.Add(appLog); // cannot remove it while I am processing it.
@@ -371,51 +376,14 @@ namespace SBXAThemeSupport.ViewModels
         /// True is the files sent to the troubleshooter should be deleted after they have been packaged
         ///     up.
         /// </param>
-        /// <param name="orgId">
-        /// The org Id.
+        /// <param name="appLog">
+        /// The Application Start Stop Log item
         /// </param>
-        public static void SendAbnormalClose(string message, bool deleteFiles, string orgId = null)
+        public static void SendAbnormalClose(string message, bool deleteFiles, ApplicationStartStopLog appLog = null)
         {
             try
             {
-                var windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
-                var sessionId = SBPlus.Current.SessionId;
-
-                var userId = windowsIdentity.Split(@"\".ToCharArray()).Count() == 2
-                                 ? windowsIdentity.Split(@"\".ToCharArray())[1]
-                                 : windowsIdentity.Split(@"\".ToCharArray())[0];
-
-                // get the actual sbxa client version
-                var sbxa = typeof(SBString).Assembly.GetName();
-                var fileName = Path.GetRandomFileName();
-                var logFolder = Path.Combine(Log.LOG_DIRECTORY, "Client");
-
-                fileName = Path.Combine(logFolder, fileName);
-
-                var existingData = string.Empty;
-
-                if (File.Exists(fileName))
-                {
-                    existingData = File.ReadAllText(fileName);
-                }
-
-                var logText = new StringBuilder(existingData);
-                logText.AppendLine(message);
-
-                logText.AppendLine(string.Format("User Id : {0} ", userId));
-                logText.AppendLine(string.Format("Machine Name {0}", SystemInformation.ComputerName));
-                logText.AppendLine(string.Format("Session Id {0}", sessionId));
-                logText.AppendLine(
-                    string.Format(
-                        "SB/XA Version {0}.{1}.{2}.{3}",
-                        sbxa.Version.Major,
-                        sbxa.Version.Minor,
-                        sbxa.Version.Build,
-                        sbxa.Version.Revision));
-                logText.AppendLine(string.Format("Customer {0}", orgId));
-
-                File.WriteAllText(fileName, logText.ToString());
-                SendAbnormalClose(message, fileName, null, deleteFiles, orgId);
+                SendAbnormalClose(message, string.Empty, null, deleteFiles, appLog);
             }
 
                 // ReSharper disable once EmptyGeneralCatchClause
@@ -447,11 +415,13 @@ namespace SBXAThemeSupport.ViewModels
             string abortDescriptionFileName, 
             string[] additionalFiles, 
             bool delete = true, 
-            string orgId = null)
+            ApplicationStartStopLog appLog = null)
         {
             var windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
             var sessionId = SBPlus.Current.SessionId;
-
+            var sbxa = typeof(SBString).Assembly.GetName();
+            var orgId = appLog == null || string.IsNullOrEmpty(appLog.Organization) ? string.Empty : appLog.Organization;
+            var troubledSessionId = appLog == null ? "No troubled Session Id" : appLog.SessionId;
             var userId = windowsIdentity.Split(@"\".ToCharArray()).Count() == 2
                              ? windowsIdentity.Split(@"\".ToCharArray())[1]
                              : windowsIdentity.Split(@"\".ToCharArray())[0];
@@ -479,6 +449,15 @@ namespace SBXAThemeSupport.ViewModels
             logText.AppendLine(string.Format("User Id : {0} ", userId));
             logText.AppendLine(string.Format("Machine Name {0}", SystemInformation.ComputerName));
             logText.AppendLine(string.Format("Session Id {0}", sessionId));
+            logText.AppendLine(string.Format("Troubled Session Id {0}", troubledSessionId));
+            logText.AppendLine(string.Format(
+                "SB/XA Version {0}.{1}.{2}.{3}",
+                sbxa.Version.Major,
+                sbxa.Version.Minor,
+                sbxa.Version.Build,
+                sbxa.Version.Revision));
+
+            logText.AppendLine(string.Format("Customer {0}", (string.IsNullOrEmpty(orgId) ? "Unknown" : orgId)));
 
             File.WriteAllText(fileName, logText.ToString());
 
@@ -727,6 +706,8 @@ namespace SBXAThemeSupport.ViewModels
                     }
                 }
 
+                id = SBFile.MakeRecordIdLegal(id);
+
                 JobManager.RunInUIThread(DispatcherPriority.Normal, () => SBFile.Write(ServerFileName, id, logRecord, WriteCompleted));
                 // Now upload log files to server.
                 UploadFiles();
@@ -803,15 +784,15 @@ namespace SBXAThemeSupport.ViewModels
         /// <summary>
         /// The log bad close.
         /// </summary>
-        /// <param name="org">
-        /// The org.
+        /// <param name="appLog">
+        /// The Application start stop log
         /// </param>
-        private static void LogBadClose(string org)
+        private static void LogBadClose(ApplicationStartStopLog appLog)
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (EnableTroubleshooting)
             {
-                SendAbnormalClose("Application was not closed correctly.", true, org);
+                SendAbnormalClose("Application was not closed correctly.", true, appLog);
             }
         }
 
@@ -1088,6 +1069,7 @@ namespace SBXAThemeSupport.ViewModels
         {
             try
             {
+                fileUploadingCount--;
                 // if the upload was sucessful, delete the files.
                 if (parameters[3].Dcount() == 1 && parameters[1].Dcount() > 1)
                 {
@@ -1101,7 +1083,7 @@ namespace SBXAThemeSupport.ViewModels
             }
             catch (Exception exception)
             {
-                SBPlusClient.LogError("There was a problem delting a file after it was uploaded.", exception);
+                SBPlusClient.LogError("There was a problem deleting a file after it was uploaded.", exception);
             }
         }
 
@@ -1110,31 +1092,34 @@ namespace SBXAThemeSupport.ViewModels
         /// </summary>
         private static void UploadFiles()
         {
-            if (!AreFilesToUpload())
+            lock (UploadSyncObj)
             {
-                return;
-            }
-
-            // first check if there are any folders. These did not get zipped before the client closed down.
-            var folderList = Directory.GetDirectories(UploadFolder);
-            // zip each of the folders
-            foreach (var folder in folderList)
-            {
-                SBFile.ZipFolder(folder, folder + ".zip");
-                CleanFolder(folder);
-            }
-
-            var fileList = Directory.GetFiles(UploadFolder);
-            foreach (var fileName in fileList)
-            {
-                var itemId = Path.GetFileName(fileName);
-                if (string.IsNullOrEmpty(itemId))
+                if (!AreFilesToUpload() || fileUploadingCount > 0)
                 {
-                    continue;
+                    return;
                 }
 
-                itemId = itemId.Replace("(", "*").Replace(")", "*").Replace(" ", "*");
-                SBFileTransfer.Upload(fileName, ServerFileName, itemId, "B", UploadCompleted);
+                // first check if there are any folders. These did not get zipped before the client closed down.
+                var folderList = Directory.GetDirectories(UploadFolder);
+                // zip each of the folders
+                foreach (var folder in folderList)
+                {
+                    SBFile.ZipFolder(folder, folder + ".zip");
+                    CleanFolder(folder);
+                }
+
+                var fileList = Directory.GetFiles(UploadFolder);
+                foreach (var fileName in fileList)
+                {
+                    var itemId = Path.GetFileName(fileName);
+                    if (string.IsNullOrEmpty(itemId))
+                    {
+                        continue;
+                    }
+                    fileUploadingCount++;
+                    itemId = itemId.Replace("(", "*").Replace(")", "*").Replace(" ", "*");
+                    SBFileTransfer.Upload(fileName, ServerFileName, itemId, "B", UploadCompleted);
+                }
             }
         }
 
@@ -1189,6 +1174,8 @@ namespace SBXAThemeSupport.ViewModels
         /// The organization.
         /// </value>
         public string Organization { get; set; }
+
+        public string SessionId { get; set; }
 
         #endregion
 

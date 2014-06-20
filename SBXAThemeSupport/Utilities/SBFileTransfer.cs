@@ -5,6 +5,8 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport.Utilities
 {
+    using System.IO;
+
     using SBXA.Runtime;
     using SBXA.Shared;
 
@@ -45,6 +47,10 @@ namespace SBXAThemeSupport.Utilities
             // FT.OPTIONS = OPTIONS : "O"
             // DATA = ""
             // CALL SB.FT.MASTER(3, MESSAGE, DATA, FT.OPTIONS, STATUS.REC)
+            if (!File.Exists(sourceFileName))
+            {
+                return;
+            }
             var message = new SBString();
             message.SBInsert(1, sourceFileName);
             message.SBInsert(3, targetFileName);

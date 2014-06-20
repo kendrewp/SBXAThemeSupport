@@ -10,6 +10,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.IO;
+    using System.Threading;
     using System.Windows.Threading;
 
     using SBXA.Runtime;
@@ -29,42 +30,43 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// <summary>
         ///     The field.
         /// </summary>
-        Field, 
+        Field,
 
         /// <summary>
         ///     The screen.
         /// </summary>
-        Screen, 
+        Screen,
 
         /// <summary>
         ///     The paragraph.
         /// </summary>
-        Paragraph, 
+        Paragraph,
 
         /// <summary>
         ///     The process.
         /// </summary>
-        Process, 
+        Process,
 
         /// <summary>
         ///     The expression.
         /// </summary>
-        Expression, 
+        Expression,
 
         /// <summary>
         ///     The definition
         /// </summary>
-        Definition, 
+        Definition,
 
         /// <summary>
         ///     The menu.
         /// </summary>
-        Menu, 
+        Menu,
 
         /// <summary>
         ///     The unknown.
         /// </summary>
-        Unknown
+        Unknown,
+        Button
     }
 
     /// <summary>
@@ -84,7 +86,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                                                                            "DMSH", 
                                                                            "DMGC", 
                                                                            "DMGD", 
-                                                                           "DMSKELCODE", 
+                                                                           "DMSKELCODE",
                                                                            "TUBP", 
                                                                            "ASCPROGS"
                                                                        };
@@ -396,6 +398,8 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// <param name="menuName">
         /// The menu name.
         /// </param>
+        /// <param name="source"></param>
+        /// <param name="slotType"></param>
         /// <param name="parent">
         /// The parent.
         /// </param>
@@ -410,10 +414,13 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// </param>
         internal void LoadMenu(
             string menuName, 
+            SourceDefinition source,
+            SourceDefinition slotType,
             DefinitionDescription parent = null, 
             string expression = "", 
             string hookPoint = "", 
-            string sysid = "")
+            string sysid = ""
+            )
         {
             if (SBExpression.IsStandardSBExpression(expression))
             {
@@ -455,8 +462,8 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         SBFile.Read(
                             menuFile, 
                             menuName, 
-                            this.ReadProcessCompleted, 
-                            new ProcessLoadState { HookPoint = hookPoint, ParentDefinitionDescription = parent, Expression = expression });
+                            this.ReadProcessCompleted,
+                            new ProcessLoadState { HookPoint = hookPoint, ParentDefinitionDescription = parent, Expression = expression, Source = source, SlotType = slotType, SysId = sysid });
                     });
         }
 
@@ -466,6 +473,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// <param name="pName">
         /// Name of the definition.
         /// </param>
+        /// <param name="slotType"></param>
         /// <param name="parent">
         /// Parent <see cref="DefinitionDescription"/>, if this is null then it will be the root of the tree.
         /// </param>
@@ -478,8 +486,11 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// <param name="sysid">
         /// The system id to use otherwise the current system id will be used.
         /// </param>
+        /// <param name="source"></param>
         internal void LoadProcess(
             string pName, 
+            SourceDefinition source,
+            SourceDefinition slotType,
             DefinitionDescription parent = null, 
             string expression = "", 
             string hookPoint = "", 
@@ -525,8 +536,8 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         SBFile.Read(
                             processFile, 
                             pName, 
-                            this.ReadProcessCompleted, 
-                            new ProcessLoadState { HookPoint = hookPoint, ParentDefinitionDescription = parent, Expression = expression });
+                            this.ReadProcessCompleted,
+                            new ProcessLoadState { HookPoint = hookPoint, ParentDefinitionDescription = parent, Expression = expression, Source = source, SlotType = slotType, SysId = sysid });
                     });
         }
 
@@ -600,7 +611,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                 switch (callType)
                 {
                     case "C":
-                        this.LoadProcess(pName, parent, expression, hookPoint, sysid);
+                        this.LoadProcess(pName, source, hookType, parent, expression, hookPoint, sysid);
                         break;
                     case "B":
                         this.LoadBasicProgramFromExpression(pName, parent, hookPoint);
@@ -614,7 +625,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         this.AddExpressionToCollection(source, hookType, hookPoint, parent, expression);
                         break;
                     default:
-                        this.LoadProcess(pName, parent, expression, hookPoint, sysid);
+                        this.LoadProcess(pName, source, hookType, parent, expression, hookPoint, sysid);
                         break;
                 }
             }
@@ -942,8 +953,10 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         {
                             if (item.ProcessDescription != null && processCall.ProcessDescription != null
                                 && item.ProcessDescription.FileName.Equals(processCall.ProcessDescription.FileName)
-                                && item.ProcessDescription.Name.Equals(processCall.ProcessDescription.Name))
+                                && item.ProcessDescription.Name.Equals(processCall.ProcessDescription.Name)
+                                && item.Description.Equals(processCall.Description))
                             {
+                                // only skip if everything is the same, i.e. the description process name and file name
                                 return;
                             }
                         }
@@ -1008,49 +1021,60 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             ProcessLoadState processLoadState = null, 
             bool isError = false)
         {
-            if (DebugWindowManager.DebugConsoleWindow == null)
+            if (DebugWindowManager.DebugConsoleWindow == null || processLoadState == null)
             {
                 return;
             }
 
+            if (Thread.CurrentThread == DebugWindowManager.DebugConsoleWindow.Dispatcher.Thread)
+            {
+                this.DoAddProcessToCollection(processFileName, pName, defn, processLoadState, isError);
+            }
+            else
+            {
+                
             JobManager.RunInDispatcherThread(
                 DebugWindowManager.DebugConsoleWindow.Dispatcher, 
                 DispatcherPriority.Normal, 
-                delegate
+                ()=> this.DoAddProcessToCollection(processFileName, pName, defn, processLoadState, isError));
+            }
+        }
+
+        private void DoAddProcessToCollection(string processFileName, string pName, SBString defn, ProcessLoadState processLoadState, bool isError)
+        {
+            try
+            {
+                if (processLoadState == null)
+                {
+                    return;
+                }
+
+                // top of tree so just assign it.
+                var processDescription = this.CreateProcessDescription(processFileName, pName, defn, processLoadState);
+                processDescription.IsError = isError;
+
+                // Add the definition to the total collection if it is not already there. It should never be there already as
+                // we should have bypassed the load if it is.
+                lock (this.processCollection)
+                {
+                    if (!this.processCollection.ContainsKey(processFileName, pName, processDescription.GetType()))
                     {
-                        try
-                        {
-                            if (processLoadState == null)
-                            {
-                                return;
-                            }
+                        this.processCollection.Add(processDescription);
+                    }
+                }
 
-                            // top of tree so just assign it.
-                            var processDescription = this.CreateProcessDescription(processFileName, pName, defn, processLoadState);
-                            processDescription.IsError = isError;
-
-                            // Add the definition to the total collection if it is not already there. It should never be there already as
-                            // we should have bypassed the load if it is.
-                            lock (this.processCollection)
-                            {
-                                if (!this.processCollection.ContainsKey(processFileName, pName, processDescription.GetType()))
-                                {
-                                    this.processCollection.Add(processDescription);
-                                }
-                            }
-
-                            this.AddProcessToCollection(
-                                processLoadState.HookPoint, 
-                                processLoadState.ParentDefinitionDescription, 
-                                processDescription);
-                        }
-                        catch (Exception ex)
-                        {
-                            CustomLogger.LogException(
-                                ex, 
-                                string.Format("There was a problem when adding {0} {1} to the collection.", processFileName, pName));
-                        }
-                    });
+                this.AddProcessToCollection(
+                    processLoadState.HookPoint,
+                    processLoadState.ParentDefinitionDescription,
+                    processDescription,
+                    processLoadState.Source);
+            }
+            catch (Exception ex)
+            {
+                CustomLogger.LogException(
+                    ex,
+                    string.Format("There was a problem when adding {0} {1} to the collection.", processFileName, pName));
+            }
         }
 
         /// <summary>
@@ -1065,10 +1089,12 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// <param name="processDescription">
         /// The process description.
         /// </param>
+        /// <param name="source">Where is the process being called from.</param>
         private void AddProcessToCollection(
             string description, 
             DefinitionDescription parentDefinitionDescription, 
-            DefinitionDescription processDescription)
+            DefinitionDescription processDescription,
+            SourceDefinition source = SourceDefinition.Unknown)
         {
             JobManager.RunInDispatcherThread(
                 DebugWindowManager.DebugConsoleWindow.Dispatcher, 
@@ -1083,9 +1109,33 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         }
                         else
                         {
-                            this.AddItemToCollection(
-                                parentDefinitionDescription.ProcessCollection, 
-                                new ProcessCall { Description = description, ProcessDescription = processDescription });
+                            switch (source)
+                            {
+                                case SourceDefinition.Screen:
+                                    if (processDescription is SBExpression)
+                                    {
+                                        this.AddItemToCollection(parentDefinitionDescription.ScreenExpressions, processDescription as SBExpression);
+                                    }
+                                    else
+                                    {
+                                        this.AddItemToCollection(
+                                            parentDefinitionDescription.ProcessCollection,
+                                            new ProcessCall { Description = description, ProcessDescription = processDescription });
+                                    }
+                                    break;
+                                case SourceDefinition.Button:
+                                    //this.AddItemToCollection(description, processDescription, parentDefinitionDescription.ProcessCollection);
+                                    this.AddItemToCollection(
+                                        parentDefinitionDescription.ProcessCollection,
+                                        new ProcessCall { Description = description, ProcessDescription = processDescription });
+                                       
+                                    break;
+                                default:
+                                    this.AddItemToCollection(
+                                        parentDefinitionDescription.ProcessCollection,
+                                        new ProcessCall { Description = description, ProcessDescription = processDescription });
+                                    break;
+                            }
                         }
                     });
         }
@@ -1184,13 +1234,34 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             DefinitionDescription processDescription;
             if (defn == null)
             {
-                processDescription = new DefinitionDescription(
-                    processFileName, 
-                    pName, 
-                    SourceDefinition.Process, 
-                    processLoadState.Expression) {
-                                                    IsError = true 
-                                                 };
+                if (processLoadState.Source == SourceDefinition.Button)
+                {
+/*
+                    processDescription = new ButtonDefinitionDescription()
+                                             {
+                                                 Description = processLoadState.HookPoint,
+                                                 pName,
+                                                 Source
+                                             };
+*/
+                    processDescription = new ButtonDefinitionDescription(
+                        processFileName,
+                        pName,
+                        SourceDefinition.Process,
+                        processLoadState.Expression);
+                }
+                else
+                {
+                    processDescription = new DefinitionDescription(
+                                                processFileName,
+                                                pName,
+                                                SourceDefinition.Process,
+                                                processLoadState.Expression)
+                                                {
+                                                    IsError = true
+                                                };
+
+                }
                 return processDescription;
             }
 
@@ -1215,7 +1286,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     processDescription = new MenuDefinitionDescription(processFileName, pName, string.Empty, defn);
                     break;
                 case "S":
-                    processDescription = new SelectionProcessDescription(processFileName, pName, defn);
+                    processDescription = new SelectionProcessDescription(processFileName, pName, SourceDefinition.Process, processLoadState.SysId, defn);
                     break;
                 default:
                     processDescription = new DefinitionDescription(
@@ -1246,7 +1317,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             // Add process to MRU list, but it it is not found it will be removed.
             AddProcessToMru(DebugViewModel.Instance.ProcessAnalysisViewModel.ProcessName);
             DebugViewModel.Instance.ProcessAnalysisViewModel.ProcessName = pName;
-            this.LoadProcess(DebugViewModel.Instance.ProcessAnalysisViewModel.ProcessName);
+            this.LoadProcess(DebugViewModel.Instance.ProcessAnalysisViewModel.ProcessName, SourceDefinition.Unknown, SourceDefinition.Process);
         }
 
         /// <summary>
@@ -1427,7 +1498,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     if (this.processCollection.ContainsKey(string.Empty, parameters[1].Value, typeof(BasicProgramDescription)))
                     {
                         basicProgramDescription = this.processCollection[parameters[1].Value] as BasicProgramDescription;
-                        /*
+/*
                         Debug.WriteLine(
                             "[ProcessAnalysisViewModel.ReadBasicProgramVocPointerCompleted(355)] Read " + parameters[1].Value
                             + " from cache.");
@@ -1438,7 +1509,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                     {
                         basicProgramDescription = new BasicProgramDescription(string.Empty, parameters[1].Value);
                         this.processCollection.Add(basicProgramDescription);
-                        /*
+/*
                         Debug.WriteLine(
                             "[ProcessAnalysisViewModel.ReadBasicProgramVocPointerCompleted(363)] Added " + basicProgramDescription.Name
                             + " to cache.");
@@ -1617,77 +1688,91 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
                         {
                             // Error
                             this.LastProcessReadError = string.Format(
-                                "Failed to read {0} from {1}.", 
-                                parameters[1].Value, 
+                                "Failed to read {0} from {1}.",
+                                parameters[1].Value,
                                 parameters[0].Value);
                             this.AddProcessToCollection(processFileName, pName, null, processState, true);
                         }
                     }
                     else
                     {
+                        // Failed, but if the name is not all upper case try that first.
+                        if (!pName.ToUpper().Equals(pName) && !parameters[0].Value.Equals(this.globalProcessFile))
+                        {
+                            this.SetIsLoading(1);
+                            SBFile.Read(processFileName, pName.ToUpper(), this.ReadProcessCompleted, processState);
+                            return;
+                        }
                         // Failed, but now I need to check if there is a global process file and if so try read it from there.
                         if (!string.IsNullOrEmpty(this.globalProcessFile) && !parameters[0].Value.Equals(this.globalProcessFile))
                         {
                             this.SetIsLoading(1);
                             SBFile.Read(this.globalProcessFile, pName, this.ReadProcessCompleted, processState);
+                            return;
                         }
-                        else
+
+                        if (!pName.ToUpper().Equals(pName) && parameters[0].Value.Equals(this.globalProcessFile))
                         {
-                            // Error
-                            this.LastProcessReadError = string.Format(
-                                "Failed to read {0} from {1}.", 
-                                parameters[1].Value, 
-                                parameters[0].Value);
-                            this.AddProcessToCollection(processFileName, pName, null, processState, true);
-                            // Now remove it from the MRU is it is there and display a message.
-                            RemoveProcessFromMru(pName);
-                            JobManager.RunInDispatcherThread(
-                                DebugWindowManager.DebugConsoleWindow.Dispatcher, 
-                                DispatcherPriority.Normal, 
-                                () =>
-                                    {
-                                        if (processState.ParentDefinitionDescription == null)
-                                        {
-                                            this.ErrorCollection.Add(
-                                                new ErrorDescription()
-                                                    {
-                                                        ProcessName = pName, 
-                                                        Description = string.Format("Failed to read process '{0}'.", pName)
-                                                    });
-                                        }
-                                        else
-                                        {
-                                            this.ErrorCollection.Add(
-                                                new ErrorDescription()
-                                                    {
-                                                        FileName =
-                                                            !string.IsNullOrEmpty(
-                                                                processState.ParentDefinitionDescription.FileName)
-                                                                ? processState.ParentDefinitionDescription.FileName
-                                                                : string.Empty, 
-                                                        ProcessName = pName, 
-                                                        FieldName =
-                                                            !string.IsNullOrEmpty(
-                                                                processState.ParentDefinitionDescription.Name)
-                                                                ? processState.ParentDefinitionDescription.Name
-                                                                : string.Empty, 
-                                                        Description =
-                                                            string.Format(
-                                                                "Failed to read process '{0}', referenced by '{1}' in the file '{2}'.", 
-                                                                pName, 
-                                                                !string.IsNullOrEmpty(
-                                                                    processState.ParentDefinitionDescription.Name)
-                                                                    ? processState.ParentDefinitionDescription.Name
-                                                                    : string.Empty, 
-                                                                !string.IsNullOrEmpty(
-                                                                    processState.ParentDefinitionDescription.FileName)
-                                                                    ? processState.ParentDefinitionDescription.FileName
-                                                                    : string.Empty)
-                                                    });
-                                        }
-                                    });
+                            this.SetIsLoading(1);
+                            SBFile.Read(this.globalProcessFile, pName.ToUpper(), this.ReadProcessCompleted, processState);
+                            return;
                         }
+
+                        // Error
+                        this.LastProcessReadError = string.Format(
+                            "Failed to read {0} from {1}.",
+                            parameters[1].Value,
+                            parameters[0].Value);
+                        this.AddProcessToCollection(processFileName, pName, null, processState, true);
+                        // Now remove it from the MRU is it is there and display a message.
+                        RemoveProcessFromMru(pName);
+                        JobManager.RunInDispatcherThread(
+                            DebugWindowManager.DebugConsoleWindow.Dispatcher,
+                            DispatcherPriority.Normal,
+                            () =>
+                            {
+                                if (processState.ParentDefinitionDescription == null)
+                                {
+                                    this.ErrorCollection.Add(
+                                        new ErrorDescription()
+                                    {
+                                        ProcessName = pName,
+                                        Description = string.Format("Failed to read process '{0}'.", pName)
+                                    });
+                                }
+                                else
+                                {
+                                    this.ErrorCollection.Add(
+                                        new ErrorDescription()
+                                    {
+                                        FileName =
+                                            !string.IsNullOrEmpty(
+                                                processState.ParentDefinitionDescription.FileName)
+                                               ? processState.ParentDefinitionDescription.FileName
+                                               : string.Empty,
+                                        ProcessName = pName,
+                                        FieldName =
+                                            !string.IsNullOrEmpty(
+                                                processState.ParentDefinitionDescription.Name)
+                                                ? processState.ParentDefinitionDescription.Name
+                                                : string.Empty,
+                                        Description =
+                                            string.Format(
+                                                "Failed to read process '{0}', referenced by '{1}' in the file '{2}'.",
+                                                pName,
+                                                !string.IsNullOrEmpty(
+                                                    processState.ParentDefinitionDescription.Name)
+                                                ? processState.ParentDefinitionDescription.Name
+                                                : string.Empty,
+                                                !string.IsNullOrEmpty(
+                                                    processState.ParentDefinitionDescription.FileName)
+                                                    ? processState.ParentDefinitionDescription.FileName
+                                                    : string.Empty)
+                                    });
+                                }
+                            });
                     }
+
 
                     return;
                 }
@@ -1748,6 +1833,7 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
         /// </summary>
         internal class ProcessLoadState
         {
+            public string SysId;
             #region Properties
 
             /// <summary>
@@ -1765,7 +1851,17 @@ namespace SBXAThemeSupport.DebugAssistant.ViewModels
             /// </summary>
             internal DefinitionDescription ParentDefinitionDescription { get; set; }
 
+            internal SourceDefinition Source { get; set; }
+
+            internal SourceDefinition SlotType { get; set; }
+
             #endregion
+
+            public ProcessLoadState()
+            {
+                SlotType = SourceDefinition.Unknown;
+                Source = SourceDefinition.Unknown;
+            }
         }
 
         /// <summary>

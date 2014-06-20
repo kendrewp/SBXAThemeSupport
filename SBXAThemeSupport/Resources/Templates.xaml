@@ -103,7 +103,7 @@
                 <ColumnDefinition SharedSizeGroup="definitionName"/>
             </Grid.ColumnDefinitions>
             <Image Grid.Column="0"  Source="/SBXAThemeSupport;component/Images/application_view_list.png"/>
-            <TextBlock Grid.Column="1" Text="{Binding ProcessDescription.Name}" FontWeight="Bold" Margin="4,0,0,0"/>
+            <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="Bold" Margin="4,0,0,0"/>
         </Grid>
     </HierarchicalDataTemplate>
     
@@ -216,6 +216,20 @@
         </Grid>
     </HierarchicalDataTemplate>
 
+    <HierarchicalDataTemplate  x:Key="ButtonDefinitionTemplate" ItemsSource="{Binding ProcessCollection}" >
+
+        <Grid wpfControls:SBUISupport.TemplateName="ButtonDefinitionTemplate">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="FieldImage" />
+                <ColumnDefinition SharedSizeGroup="FieldNameDescription" />
+                <ColumnDefinition SharedSizeGroup="FieldName"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0"  Source="/SBXAThemeSupport;component/Images/ui_button_default.png"/>
+            <TextBlock Grid.Column="1" Text="{Binding Description}" MaxWidth="100" TextTrimming="CharacterEllipsis" Margin="4,0,0,0"/>
+            <TextBlock Grid.Column="2" Text="{Binding Name}" FontWeight="Bold" Margin="4,0,0,0"/>
+        </Grid>
+    </HierarchicalDataTemplate>
+
     <HierarchicalDataTemplate  x:Key="TreeItemTemplate" ItemsSource="{Binding Children}">
         <Grid wpfControls:SBUISupport.TemplateName="TreeItemTemplate">
             <Grid.ColumnDefinitions>
@@ -273,6 +287,7 @@
                 MenuDefinitionTemplate="{StaticResource MenuDefinitionTemplate}"
                 SelectionProcessTemplate="{StaticResource SelectionProcessTemplate}"
                 ScreenFieldDefinitionTemplate="{StaticResource ScreenFieldDefinitionTemplate}"
+                ButtonDefinitionTemplate="{StaticResource ButtonDefinitionTemplate}"
                         />
 
         </HierarchicalDataTemplate.ItemTemplateSelector>

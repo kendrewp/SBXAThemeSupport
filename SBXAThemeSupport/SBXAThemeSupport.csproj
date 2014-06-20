@@ -152,8 +152,10 @@
     <Compile Include="CustomLogger.cs" />
     <Compile Include="DebugAssistant\DebugWindowManager.cs" />
     <Compile Include="DebugAssistant\ViewModels\RevisionDefinitionViewModel.cs" />
+    <Compile Include="PositionCursorBehavior.cs" />
     <Compile Include="Models\ApplicationInsightState.cs" />
     <Compile Include="Models\BasicProgramDescription.cs" />
+    <Compile Include="Models\ButtonDefinitionDescription.cs" />
     <Compile Include="Models\DictionaryDescription.cs" />
     <Compile Include="Models\MenuDefinitionDescription.cs" />
     <Compile Include="Models\SBExpression.cs" />
@@ -336,6 +338,7 @@
     <Resource Include="Images\regular-expression-icon.png" />
     <Resource Include="Images\menu.png" />
     <Resource Include="Images\application_view_list.png" />
+    <Resource Include="Images\ui_button_default.png" />
     <Content Include="ThirdParty\Ionic.Zip.dll" />
     <Content Include="ThirdParty\Ionic.Zlib.dll" />
   </ItemGroup>
