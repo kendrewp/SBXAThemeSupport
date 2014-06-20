@@ -1,4 +1,5 @@
-﻿May 16, 2014	Kendrew Peacey	Changed the order of the processes in the stack so that they are now in the correct order.
+﻿June 20, 2014	Kendrew Peacey	Improved Troubleshooter to recognize if the user logged off Windows.
+May 16, 2014	Kendrew Peacey	Changed the order of the processes in the stack so that they are now in the correct order.
 May 16, 2014	Kendrew Peacey	Added process time to the process stack.
 April 29, 2014  Kendrew Peacey	Added saving and resatoring of state in ApplicationInsight.
 April 28, 2014  Kendrew Peacey	Added process analysis

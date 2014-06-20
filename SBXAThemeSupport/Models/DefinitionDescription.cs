@@ -2,6 +2,9 @@
 // <copyright file="DefinitionDescription.cs" company="Ruf Informatik AG">
 //   Copyright © Ruf Informatik AG. All rights reserved.
 // </copyright>
+// <copyright file="DebugWindowManager.cs" company="Ascension Technologies, Inc.">
+//   Copyright © Ascension Technologies, Inc. All rights reserved.
+// </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 namespace SBXAThemeSupport.Models
 {
@@ -187,7 +190,7 @@ namespace SBXAThemeSupport.Models
         public virtual ObservableCollection<ProcessCall> ProcessCollection { get; private set; }
 
         /// <summary>
-        ///     Gets or sets the screen expressions.
+        /// Gets the screen expressions.
         /// </summary>
         public virtual ObservableCollection<SBExpression> ScreenExpressions
         {
@@ -238,7 +241,7 @@ namespace SBXAThemeSupport.Models
         }
 
         /// <summary>
-        ///     Gets the source expression.
+        /// Gets or sets the source expression.
         /// </summary>
         public virtual string SourceExpression { get; protected set; }
 

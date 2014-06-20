@@ -216,7 +216,6 @@
         </Grid>
     </HierarchicalDataTemplate>
 
-
     <HierarchicalDataTemplate  x:Key="TreeItemTemplate" ItemsSource="{Binding Children}">
         <Grid wpfControls:SBUISupport.TemplateName="TreeItemTemplate">
             <Grid.ColumnDefinitions>

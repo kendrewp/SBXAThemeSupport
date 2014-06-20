@@ -73,6 +73,15 @@ namespace SBXAThemeSupport
 
         #endregion
 
+        #region Events
+
+        /// <summary>
+        ///     Occurs when a property value changes.
+        /// </summary>
+        protected virtual event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
         #region Explicit Interface Events
 
         /// <summary>
@@ -90,15 +99,6 @@ namespace SBXAThemeSupport
                 this.PropertyChanged -= value;
             }
         }
-
-        #endregion
-
-        #region Events
-
-        /// <summary>
-        ///     Occurs when a property value changes.
-        /// </summary>
-        protected virtual event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
 

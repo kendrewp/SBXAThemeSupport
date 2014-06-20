@@ -210,7 +210,6 @@ namespace SBXAThemeSupport
             typeof(UiAssistant), 
             new PropertyMetadata(true, OnSetDrawableChanged));
 
-        // Using a DependencyProperty as the backing store for IsConnected.  This enables animation, styling, binding, etc...
         /// <summary>
         /// The execute process in context command binding.
         /// </summary>

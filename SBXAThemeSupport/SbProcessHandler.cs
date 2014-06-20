@@ -532,7 +532,7 @@ namespace SBXAThemeSupport
         /// <returns>
         /// The <see cref="SBString[]"/>.
         /// </returns>
-        /// <exception cref="ServerNotReadyException">
+        /// <exception cref="ServerNotReadyException">If the server is not waiting or a message from the client <see cref="ServerNotReadyException"/> is thrown.
         /// </exception>
         private static SBString[] ExecuteSubroutine(string subroutineName, SBString[] arguments, bool commandCouldCauseUiAction = false)
         {
@@ -764,9 +764,9 @@ namespace SBXAThemeSupport
         /// <summary>
         /// The callback runtime.
         /// </summary>
-        /// <typeparam name="T">
+        /// <typeparam name="T">object
         /// </typeparam>
-        /// <typeparam name="T2">
+        /// <typeparam name="T2">object 2
         /// </typeparam>
         private class CallbackRuntime<T, T2>
         {

@@ -299,7 +299,7 @@ namespace SBXAThemeSupport.DebugAssistant
         /// <param name="data">
         /// The data.
         /// </param>
-        /// <exception cref="ArgumentNullException">
+        /// <exception cref="ArgumentNullException">If the data passed is null.
         /// </exception>
         internal static void ShowSBString(string which, SBString data)
         {
