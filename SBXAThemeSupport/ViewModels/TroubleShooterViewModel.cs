@@ -17,6 +17,8 @@ namespace SBXAThemeSupport.ViewModels
     using System.Windows.Forms;
     using System.Windows.Threading;
 
+    using Microsoft.Win32;
+
     using SBXA.Runtime;
     using SBXA.Shared;
     using SBXA.UI.Client;
@@ -68,22 +70,22 @@ namespace SBXAThemeSupport.ViewModels
         #region Constants
 
         /// <summary>
-        /// The active application list id.
+        ///     The active application list id.
         /// </summary>
         private const string ActiveApplicationListId = "ActiveApplicationList";
 
         /// <summary>
-        /// The enable troubleshooting.
+        ///     The enable troubleshooting.
         /// </summary>
         private const bool EnableTroubleshooting = true;
 
         /// <summary>
-        /// The log rec description.
+        ///     The log rec description.
         /// </summary>
         private const int LogRecDescription = 2;
 
         /// <summary>
-        /// The log rec type.
+        ///     The log rec type.
         /// </summary>
         private const int LogRecType = 1;
 
@@ -91,14 +93,14 @@ namespace SBXAThemeSupport.ViewModels
 
         #region Static Fields
 
-        /// <summary>
-        /// The organization.
-        /// </summary>
-        private static string organization;
-
         private static readonly object UploadSyncObj = new object();
 
         private static int fileUploadingCount;
+
+        /// <summary>
+        ///     The organization.
+        /// </summary>
+        private static string organization;
 
         #endregion
 
@@ -116,6 +118,38 @@ namespace SBXAThemeSupport.ViewModels
         #endregion
 
         #region Public Properties
+
+        /// <summary>
+        ///     Gets or sets the organization.
+        /// </summary>
+        /// <value>
+        ///     The organization.
+        /// </value>
+        public static string Organization
+        {
+            get
+            {
+                return organization;
+            }
+
+            set
+            {
+                organization = value;
+                // now I need to add it to the application start item so it can be used later if need be.
+                ActiveApplicationList activeApplicationList;
+                int currentProcessId;
+                string currentProcessName;
+
+                var activeApplicationLog = ReadActiveApplicationLog(out activeApplicationList, out currentProcessId, out currentProcessName);
+                if (activeApplicationLog != null)
+                {
+                    activeApplicationLog.Organization = organization;
+                }
+
+                // commit the updated collection.
+                SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), true);
+            }
+        }
 
         /// <summary>
         ///     Gets or sets the report problems to.
@@ -140,37 +174,6 @@ namespace SBXAThemeSupport.ViewModels
         ///     The name of the server file.
         /// </value>
         public static string ServerFileName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the organization.
-        /// </summary>
-        /// <value>
-        /// The organization.
-        /// </value>
-        public static string Organization
-        {
-            get
-            {
-                return organization;
-            }
-
-            set
-            {
-                organization = value;
-                // now I need to add it to the application start item so it can be used later if need be.
-                ActiveApplicationList activeApplicationList;
-                int currentProcessId;
-                string currentProcessName;
-
-                var activeApplicationLog = ReadActiveApplicationLog(out activeApplicationList, out currentProcessId, out currentProcessName);
-                if (activeApplicationLog != null)
-                {
-                    activeApplicationLog.Organization = organization;
-                }
-                // commit the updated collection.
-                SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), true);
-            }
-        }
 
         #endregion
 
@@ -231,7 +234,7 @@ namespace SBXAThemeSupport.ViewModels
                             ProcessId = currentProcessId, 
                             Start = DateTime.Now, 
                             CleanExit = false, 
-                            Organization = Organization,
+                            Organization = Organization, 
                             SessionId = SBPlus.Current.SessionId
                         });
                 SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), true);
@@ -267,6 +270,7 @@ namespace SBXAThemeSupport.ViewModels
 
                 // commit the updated collection.
                 SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), true);
+                SystemEvents.SessionEnded += HandleSystemEventsSessionEnded;
 
                 // Check to see if there are any files to upload. This is the final catch all to ensure that all crash files are uploaded to the server.
                 UploadFiles();
@@ -278,9 +282,12 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        ///     The application stop.
+        /// The application stop.
         /// </summary>
-        public static void ApplicationStop()
+        /// <param name="comment">
+        /// The comment.
+        /// </param>
+        public static void ApplicationStop(string comment = "")
         {
             // first get the colleciton or create it if it does not already exist
             if (!SBPlus.Current.GlobalStateFile.Exists(ActiveApplicationListId))
@@ -296,7 +303,7 @@ namespace SBXAThemeSupport.ViewModels
             var currentProcess = Process.GetCurrentProcess();
             var currentProcessId = currentProcess.Id;
 
-            // create a new log entry with the process id
+            // log entry does not exist - assume it is already stopped
             if (!activeApplicationList.ContainsProcessId(currentProcessId))
             {
                 return;
@@ -304,9 +311,11 @@ namespace SBXAThemeSupport.ViewModels
 
             activeApplicationList[currentProcessId].CleanExit = true;
             activeApplicationList[currentProcessId].Stop = DateTime.Now;
+            activeApplicationList[currentProcessId].Comment = comment;
 
             // commit the updated collection.
             SBPlus.Current.GlobalStateFile.SetItem(new SBhStateFileItem(ActiveApplicationListId, activeApplicationList), false);
+            SystemEvents.SessionEnded -= HandleSystemEventsSessionEnded;
         }
 
         /// <summary>
@@ -335,6 +344,20 @@ namespace SBXAThemeSupport.ViewModels
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// The system events_ session ended.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        public static void HandleSystemEventsSessionEnded(object sender, SessionEndedEventArgs e)
+        {
+            ApplicationStop("Session Ended");
         }
 
         /// <summary>
@@ -407,6 +430,9 @@ namespace SBXAThemeSupport.ViewModels
         /// <param name="delete">
         /// The delete.
         /// </param>
+        /// <param name="appLog">
+        /// The app Log.
+        /// </param>
         /// <param name="orgId">
         /// The org identifier.
         /// </param>
@@ -415,12 +441,17 @@ namespace SBXAThemeSupport.ViewModels
             string abortDescriptionFileName, 
             string[] additionalFiles, 
             bool delete = true, 
-            ApplicationStartStopLog appLog = null)
+            ApplicationStartStopLog appLog = null, 
+            string orgId = null)
         {
             var windowsIdentity = SBPlus.Current.SBPlusRuntime.WindowsIdentity;
             var sessionId = SBPlus.Current.SessionId;
             var sbxa = typeof(SBString).Assembly.GetName();
-            var orgId = appLog == null || string.IsNullOrEmpty(appLog.Organization) ? string.Empty : appLog.Organization;
+            if (orgId == null)
+            {
+                orgId = appLog == null || string.IsNullOrEmpty(appLog.Organization) ? string.Empty : appLog.Organization;
+            }
+
             var troubledSessionId = appLog == null ? "No troubled Session Id" : appLog.SessionId;
             var userId = windowsIdentity.Split(@"\".ToCharArray()).Count() == 2
                              ? windowsIdentity.Split(@"\".ToCharArray())[1]
@@ -450,14 +481,15 @@ namespace SBXAThemeSupport.ViewModels
             logText.AppendLine(string.Format("Machine Name {0}", SystemInformation.ComputerName));
             logText.AppendLine(string.Format("Session Id {0}", sessionId));
             logText.AppendLine(string.Format("Troubled Session Id {0}", troubledSessionId));
-            logText.AppendLine(string.Format(
-                "SB/XA Version {0}.{1}.{2}.{3}",
-                sbxa.Version.Major,
-                sbxa.Version.Minor,
-                sbxa.Version.Build,
-                sbxa.Version.Revision));
+            logText.AppendLine(
+                string.Format(
+                    "SB/XA Version {0}.{1}.{2}.{3}", 
+                    sbxa.Version.Major, 
+                    sbxa.Version.Minor, 
+                    sbxa.Version.Build, 
+                    sbxa.Version.Revision));
 
-            logText.AppendLine(string.Format("Customer {0}", (string.IsNullOrEmpty(orgId) ? "Unknown" : orgId)));
+            logText.AppendLine(string.Format("Customer {0}", string.IsNullOrEmpty(orgId) ? "Unknown" : orgId));
 
             File.WriteAllText(fileName, logText.ToString());
 
@@ -606,35 +638,6 @@ namespace SBXAThemeSupport.ViewModels
         #region Methods
 
         /// <summary>
-        /// Reads the active application log.
-        /// </summary>
-        /// <param name="activeApplicationList">The active application list.</param>
-        /// <param name="currentProcessId">The current process identifier.</param>
-        /// <param name="currentProcessName">Name of the current process.</param>
-        /// <returns>An intance of <see cref="ApplicationStartStopLog"/> or null.</returns>
-        private static ApplicationStartStopLog ReadActiveApplicationLog(out ActiveApplicationList activeApplicationList, out int currentProcessId, out string currentProcessName)
-        {
-            // first get the collection, if it does not exist create a new one.
-            activeApplicationList = SBPlus.Current.GlobalStateFile.GetItem(ActiveApplicationListId).Object as ActiveApplicationList
-                                    ?? new ActiveApplicationList();
-            // get the process id and name
-            var currentProcess = Process.GetCurrentProcess();
-            currentProcessId = currentProcess.Id;
-            currentProcessName = currentProcess.ProcessName;
-            if (currentProcessName.EndsWith("vshost"))
-            {
-                currentProcessName = currentProcessName.Substring(0, currentProcessName.Length - 7);
-            }
-
-            if (activeApplicationList.ContainsProcessId(currentProcessId))
-            {
-                return activeApplicationList[currentProcessId];
-            }
-
-            return null;
-        }
-
-        /// <summary>
         ///     This method will check to see if there are any files in the upload folder.
         /// </summary>
         /// <returns>True or false depending on if there are files that need to be uploaded.</returns>
@@ -690,11 +693,11 @@ namespace SBXAThemeSupport.ViewModels
 
                 if (!string.IsNullOrEmpty(additionalText))
                 {
-                    var tmp = additionalText.Replace(
-                        "\r\n",
-                        Convert.ToString(GenericConstants.DEFAULT_AM_CHAR));
+                    var tmp = additionalText.Replace("\r\n", Convert.ToString(GenericConstants.DEFAULT_AM_CHAR));
 
-                    var addText = new SBString(tmp, new char[] { GenericConstants.DEFAULT_AM_CHAR, GenericConstants.DEFAULT_VM_CHAR, GenericConstants.DEFAULT_SVM_CHAR });
+                    var addText = new SBString(
+                        tmp, 
+                        new[] { GenericConstants.DEFAULT_AM_CHAR, GenericConstants.DEFAULT_VM_CHAR, GenericConstants.DEFAULT_SVM_CHAR });
                     logRecord.SBInsert(LogRecDescription, addText);
                 }
                 else
@@ -826,7 +829,7 @@ namespace SBXAThemeSupport.ViewModels
             string[] additionalFiles, 
             string userId, 
             string logFolder, 
-            bool deleteFiles,
+            bool deleteFiles, 
             string org = null)
         {
             // check if the file exists, if not ignore the call so we do not crash.
@@ -1001,6 +1004,46 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
+        /// Reads the active application log.
+        /// </summary>
+        /// <param name="activeApplicationList">
+        /// The active application list.
+        /// </param>
+        /// <param name="currentProcessId">
+        /// The current process identifier.
+        /// </param>
+        /// <param name="currentProcessName">
+        /// Name of the current process.
+        /// </param>
+        /// <returns>
+        /// An intance of <see cref="ApplicationStartStopLog"/> or null.
+        /// </returns>
+        private static ApplicationStartStopLog ReadActiveApplicationLog(
+            out ActiveApplicationList activeApplicationList, 
+            out int currentProcessId, 
+            out string currentProcessName)
+        {
+            // first get the collection, if it does not exist create a new one.
+            activeApplicationList = SBPlus.Current.GlobalStateFile.GetItem(ActiveApplicationListId).Object as ActiveApplicationList
+                                    ?? new ActiveApplicationList();
+            // get the process id and name
+            var currentProcess = Process.GetCurrentProcess();
+            currentProcessId = currentProcess.Id;
+            currentProcessName = currentProcess.ProcessName;
+            if (currentProcessName.EndsWith("vshost"))
+            {
+                currentProcessName = currentProcessName.Substring(0, currentProcessName.Length - 7);
+            }
+
+            if (activeApplicationList.ContainsProcessId(currentProcessId))
+            {
+                return activeApplicationList[currentProcessId];
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// The register problem.
         /// </summary>
         /// <param name="problemType">
@@ -1088,7 +1131,7 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
-        /// The upload files.
+        ///     The upload files.
         /// </summary>
         private static void UploadFiles()
         {
@@ -1116,6 +1159,7 @@ namespace SBXAThemeSupport.ViewModels
                     {
                         continue;
                     }
+
                     fileUploadingCount++;
                     itemId = itemId.Replace("(", "*").Replace(")", "*").Replace(" ", "*");
                     SBFileTransfer.Upload(fileName, ServerFileName, itemId, "B", UploadCompleted);
@@ -1151,31 +1195,21 @@ namespace SBXAThemeSupport.ViewModels
         #region Fields
 
         /// <summary>
-        /// The clean exit.
+        ///     The clean exit.
         /// </summary>
         private bool cleanExit;
 
         /// <summary>
-        /// The process id.
+        ///     The process id.
         /// </summary>
         private int processId;
 
         /// <summary>
-        /// The start.
+        ///     The start.
         /// </summary>
         private DateTime start;
 
         private DateTime stop;
-
-        /// <summary>
-        /// Gets or sets the organization.
-        /// </summary>
-        /// <value>
-        /// The organization.
-        /// </value>
-        public string Organization { get; set; }
-
-        public string SessionId { get; set; }
 
         #endregion
 
@@ -1201,6 +1235,22 @@ namespace SBXAThemeSupport.ViewModels
         }
 
         /// <summary>
+        ///     Gets or sets the comment.
+        /// </summary>
+        /// <value>
+        ///     The comment.
+        /// </value>
+        public string Comment { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the organization.
+        /// </summary>
+        /// <value>
+        ///     The organization.
+        /// </value>
+        public string Organization { get; set; }
+
+        /// <summary>
         ///     Gets or sets the process identifier.
         /// </summary>
         /// <value>
@@ -1218,6 +1268,14 @@ namespace SBXAThemeSupport.ViewModels
                 this.processId = value;
             }
         }
+
+        /// <summary>
+        ///     Gets or sets the session identifier.
+        /// </summary>
+        /// <value>
+        ///     The session identifier.
+        /// </value>
+        public string SessionId { get; set; }
 
         /// <summary>
         ///     Gets or sets the start.
